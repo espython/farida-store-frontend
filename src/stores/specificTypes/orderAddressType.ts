@@ -12,7 +12,6 @@ export interface PurpleAttributes {
   total: number;
   createdAt: Date;
   updatedAt: Date;
-  publishedAt: Date;
   order_notes: string;
   arrivedAt: Date;
   state: string;
@@ -23,9 +22,36 @@ export interface PurpleAttributes {
   phone: string;
   second_phone: string;
   postal_code: string;
-  user_payment: OrderItems;
+  /**
+   * Server-authoritative payment state. Set at checkout to 'cod' or 'pending'
+   * and flipped to 'paid' by the webhook, so it is the only trustworthy source
+   * for what the customer was charged and whether it settled.
+   */
+  payment_status: "pending" | "paid" | "failed" | "cod";
+  /** Written by the webhook on settlement. Null until then. */
+  payment_transaction_id: string | null;
+  /** Paymob order, written at checkout for card orders. Null for COD. */
+  paymob_order_id: string | null;
+  paid_at: Date | null;
+  /** Populated oneToOne to user-payments. Metadata only - no card number. */
+  payment: { data: UserPaymentDatum | null };
   user: User;
   order_items: OrderItems;
+}
+
+export interface UserPaymentDatum {
+  id: number;
+  attributes: UserPaymentAttributes;
+}
+
+export interface UserPaymentAttributes {
+  payment_type: string;
+  cardholder_name: string;
+  card_brand: string;
+  last_four: string;
+  payment_transaction_id: string;
+  expiration_month: string;
+  expiration_year: string;
 }
 
 export interface OrderItems {
@@ -40,7 +66,6 @@ export interface Datum {
 export interface DatumAttributes {
   createdAt: Date;
   updatedAt: Date;
-  publishedAt: Date;
   quantity: number;
 }
 
