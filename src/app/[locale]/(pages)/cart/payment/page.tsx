@@ -10,6 +10,10 @@ import { MdPayment } from "react-icons/md";
 import { toast } from "react-toastify";
 import PaymentIframe from "./components/PaymentIframe";
 import PaymentSummary from "./components/PaymentSummary";
+import {
+  getCheckoutIdempotencyKey,
+  clearCheckoutIdempotencyKey,
+} from "@/functions/checkoutIdempotency";
 
 const PaymentPage = () => {
   const { cart, user, userOrders, userAddresses, payment } =
@@ -78,13 +82,22 @@ const PaymentPage = () => {
     payment.resetPaymentState();
 
     try {
-      const idempotencyKey = `${user.strapiUserdata.id}_${Date.now()}`;
+      const items = cart.userCartItems.map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+      }));
+
+      // Reused across retries of this same intent, so a reload or a lost
+      // response resumes the existing order instead of creating a second one.
+      const idempotencyKey = getCheckoutIdempotencyKey({
+        userId: user.strapiUserdata.id,
+        items,
+        addressId: shippingData.id,
+        paymentMethod: "card",
+      });
 
       const orderData = await userOrders.checkout({
-        items: cart.userCartItems.map((item) => ({
-          id: item.id,
-          quantity: item.quantity,
-        })),
+        items,
         orderNotes: "Online payment via Paymob",
         addressId: shippingData.id,
         paymentMethod: "card",
@@ -128,20 +141,35 @@ const PaymentPage = () => {
     setIsProcessingOrder(true);
 
     try {
+      const items = cart.userCartItems.map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+      }));
+
+      const idempotencyKey = getCheckoutIdempotencyKey({
+        userId: user.strapiUserdata.id,
+        items,
+        addressId: shippingData.id,
+        paymentMethod: "cod",
+      });
+
       // Create order with COD payment method. The backend resolves the
       // address by id and verifies ownership — no personal data is trusted
       // from the browser.
       const orderData = await userOrders.checkout({
-        items: cart.userCartItems.map((item) => ({
-          id: item.id,
-          quantity: item.quantity,
-        })),
+        items,
         orderNotes: "Cash on Delivery",
         addressId: shippingData.id,
+        paymentMethod: "cod",
+        idempotencyKey,
       });
 
       if (orderData) {
         await user.clearUserCart(cart.userCartItems);
+
+        // The order exists, so this checkout intent is resolved. Drop the key
+        // or a later order of the same items would replay this one.
+        clearCheckoutIdempotencyKey();
 
         // Shipping data was never stored as PII client-side; clear the ref
         localStorage.removeItem("shippingAddressId");
@@ -179,6 +207,10 @@ const PaymentPage = () => {
         payment.createdOrderId ?? payment.createdPaymobOrderId ?? "";
 
       await user.clearUserCart(cart.userCartItems);
+
+      // The order is committed and paid, so the intent is resolved. Drop the
+      // key so a later order of the same items is not replayed from this one.
+      clearCheckoutIdempotencyKey();
 
       // Clear the non-sensitive address reference
       localStorage.removeItem("shippingAddressId");

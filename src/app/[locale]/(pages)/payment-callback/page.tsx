@@ -8,6 +8,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Button, Card, CardBody, Spinner } from "@nextui-org/react";
 import { FaCheckCircle, FaTimesCircle, FaClock } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { clearCheckoutIdempotencyKey } from "@/functions/checkoutIdempotency";
 
 const PaymentCallbackPage = () => {
   const { payment, cart, user } = useContext(StoreContext);
@@ -39,6 +40,7 @@ const PaymentCallbackPage = () => {
             searchParams.get("merchant_order_id");
 
           await user.clearUserCart(cart.userCartItems);
+          clearCheckoutIdempotencyKey();
           localStorage.removeItem("shippingAddressId");
 
           setOrderCreated(true);
