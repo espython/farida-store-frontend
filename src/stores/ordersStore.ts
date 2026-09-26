@@ -224,15 +224,23 @@ export class OrdersStore {
     );
 
     if (response.ok) {
-      let data: {
-        data?: { attributes?: { order_details?: { data?: UserOrderDetails[] } } };
-      } = await response.json();
+      let data: { order_details?: UserOrderDetails[] } = await response.json();
 
       runInAction(() => {
-        // /users/me is a *single* type, so a populated relation arrives under
-        // data.attributes as a v4 collection: data[].attributes, each entry an
-        // { id, attributes } envelope. It is never at the top level.
-        this.userOrders = data?.data?.attributes?.order_details?.data ?? [];
+        // /users/me is NOT a standard content-type route. It is a custom
+        // users-permissions handler that sets ctx.body to the entity-service
+        // result after sanitize.contentAPI.output, and never passes through the
+        // core-api transformResponse that wraps every other route in
+        // { data: { id, attributes } }. So the user and its populated
+        // relations arrive flat, inlined, with no envelope at any depth --
+        // which is why cartStore reads data.cart.cart_items directly.
+        // Only routes served by the core-api controllers, such as
+        // /order-details/:id in getOrderDetails above, are enveloped.
+        // Array.isArray, not `?? []`: a non-array would otherwise be stored
+        // against the declared UserOrderDetails[] and break .length/.map.
+        this.userOrders = Array.isArray(data?.order_details)
+          ? data.order_details
+          : [];
       });
 
       return true;

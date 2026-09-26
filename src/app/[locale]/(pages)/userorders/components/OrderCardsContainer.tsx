@@ -17,14 +17,14 @@ const OrderCardsContainer = () => {
     <>
       {userOrders?.userOrders?.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-20 px-5 md:px-10 lg:px-20">
-          {userOrders.userOrders.map(({ id, attributes }) => (
+          {userOrders.userOrders.map((order) => (
             <OrderCard
-              key={id}
-              totalPrice={attributes.total}
-              orderNumber={id}
-              orderedOn={attributes.createdAt}
-              arrivedOn={attributes.arrivedAt}
-              orderItemsCount={attributes.order_items?.data?.length || 0}
+              key={order.id}
+              totalPrice={order.total}
+              orderNumber={order.id}
+              orderedOn={order.createdAt}
+              arrivedOn={order.arrivedAt}
+              orderItemsCount={order.order_items?.length || 0}
             />
           ))}
         </div>
