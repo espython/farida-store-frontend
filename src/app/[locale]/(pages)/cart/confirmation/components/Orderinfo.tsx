@@ -4,6 +4,7 @@ import InfoCard from "./InfoCard";
 import { observer } from "mobx-react-lite";
 import { StoreContext } from "@/contexts/StoreContext";
 import { useLocale, useTranslations } from "next-intl";
+import { getOrderPaymentDisplay } from "@/functions/orderPaymentState";
 
 const Orderinfo = () => {
   const { userOrders } = useContext(StoreContext);
@@ -29,18 +30,20 @@ const Orderinfo = () => {
       })
     : t("orderInfo.date.soon");
 
-  // Determine payment method based on order notes and user_payment
-  const getPaymentMethodText = () => {
-    const orderNotes = userOrders.orderDetails.data?.attributes?.order_notes || "";
-    const userPayment = userOrders.orderDetails.data?.attributes?.user_payment;
+  // Payment method comes from the server's payment_status: 'cod' for cash on
+  // delivery, anything else means the order went through Paymob. The previous
+  // check matched the client-supplied order_notes text and also tested
+  // `!userPayment`, a field that no longer exists — so that branch was always
+  // taken and the "Online Payment" arm below it was unreachable.
+  const paymentInfo = getOrderPaymentDisplay(
+    userOrders.orderDetails.data?.attributes
+  );
 
-    if (orderNotes.includes("Paymob") || orderNotes.includes("Transaction ID")) {
-      return locale === "ar" ? "دفع إلكتروني" : "Online Payment";
-    } else if (orderNotes.includes("Cash on Delivery") || !userPayment) {
+  const getPaymentMethodText = () => {
+    if (paymentInfo.isCod) {
       return locale === "ar" ? "الدفع عند الاستلام" : "Cash on Delivery";
-    } else {
-      return locale === "ar" ? "دفع إلكتروني" : "Online Payment";
     }
+    return locale === "ar" ? "دفع إلكتروني" : "Online Payment";
   };
 
   const information = [

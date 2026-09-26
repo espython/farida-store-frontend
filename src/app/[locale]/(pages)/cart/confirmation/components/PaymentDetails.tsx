@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite";
 import { useLocale, useTranslations } from "next-intl";
 import { Card, CardBody, CardHeader, Chip, Divider } from "@nextui-org/react";
 import { FaCreditCard, FaMoneyBillWave, FaCheckCircle, FaClock, FaTimesCircle } from "react-icons/fa";
+import { getOrderPaymentDisplay } from "@/functions/orderPaymentState";
 
 const PaymentDetails = () => {
   const { userOrders } = useContext(StoreContext);
@@ -12,40 +13,11 @@ const PaymentDetails = () => {
   const t = useTranslations("confirmationPage");
   const currency = useTranslations("currency");
 
-  const orderNotes = userOrders.orderDetails.data?.attributes?.order_notes || "";
-  const userPayment = userOrders.orderDetails.data?.attributes?.user_payment;
   const totalAmount = userOrders.orderDetails.data?.attributes?.total;
 
-  // Extract payment information from order notes
-  const extractPaymentInfo = () => {
-    if (orderNotes.includes("Paymob") || orderNotes.includes("Transaction ID")) {
-      const transactionMatch = orderNotes.match(/Transaction ID: ([A-Za-z0-9]+)/);
-      const paymobOrderMatch = orderNotes.match(/Paymob Order ID: ([A-Za-z0-9]+)/);
-      
-      return {
-        method: "online",
-        transactionId: transactionMatch ? transactionMatch[1] : null,
-        paymobOrderId: paymobOrderMatch ? paymobOrderMatch[1] : null,
-        status: "completed"
-      };
-    } else if (orderNotes.includes("Cash on Delivery")) {
-      return {
-        method: "cod",
-        transactionId: null,
-        paymobOrderId: null,
-        status: "pending"
-      };
-    } else {
-      return {
-        method: "unknown",
-        transactionId: null,
-        paymobOrderId: null,
-        status: "unknown"
-      };
-    }
-  };
-
-  const paymentInfo = extractPaymentInfo();
+  const paymentInfo = getOrderPaymentDisplay(
+    userOrders.orderDetails.data?.attributes
+  );
 
   const getPaymentIcon = () => {
     switch (paymentInfo.method) {
@@ -86,6 +58,8 @@ const PaymentDetails = () => {
         return locale === "ar" ? "مكتمل" : "Completed";
       case "pending":
         return locale === "ar" ? "في الانتظار" : "Pending";
+      case "failed":
+        return locale === "ar" ? "فشل" : "Failed";
       default:
         return locale === "ar" ? "غير معروف" : "Unknown";
     }
@@ -149,12 +123,24 @@ const PaymentDetails = () => {
 
           <Divider />
 
-          {/* Amount */}
+          {/* Amount. Only claim "paid" once the server says so -- a pending or
+              failed payment still owes this, so it is labelled as the order
+              total and not styled as a settled payment. */}
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium text-gray-700">
-              {locale === "ar" ? "المبلغ المدفوع:" : "Amount Paid:"}
+              {paymentInfo.status === "completed"
+                ? locale === "ar"
+                  ? "المبلغ المدفوع:"
+                  : "Amount Paid:"
+                : locale === "ar"
+                ? "إجمالي الطلب:"
+                : "Order Total:"}
             </span>
-            <span className="text-lg font-bold text-green-600">
+            <span
+              className={`text-lg font-bold ${
+                paymentInfo.status === "completed" ? "text-green-600" : "text-gray-700"
+              }`}
+            >
               {totalAmount} {currency("currency")}
             </span>
           </div>
