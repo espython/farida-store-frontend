@@ -214,7 +214,7 @@ export class OrdersStore {
 
   getUserOrders = async () => {
     let response = await fetch(
-      `${STRAPI_ENDPOINT}/users/me?[populate][order_details][populate][order_items][populate]=*&[populate][order_details][populate][user_order_address]=*`,
+      `${STRAPI_ENDPOINT}/users/me?[populate][order_details][populate][order_items][populate]=*`,
       {
         method: "GET",
         headers: {
@@ -224,27 +224,28 @@ export class OrdersStore {
     );
 
     if (response.ok) {
-      let data = await response.json();
+      let data: { order_details?: UserOrderDetails[] } = await response.json();
 
-      if (data) {
-        runInAction(() => {
-          this.userOrders = data.order_details;
-        });
+      runInAction(() => {
+        // /users/me is NOT a standard content-type route. It is a custom
+        // users-permissions handler that sets ctx.body to the entity-service
+        // result after sanitize.contentAPI.output, and never passes through the
+        // core-api transformResponse that wraps every other route in
+        // { data: { id, attributes } }. So the user and its populated
+        // relations arrive flat, inlined, with no envelope at any depth --
+        // which is why cartStore reads data.cart.cart_items directly.
+        // Only routes served by the core-api controllers, such as
+        // /order-details/:id in getOrderDetails above, are enveloped.
+        // Array.isArray, not `?? []`: a non-array would otherwise be stored
+        // against the declared UserOrderDetails[] and break .length/.map.
+        this.userOrders = Array.isArray(data?.order_details)
+          ? data.order_details
+          : [];
+      });
 
-        return response.ok;
-      } else {
-        return false;
-      }
-
-      // if (data) {
-      //   if (data?.data?.attributes?.user?.data?.id === userId) {
-      //     return true;
-      //   } else {
-      //     return false;
-      //   }
-      // } else {
-      //   return false;
-      // }
+      return true;
+    } else {
+      return false;
     }
   };
 

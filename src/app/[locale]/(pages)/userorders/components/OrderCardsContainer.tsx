@@ -24,7 +24,7 @@ const OrderCardsContainer = () => {
               orderNumber={order.id}
               orderedOn={order.createdAt}
               arrivedOn={order.arrivedAt}
-              orderItemsCount={order?.order_items?.length || 0}
+              orderItemsCount={order.order_items?.length || 0}
             />
           ))}
         </div>

@@ -3,14 +3,27 @@ export interface UserOrderDetails {
   total: number;
   createdAt: Date;
   updatedAt: Date;
-  publishedAt: Date;
   order_notes: string;
   arrivedAt: Date;
-  user_payment: null;
-  user: Main;
-  user_order_address: UserOrderAddress;
-  order_items: OrderItem[];
   status: "delivery" | "placed" | "arrived";
+  /**
+   * Flat, inlined relations: /users/me bypasses the core-api envelope, so
+   * this is the shape as it actually arrives, not a { data: [...] } wrapper.
+   */
+  order_items: OrderItem[];
+  /**
+   * Denormalised onto the order row in #200. The `user_order_address`
+   * relation these replaced no longer exists, so it must not be populated
+   * or read.
+   */
+  street: string;
+  city: string;
+  state: string;
+  country: string;
+  postal_code: string;
+  phone: string;
+  second_phone: string;
+  user: Main;
 }
 
 export interface Main {
@@ -31,23 +44,7 @@ export interface OrderItem {
   id: number;
   createdAt: Date;
   updatedAt: Date;
-  publishedAt: Date;
   quantity: number;
-}
-
-export interface UserOrderAddress {
-  id: number;
-  state: string;
-  city: string;
-  country: string;
-  postal_code: string;
-  phone: string;
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date;
-  street: string;
-  second_phone: string;
-  fullname: string;
 }
 
 // export enum Email {
