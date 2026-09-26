@@ -264,6 +264,10 @@
         "action": {
           "complete": "complete your order",
           "continue": "continue to payment"
+        },
+        "errors": {
+          "login": "please log in to save your address",
+          "save": "could not save your address, please try again"
         }
       },
       "addresses": {
@@ -476,7 +480,7 @@
       "city_state": "cairo,egypt",
 
       "times1": "sun-thurs:9:00-20:00",
-      " times2": "fri-sat:11:00-15:00"
+      "times2": "fri-sat:11:00-15:00"
     },
     "form": {
       "title": "Do you have a complaint or inquiry?",
