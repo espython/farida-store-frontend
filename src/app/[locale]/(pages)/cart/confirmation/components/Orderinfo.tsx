@@ -39,14 +39,12 @@ const Orderinfo = () => {
     userOrders.orderDetails.data?.attributes
   );
 
-  const getPaymentMethodText = () =>
-    paymentInfo.isCod
-      ? locale === "ar"
-        ? "الدفع عند الاستلام"
-        : "Cash on Delivery"
-      : locale === "ar"
-      ? "دفع إلكتروني"
-      : "Online Payment";
+  const getPaymentMethodText = () => {
+    if (paymentInfo.isCod) {
+      return locale === "ar" ? "الدفع عند الاستلام" : "Cash on Delivery";
+    }
+    return locale === "ar" ? "دفع إلكتروني" : "Online Payment";
+  };
 
   const information = [
     {

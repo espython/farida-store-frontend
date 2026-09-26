@@ -33,25 +33,8 @@ export interface PurpleAttributes {
   /** Paymob order, written at checkout for card orders. Null for COD. */
   paymob_order_id: string | null;
   paid_at: Date | null;
-  /** Populated oneToOne to user-payments. Metadata only - no card number. */
-  payment: { data: UserPaymentDatum | null };
   user: User;
   order_items: OrderItems;
-}
-
-export interface UserPaymentDatum {
-  id: number;
-  attributes: UserPaymentAttributes;
-}
-
-export interface UserPaymentAttributes {
-  payment_type: string;
-  cardholder_name: string;
-  card_brand: string;
-  last_four: string;
-  payment_transaction_id: string;
-  expiration_month: string;
-  expiration_year: string;
 }
 
 export interface OrderItems {

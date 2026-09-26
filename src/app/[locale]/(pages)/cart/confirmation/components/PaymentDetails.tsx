@@ -123,12 +123,24 @@ const PaymentDetails = () => {
 
           <Divider />
 
-          {/* Amount */}
+          {/* Amount. Only claim "paid" once the server says so -- a pending or
+              failed payment still owes this, so it is labelled as the order
+              total and not styled as a settled payment. */}
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium text-gray-700">
-              {locale === "ar" ? "المبلغ المدفوع:" : "Amount Paid:"}
+              {paymentInfo.status === "completed"
+                ? locale === "ar"
+                  ? "المبلغ المدفوع:"
+                  : "Amount Paid:"
+                : locale === "ar"
+                ? "إجمالي الطلب:"
+                : "Order Total:"}
             </span>
-            <span className="text-lg font-bold text-green-600">
+            <span
+              className={`text-lg font-bold ${
+                paymentInfo.status === "completed" ? "text-green-600" : "text-gray-700"
+              }`}
+            >
               {totalAmount} {currency("currency")}
             </span>
           </div>
