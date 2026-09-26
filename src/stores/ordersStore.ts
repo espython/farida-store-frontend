@@ -214,7 +214,7 @@ export class OrdersStore {
 
   getUserOrders = async () => {
     let response = await fetch(
-      `${STRAPI_ENDPOINT}/users/me?[populate][order_details][populate][order_items][populate]=*&[populate][order_details][populate][user_order_address]=*`,
+      `${STRAPI_ENDPOINT}/users/me?[populate][order_details][populate][order_items][populate]=*`,
       {
         method: "GET",
         headers: {
@@ -224,27 +224,20 @@ export class OrdersStore {
     );
 
     if (response.ok) {
-      let data = await response.json();
+      let data: {
+        data?: { attributes?: { order_details?: { data?: UserOrderDetails[] } } };
+      } = await response.json();
 
-      if (data) {
-        runInAction(() => {
-          this.userOrders = data.order_details;
-        });
+      runInAction(() => {
+        // /users/me is a *single* type, so a populated relation arrives under
+        // data.attributes as a v4 collection: data[].attributes, each entry an
+        // { id, attributes } envelope. It is never at the top level.
+        this.userOrders = data?.data?.attributes?.order_details?.data ?? [];
+      });
 
-        return response.ok;
-      } else {
-        return false;
-      }
-
-      // if (data) {
-      //   if (data?.data?.attributes?.user?.data?.id === userId) {
-      //     return true;
-      //   } else {
-      //     return false;
-      //   }
-      // } else {
-      //   return false;
-      // }
+      return true;
+    } else {
+      return false;
     }
   };
 
