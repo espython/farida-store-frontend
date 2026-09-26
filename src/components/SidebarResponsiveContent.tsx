@@ -91,9 +91,15 @@ const SidebarResponsiveContent = () => {
         </div>
         <div className="p-4">
           <h1 className="text-xl capitalize text-center">
-            {selectedLabel === "main menu"
-              ? tSidebar("menu")
-              : tSidebar(selectedLabel)}
+            {/* Both labels are named literally rather than looked up
+                dynamically: the state only ever holds "main menu" or
+                "sections" (see the two setSelectedLabel calls above), and
+                naming the keys is what lets the i18n verifier check them. If a
+                third label is ever added this has to be revisited on purpose
+                instead of dangling silently. */}
+            {selectedLabel === "sections"
+              ? tSidebar("sections")
+              : tSidebar("menu")}
           </h1>
         </div>
       </div>

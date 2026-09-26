@@ -48,10 +48,17 @@ const readJson = (f) => JSON.parse(fs.readFileSync(path.join(ROOT, f), "utf8"));
 const en = readJson("messages/en.json");
 const ar = readJson("messages/ar.json");
 
-/** Flatten to dotted leaf paths, e.g. {a:{b:'x'}} -> ['a.b']. */
+/**
+ * Flatten to dotted leaf paths, e.g. {a:{b:'x'}} -> ['a.b'].
+ * An array is treated as a single leaf: its contents are message values, not
+ * sub-namespaces, so flattening it to numeric indices would produce
+ * meaningless parity diffs.
+ */
 function leafKeys(obj, prefix = "") {
   return Object.entries(obj).flatMap(([k, v]) =>
-    v !== null && typeof v === "object"
+    Array.isArray(v)
+      ? [`${prefix}${k}`]
+      : v !== null && typeof v === "object"
       ? leafKeys(v, `${prefix}${k}.`)
       : [`${prefix}${k}`]
   );
@@ -61,6 +68,66 @@ function resolve(tree, dotted) {
   return dotted
     .split(".")
     .reduce((node, part) => (node == null ? undefined : node[part]), tree);
+}
+
+/**
+ * Blank out comments while leaving string/template literals intact.
+ *
+ * Without this, prose that happens to contain a call shape is read as a call
+ * site -- a comment saying `// used to be t("removed.key")` would be reported
+ * as a missing key and fail the gate for no reason. Comment characters are
+ * replaced with spaces rather than deleted so byte offsets, and therefore
+ * reported line numbers, stay correct.
+ *
+ * Known limitation: a regex literal containing a quote or a `//` can confuse
+ * the string tracking. The consequence is a mis-scan, not a crash, and there
+ * is no such literal in src/ today.
+ */
+function stripComments(src) {
+  let out = "";
+  let i = 0;
+  const n = src.length;
+  while (i < n) {
+    const c = src[i];
+    const d = src[i + 1];
+    if (c === "/" && d === "/") {
+      while (i < n && src[i] !== "\n") (out += " "), i++;
+      continue;
+    }
+    if (c === "/" && d === "*") {
+      out += "  ";
+      i += 2;
+      while (i < n && !(src[i] === "*" && src[i + 1] === "/")) {
+        out += src[i] === "\n" ? "\n" : " ";
+        i++;
+      }
+      out += "  ";
+      i += 2;
+      continue;
+    }
+    if (c === '"' || c === "'" || c === "`") {
+      const quote = c;
+      out += c;
+      i++;
+      while (i < n) {
+        if (src[i] === "\\") {
+          out += src.slice(i, i + 2);
+          i += 2;
+          continue;
+        }
+        out += src[i];
+        if (src[i] === quote) {
+          i++;
+          break;
+        }
+        i++;
+      }
+      continue;
+    }
+    out += c;
+    i++;
+  }
+  return out;
 }
 
 function walk(dir, out = []) {
@@ -107,26 +174,64 @@ section("every static t(\"...\") lookup resolves in both catalogues");
   let checked = 0;
   let dynamic = 0;
   const missing = [];
+  const cannotVerify = [];
+  const collisionsByVar = new Map();
+  // next-intl exposes the same namespace through several methods. All of them
+  // take a message key, so all of them are resolved rather than excluded —
+  // excluding them would make a future .rich("...") silently unchecked.
+  const METHOD = "(?:rich|has|raw|markup)";
 
   for (const file of files) {
-    const text = fs.readFileSync(file, "utf8");
+    const raw = fs.readFileSync(file, "utf8");
+    const text = stripComments(raw);
     const rel = path.relative(ROOT, file);
 
-    const namespaces = new Map();
+    // const t = useTranslations("ns")  /  const t = useTranslations()
+    const byVar = new Map();
     for (const m of text.matchAll(DECLARE)) {
-      namespaces.set(m[1], m[3]);
+      const existing = byVar.get(m[1]);
+      if (existing && existing.ns !== m[3]) {
+        // Two declarations of the same variable name in one file (e.g. two
+        // exported components each doing `const t = useTranslations(...)`).
+        // Picking the last one would check every call against the wrong
+        // namespace, so neither is trusted and the variable is skipped.
+        existing.ambiguous = true;
+        if (!collisionsByVar.has(rel)) collisionsByVar.set(rel, []);
+        collisionsByVar.get(rel).push(
+          `${rel}: "${m[1]}" is declared as both "${existing.ns}" and "${m[3]}"`
+        );
+      } else if (!existing) {
+        byVar.set(m[1], { ns: m[3], ambiguous: false });
+      }
     }
-    if (namespaces.size === 0) continue;
+    if (byVar.size === 0) continue;
 
-    for (const [varName, ns] of namespaces) {
-      // Direct calls only: `.rich(` / `.has(` are deliberately not matched, and
-      // a template literal or variable key cannot be resolved statically.
-      const call = new RegExp(
-        `\\b${varName}\\(\\s*(['"])([^'"\\n]+)\\1`,
+    for (const [varName, { ns, ambiguous }] of byVar) {
+      if (ambiguous) {
+        // Two declarations of one variable name in a single file. Resolving
+        // against either namespace would check calls against the wrong tree,
+        // and *skipping* them would let a genuinely missing key pass silently.
+        // Neither is acceptable, so the file is reported as unverifiable and
+        // this check fails. The fix is trivial -- give one of them a
+        // different variable name -- and unlike a genuinely dynamic key there
+        // is no legitimate reason to leave this ambiguous.
+        cannotVerify.push(...(collisionsByVar.get(rel) || []));
+        continue;
+      }
+      const anyCall = new RegExp(
+        `\\b${varName}(?:\\.${METHOD})?\\(([^)]{0,200})\\)`,
         "g"
       );
-      for (const m of text.matchAll(call)) {
-        const key = m[2];
+      for (const m of text.matchAll(anyCall)) {
+        const arg = m[1].trim();
+        if (!arg) continue;
+        // A plain string literal, however it is wrapped or indented, is a
+        // static lookup. Anything else cannot be resolved here.
+        if (!/^['"]/.test(arg)) {
+          dynamic += 1;
+          continue;
+        }
+        const key = arg.slice(1, -1);
         const full = ns ? `${ns}.${key}` : key;
         checked += 1;
         for (const [label, tree] of [
@@ -134,17 +239,12 @@ section("every static t(\"...\") lookup resolves in both catalogues");
           ["ar", ar],
         ]) {
           if (resolve(tree, full) === undefined) {
-            missing.push(`${rel}: ${varName}("${key}") -> ${full} [missing in ${label}]`);
+            missing.push(
+              `${rel}: ${varName}("${key}") -> ${full} [missing in ${label}]`
+            );
           }
         }
       }
-
-      // Same variable, but the argument is not a plain string literal.
-      const dynamicCall = new RegExp(
-        `\\b${varName}\\(\\s*(?!['"])[^)]{0,60}\\)`,
-        "g"
-      );
-      for (const _ of text.matchAll(dynamicCall)) dynamic += 1;
     }
   }
 
@@ -153,9 +253,22 @@ section("every static t(\"...\") lookup resolves in both catalogues");
     missing.length === 0,
     missing.join("\n          ")
   );
+  check(
+    "every translations variable resolves to exactly one namespace",
+    cannotVerify.length === 0,
+    cannotVerify
+      .map((c) => `${c} -- rename one of them so this file can be verified`)
+      .join("\n          ")
+  );
   console.log(
     `  note  ${dynamic} lookup(s) use a non-literal key and are NOT verified here`
   );
+  if (dynamic > 0) {
+    console.log(
+      `        (0 today. Convert to literals where the value set is known,` +
+      ` the way SidebarResponsiveContent.tsx does.)`
+    );
+  }
 }
 
 // ---------------------------------- 3. backlog: hard-coded bilingual ternaries
@@ -163,7 +276,7 @@ section("backlog: hard-coded bilingual ternaries bypassing the catalogue");
 {
   const offenders = [];
   for (const file of files) {
-    const text = fs.readFileSync(file, "utf8");
+    const text = stripComments(fs.readFileSync(file, "utf8"));
     const n = (text.match(/locale === ["']ar["']/g) || []).length;
     if (n > 0) offenders.push([path.relative(ROOT, file), n]);
   }
