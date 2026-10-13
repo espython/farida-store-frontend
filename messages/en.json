@@ -402,6 +402,16 @@
     "goHome": "Go Home",
     "goBack": "Go Back"
   },
+  "errorPage": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again, or return to the home page.",
+    "retry": "Try again",
+    "goHome": "Go Home",
+    "reference": "Reference"
+  },
+  "loading": {
+    "label": "Loading"
+  },
   "userOrders": {
     "title": "your orders",
     "empty": "you have no orders",
