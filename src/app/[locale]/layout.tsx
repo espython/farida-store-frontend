@@ -17,6 +17,7 @@ import GoTopFloatingButton from "@/components/GoTopFloatingButton";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import { unstable_setRequestLocale } from "next-intl/server";
 import Uiproviders from "@/providers/UiProviders";
+import ReduxStoreProvider from "@/store/StoreProvider";
 
 export const metadata = {
   title: "Farida Store",
@@ -52,6 +53,7 @@ export default function RootLayout({
     >
       <body className={`font-cairo flex flex-col `} suppressHydrationWarning={true}>
         <Uiproviders>
+          <ReduxStoreProvider>
           <StoreContextProvider>
             <NextIntlClientProvider locale={locale} messages={messages}>
               <div className="h-full   flex flex-col">
@@ -73,6 +75,7 @@ export default function RootLayout({
               </div>
             </NextIntlClientProvider>
           </StoreContextProvider>
+          </ReduxStoreProvider>
         </Uiproviders>
       </body>
     </html>
