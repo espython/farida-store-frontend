@@ -16,12 +16,13 @@ Next.js 13 (App Router), React 18, TypeScript, Tailwind + NextUI, framer-motion,
 ## Layout
 
 - `src/app/[locale]/` – all pages, under `(auth)` (login, register) and `(pages)` (cart, order, payment-callback, trackorder, user*, wishlist, search, categories/[name], contact). Page-specific components live in a `components/` folder next to the page.
-- `src/app/components/` – shared UI (product cards, filters, sliders, pagination).
+- `src/app/components/` and `src/components/` – shared UI (product cards, filters, sliders, pagination, cart sidebar). Two folders for historical reasons; the migration plan merges them.
 - `src/app/api/` – Next route handlers:
   - `strapi/[...path]` – proxy to Strapi; adds the user's JWT (from the `credentials` cookie) or falls back to `STRAPI_API_TOKEN`. Client code should call `STRAPI_ENDPOINT` (`/api/strapi`, see `src/api/config.ts`), not Strapi directly.
   - `auth/session` – sets/clears the httpOnly `credentials` JWT cookie and a readable `logged_in` cookie.
   - `contact` – contact form (uses `CONTACT_SHARED_SECRET`).
-- `src/stores/` – MobX stores, instantiated and exposed through context in `src/stores/index.tsx`. Add new stores there.
+- `src/store/` – Redux Toolkit store, typed hooks, `StoreProvider` and the RTK Query `baseApi` (new code goes here; see `doc/woocommerce-rtk-migration-plan.md`).
+- `src/stores/` – MobX stores (being migrated to `src/store/`), instantiated and exposed through context in `src/stores/index.tsx`. Add new stores there.
 - `src/services/paymobService.ts` – Paymob payment integration.
 - `src/middleware.ts` – auth redirects (protects `/user*`, `/order`, `/trackorder`, `/shipping`, `/confirmation`; bounces logged-in users off login/register) then next-intl routing.
 - `messages/en.json`, `messages/ar.json` – translations. Locale prefix is always present (`/en/...`, `/ar/...`); use `Link`/`useRouter` from `src/navigation.ts`, not `next/link`.
@@ -34,7 +35,7 @@ Next.js 13 (App Router), React 18, TypeScript, Tailwind + NextUI, framer-motion,
 
 ## Environment variables
 
-`NEXT_PUBLIC_STRAPI_API_ENDPOINT`, `STRAPI_API_TOKEN`, `NEXT_PUBLIC_HOST`, `CONTACT_SHARED_SECRET`, `NEXT_PUBLIC_PAYMOB_API_TOKEN`, `NEXT_PUBLIC_PAYMOB_IFRAME_ID`, `NEXT_PUBLIC_PAYMOB_INTEGRATION_ID`. No `.env` is committed.
+`NEXT_PUBLIC_STRAPI_API_ENDPOINT`, `STRAPI_API_TOKEN`, `NEXT_PUBLIC_HOST` (media host, also used for `images.remotePatterns`), `CONTACT_SHARED_SECRET`, `NEXT_PUBLIC_PAYMOB_API_TOKEN`, `NEXT_PUBLIC_PAYMOB_IFRAME_ID`, `NEXT_PUBLIC_PAYMOB_INTEGRATION_ID`. No `.env` is committed.
 
 ## Workflow
 

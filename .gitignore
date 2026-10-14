@@ -37,3 +37,6 @@ next-env.d.ts
 
 # files created by me 
 description.txt
+# Claude Code local settings
+.claude/settings.local.json
+*.stackdump
