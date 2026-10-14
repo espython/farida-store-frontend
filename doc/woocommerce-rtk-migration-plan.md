@@ -16,6 +16,7 @@ This is the single complete plan. It replaces the Strapi-specific parts of `rtk-
 | 2026-10-14 | Start with backend-independent frontend work; no Woo instance exists yet | Avoids blocking on the backend. |
 | 2026-10-14 | `react-redux` **8.1.x** with `@reduxjs/toolkit` 2.x | `react-redux` 9.3 failed to install (`ERESOLVE`): it requires `@types/react` ≥ 18.2.25 while the repo pins 18.2.7. v8.1 is supported by RTK 2. Revisit when the type packages are upgraded. |
 | 2026-10-14 | `backend-admin` (Strapi) is **not deleted** until after cutover and a stable period | Needed for the data export and for rollback. |
+| 2026-10-14 | Adopt **DDD-lite**: bounded-context modules (`src/modules/<context>`) with domain / infrastructure / application / ui layers, a shared kernel, and an anti-corruption layer for Woo | Keeps Woo and RTK specifics out of components and makes pricing, coupon, cancellation and status rules pure and testable. See `ddd-architecture.md`. |
 
 ## 2. Goals and non-goals
 
@@ -54,6 +55,8 @@ Rules:
 6. The Redux store is created **per request** inside a client `StoreProvider` (never a module singleton).
 
 ### Folder structure
+
+> **Superseded by [`ddd-architecture.md`](ddd-architecture.md).** The layout below shows the Redux pieces only; with DDD they live inside `src/modules/<context>/` (endpoints, slices, mappers, domain types), and `src/store/` only composes them. Kept here for reference.
 
 ```
 src/
