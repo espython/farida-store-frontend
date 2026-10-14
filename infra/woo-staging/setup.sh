@@ -17,6 +17,31 @@ wp plugin install jwt-authentication-for-wp-rest-api --activate
 # Paymob: try the wp.org plugin; the spike records whether it fits our account.
 wp plugin install paymob-for-woocommerce --activate || echo "WARN: Paymob plugin not installed from wp.org; install manually and record it."
 
+# Local only: Woo accepts consumer-key auth over HTTPS only. Pretend REST calls are HTTPS
+# (not the browser admin, so cookies keep working). Never do this on a real host.
+mkdir -p wp-content/mu-plugins
+cat > wp-content/mu-plugins/local-rest-https.php <<'PHP'
+<?php
+if ( isset( $_SERVER['REQUEST_URI'] ) && false !== strpos( $_SERVER['REQUEST_URI'], '/wp-json/' ) ) {
+	$_SERVER['HTTPS'] = 'on';
+}
+PHP
+
+# Hardening that must also ship to production: hide the user list from anonymous visitors.
+cat > wp-content/mu-plugins/farida-hardening.php <<'PHP'
+<?php
+add_filter( 'rest_endpoints', function ( $endpoints ) {
+	if ( ! is_user_logged_in() ) {
+		foreach ( array_keys( $endpoints ) as $route ) {
+			if ( 0 === strpos( $route, '/wp/v2/users' ) ) {
+				unset( $endpoints[ $route ] );
+			}
+		}
+	}
+	return $endpoints;
+} );
+PHP
+
 wp option update woocommerce_currency EGP
 wp option update woocommerce_default_country EG
 wp option update woocommerce_price_num_decimals 2

@@ -48,6 +48,7 @@ services:
     volumes:
       - wp:/var/www/html
       - ./setup.sh:/setup.sh:ro
+      - ./create-keys.php:/create-keys.php:ro
 
 volumes:
   db:
