@@ -1,0 +1,48 @@
+#!/bin/sh
+# Runs inside the wpcli container. Idempotent: safe to re-run.
+set -eu
+URL="${WP_URL:-http://localhost:8080}"
+
+
+if ! wp core is-installed 2>/dev/null; then
+  wp core install --url="$URL" --title="Farida Stores (staging)" \
+    --admin_user=admin --admin_password=admin --admin_email=admin@example.com --skip-email
+fi
+
+wp rewrite structure '/%postname%/'
+wp plugin install woocommerce --activate
+wp plugin install polylang --activate
+wp plugin install jwt-authentication-for-wp-rest-api --activate
+
+# Paymob: try the wp.org plugin; the spike records whether it fits our account.
+wp plugin install paymob-for-woocommerce --activate || echo "WARN: Paymob plugin not installed from wp.org; install manually and record it."
+
+wp option update woocommerce_currency EGP
+wp option update woocommerce_default_country EG
+wp option update woocommerce_price_num_decimals 2
+wp option update woocommerce_cod_settings '{"enabled":"yes","title":"Cash on delivery"}' --format=json
+
+wp language core install ar || true
+# Polylang has no wp-cli commands in the free plugin, so create languages in PHP.
+wp eval '
+$m = PLL()->model;
+foreach ( [["name"=>"English","slug"=>"en","locale"=>"en_US","rtl"=>0,"term_group"=>0],
+           ["name"=>"العربية","slug"=>"ar","locale"=>"ar","rtl"=>1,"term_group"=>1]] as $l ) {
+  if ( ! $m->get_language( $l["slug"] ) ) { $m->add_language( $l ); }
+}
+'
+
+# Sample catalog so the API has something to return.
+if [ "$(wp wc product list --user=admin --format=count 2>/dev/null || echo 0)" = "0" ]; then
+  wp wc product_cat create --name="Blenders" --user=admin >/dev/null
+  for i in 1 2 3 4 5; do
+    wp wc product create --name="Sample product $i" --type=simple \
+      --regular_price="$((i * 450)).00" --manage_stock=true --stock_quantity=10 \
+      --description="Sample $i" --user=admin >/dev/null
+  done
+fi
+
+echo "WordPress:  $URL/wp-admin  (admin / admin)"
+echo "Woo REST:   $URL/wp-json/wc/v3   Store API: $URL/wp-json/wc/store/v1"
+wp plugin list --fields=name,version,status
+wp core version
