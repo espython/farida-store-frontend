@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "verify:i18n": "node scripts/verify-i18n.mjs",
-    "verify:payment": "node scripts/verify-order-payment-state.mjs"
+    "verify:payment": "node scripts/verify-order-payment-state.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@nextui-org/react": "^2.2.9",
@@ -52,9 +54,16 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.3",
     "@types/js-cookie": "^3.0.6",
     "@types/react-inner-image-zoom": "^3.0.3",
     "@types/react-slick": "^0.23.10",
-    "@types/styled-components": "^5.1.26"
+    "@types/styled-components": "^5.1.26",
+    "@vitejs/plugin-react": "^4.7.0",
+    "jsdom": "^25.0.1",
+    "vite": "^5.4.21",
+    "vitest": "^2.1.9"
   }
 }
