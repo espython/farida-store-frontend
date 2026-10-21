@@ -111,7 +111,9 @@
     "best": "best seller",
     "add": "add",
     "added": "added",
-    "cart": "to cart"
+    "cart": "to cart",
+    "outOfStock": "out of stock",
+    "onlyLeft": "left in stock"
   },
   "emptyProduct": {
     "noProducts": " we could not find any products with applied filters",

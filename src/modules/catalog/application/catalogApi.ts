@@ -15,6 +15,7 @@ export interface ProductsArgs {
   minPrice?: number | null;
   maxPrice?: number | null;
   onSale?: boolean;
+  search?: string | null;
 }
 
 export interface SearchArgs {
