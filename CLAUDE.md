@@ -31,7 +31,7 @@ Next.js 13 (App Router), React 18, TypeScript, Tailwind + NextUI, framer-motion,
 
 - New code goes in `src/modules/<context>/{domain,infrastructure,application,ui}` and `src/shared/{kernel,infrastructure,ui,lib}`. Legacy code moves only when a migration task touches it.
 - `domain` and `shared/kernel` import nothing from React, Redux, Next or other layers. `infrastructure` imports domain and shared only. `ui` never imports `infrastructure`.
-- Modules import each other only via `@/modules/<name>` (its `index.ts`); inside a module use relative imports.
+- Modules import each other only via `@/modules/<name>` (its `index.ts`); inside a module use relative imports. Server code is exposed through `@/modules/<name>/index.server`, for `app/api` only.
 - `*.server.ts` files are imported only from `app/api`, server components and `infrastructure`.
 - Enforced by `no-restricted-imports` overrides in `.eslintrc.json`. Money is integer minor units (`shared/kernel/Money`).
 

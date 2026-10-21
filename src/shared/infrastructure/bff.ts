@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { ZodTypeAny, z } from "zod";
+import { ZodError, type ZodTypeAny, type z } from "zod";
 import { AppError, toErrorBody } from "./errorMapping";
 
 const METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"] as const;
@@ -10,7 +10,7 @@ type Handler<C> = (req: NextRequest, ctx: C) => Promise<Response> | Response;
 const MAX_BODY_BYTES = 100_000;
 
 export function errorResponse(err: unknown, extraHeaders?: HeadersInit): NextResponse {
-  const { status, body } = toErrorBody(err);
+  const { status, body } = toErrorBody(err instanceof ZodError ? validationError(err) : err);
   if (status >= 500) console.error("[bff]", err);
   return NextResponse.json(body, { status, headers: extraHeaders });
 }

@@ -1,0 +1,31 @@
+import { z } from "zod";
+import { LOCALES } from "@/shared/kernel/Locale";
+
+export const localeSchema = z.enum(LOCALES).default("en");
+
+export const slugSchema = z
+  .string()
+  .min(1)
+  .max(200)
+  .regex(/^[^\s/\\?#]+$/, "Invalid slug");
+
+export const catalogFilterBase = z.object({
+  locale: localeSchema,
+  page: z.coerce.number().int().min(1).max(1000).default(1),
+  perPage: z.coerce.number().int().min(1).max(48).default(12),
+  sort: z
+    .enum(["newest", "price_asc", "price_desc", "popularity", "rating", "title"])
+    .default("newest"),
+  category: slugSchema.optional(),
+  color: slugSchema.optional(),
+  minPrice: z.coerce.number().int().min(0).max(10_000_000).optional(),
+  maxPrice: z.coerce.number().int().min(0).max(10_000_000).optional(),
+});
+
+export const priceRangeValid = (v: { minPrice?: number; maxPrice?: number }) =>
+  v.minPrice === undefined || v.maxPrice === undefined || v.minPrice <= v.maxPrice;
+
+export const priceRangeIssue = {
+  message: "minPrice must not exceed maxPrice",
+  path: ["minPrice"],
+};
