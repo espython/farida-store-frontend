@@ -8,6 +8,7 @@
           {
             "group": [
               "@/modules/*/*",
+              "!@/modules/*/index.server",
               "@/modules/*/*/**"
             ],
             "message": "Import another module only through its index.ts (@/modules/<name>). Inside a module use relative imports."
@@ -30,6 +31,7 @@
               {
                 "group": [
                   "@/modules/*/*",
+                  "!@/modules/*/index.server",
                   "@/modules/*/*/**"
                 ],
                 "message": "Import another module only through its index.ts (@/modules/<name>). Inside a module use relative imports."
@@ -99,6 +101,7 @@
               {
                 "group": [
                   "@/modules/*/*",
+                  "!@/modules/*/index.server",
                   "@/modules/*/*/**"
                 ],
                 "message": "Import another module only through its index.ts (@/modules/<name>). Inside a module use relative imports."
@@ -130,6 +133,7 @@
               {
                 "group": [
                   "@/modules/*/*",
+                  "!@/modules/*/index.server",
                   "@/modules/*/*/**"
                 ],
                 "message": "Import another module only through its index.ts (@/modules/<name>). Inside a module use relative imports."
@@ -167,6 +171,7 @@
               {
                 "group": [
                   "@/modules/*/*",
+                  "!@/modules/*/index.server",
                   "@/modules/*/*/**"
                 ],
                 "message": "Import another module only through its index.ts (@/modules/<name>). Inside a module use relative imports."

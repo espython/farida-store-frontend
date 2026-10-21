@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { ZodTypeAny, z } from "zod";
+import { ZodError, type ZodTypeAny, type z } from "zod";
 import { AppError, toErrorBody } from "./errorMapping";
 
 const METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"] as const;
@@ -10,7 +10,7 @@ type Handler<C> = (req: NextRequest, ctx: C) => Promise<Response> | Response;
 const MAX_BODY_BYTES = 100_000;
 
 export function errorResponse(err: unknown, extraHeaders?: HeadersInit): NextResponse {
-  const { status, body } = toErrorBody(err);
+  const { status, body } = toErrorBody(err instanceof ZodError ? validationError(err) : err);
   if (status >= 500) console.error("[bff]", err);
   return NextResponse.json(body, { status, headers: extraHeaders });
 }
@@ -22,9 +22,16 @@ export function errorResponse(err: unknown, extraHeaders?: HeadersInit): NextRes
  */
 export function defineRoute<C = unknown>(
   handlers: Partial<Record<Method, Handler<C>>>
-): Record<Method, (req: NextRequest, ctx: C) => Promise<Response>> {
-  const allow = METHODS.filter((m) => handlers[m]).join(", ");
-  const out = {} as Record<Method, (req: NextRequest, ctx: C) => Promise<Response>>;
+): Record<Method | "OPTIONS", (req: NextRequest, ctx: C) => Promise<Response>> {
+  const listed = METHODS.filter((m) => handlers[m]);
+  const allow = listed.join(", ");
+  const out = {} as Record<Method | "OPTIONS", (req: NextRequest, ctx: C) => Promise<Response>>;
+  // Next would otherwise advertise every exported method, including the ones we reject.
+  out.OPTIONS = async () =>
+    new Response(null, {
+      status: 204,
+      headers: { Allow: [...listed, ...(handlers.GET ? ["HEAD"] : []), "OPTIONS"].join(", ") },
+    });
   for (const m of METHODS) {
     const handler = handlers[m];
     out[m] = async (req, ctx) => {
