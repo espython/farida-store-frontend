@@ -10,8 +10,10 @@ export interface AllowedWooRoute {
  */
 export const WOO_ALLOWLIST: readonly AllowedWooRoute[] = [
   { method: "GET", pattern: /^\/wc\/store\/v1\/products$/ },
-  { method: "GET", pattern: /^\/wc\/store\/v1\/products\/(?!categories$)[^/]+$/ },
+  { method: "GET", pattern: /^\/wc\/store\/v1\/products\/(?!categories$|attributes$)[^/]+$/ },
   { method: "GET", pattern: /^\/wc\/store\/v1\/products\/categories$/ },
+  { method: "GET", pattern: /^\/wc\/store\/v1\/products\/attributes$/ },
+  { method: "GET", pattern: /^\/wc\/store\/v1\/products\/attributes\/\d+\/terms$/ },
 ];
 
 export function isWooRouteAllowed(

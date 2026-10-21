@@ -5,6 +5,7 @@ import * as products from "./products/route";
 import * as productDetail from "./products/[slug]/route";
 import * as search from "./search/route";
 import * as categories from "./categories/route";
+import * as colors from "./colors/route";
 
 const req = (path: string, method = "GET") =>
   new NextRequest(new URL(path, "http://localhost"), { method });
@@ -89,8 +90,31 @@ describe("/api/shop routes", () => {
     expect((await res.json())[0]).toMatchObject({ slug: "cookware", locale: "en" });
   });
 
+  it("GET /products accepts onSale and rejects non-boolean values", async () => {
+    const ok = await products.GET(req("/api/shop/products?onSale=1"), {});
+    expect(ok.status).toBe(200);
+    expect(new URL(fetchMock.mock.calls[0][0]).searchParams.get("on_sale")).toBe("true");
+    expect((await products.GET(req("/api/shop/products?onSale=maybe"), {})).status).toBe(400);
+  });
+
+  it("GET /colors returns mapped colours", async () => {
+    fetchMock.mockImplementation(async (url: string) =>
+      new Response(
+        JSON.stringify(
+          url.endsWith("/attributes")
+            ? [{ id: 1, name: "Color", taxonomy: "pa_color" }]
+            : [{ id: 29, name: "Red", slug: "red", description: "#ff0000" }]
+        )
+      )
+    );
+    const res = await colors.GET(req("/api/shop/colors?locale=ar"), {});
+    expect(await res.json()).toEqual([
+      { id: "29", slug: "red", name: "Red", hex: "#ff0000", locale: "ar" },
+    ]);
+  });
+
   it("only serves GET: other methods get a JSON 405", async () => {
-    for (const mod of [products, productDetail, search, categories]) {
+    for (const mod of [products, productDetail, search, categories, colors]) {
       const res = await mod.POST(req("/api/shop/x", "POST"), { params: { slug: "x" } });
       expect(res.status).toBe(405);
       expect(res.headers.get("Allow")).toBe("GET");

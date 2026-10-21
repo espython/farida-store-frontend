@@ -2,6 +2,7 @@
 export {
   getProductBySlug,
   listCategories,
+  listColors,
   listProducts,
 } from "./infrastructure/catalogClient.server";
-export type { ProductQuery, ProductSort } from "./infrastructure/catalogClient.server";
+export type { ProductQuery } from "./infrastructure/catalogClient.server";

@@ -62,6 +62,7 @@ In Strapi, stock and color/size are **not** separate entities. They are rows of 
 
 - `product_inventory` (oneToOne): one category row holding `available_in_stock`.
 - `colors` (manyToMany) on products: `colors-signular` rows with `name`, `hex`, `locale`.
+  - **Woo target convention (B3):** colours are terms of the `pa_color` attribute. The Strapi `hex` goes in the term **description** as `#rrggbb`; the storefront reads it from there (`/api/shop/colors`). Terms without a valid hex render without a swatch colour.
 - `sizes` (oneToMany): more `categories-singular` rows.
 - `categories` (manyToMany): the real product categories, from the same type.
 
