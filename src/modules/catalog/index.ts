@@ -42,3 +42,7 @@ export { CATALOG_SOURCE } from "./catalogSource";
 export type { CatalogSource } from "./catalogSource";
 export { default as CatalogListing } from "./ui/CatalogListing";
 export { default as CatalogProductCard } from "./ui/CatalogProductCard";
+export { default as CategoryLinks } from "./ui/CategoryLinks";
+export { default as CategoryTitle } from "./ui/CategoryTitle";
+export { default as ColorOptions } from "./ui/ColorOptions";
+export { findCategory, findColor, sameSlug } from "./application/lookups";
