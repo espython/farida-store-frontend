@@ -12,6 +12,7 @@ import RawProductCard from "./RawProductCard";
 import GridStyleView from "./GridStyleView";
 import RowStyleView from "./RowStyleView";
 import { useLocale } from "next-intl";
+import { CATALOG_SOURCE, CatalogListing } from "@/modules/catalog";
 
 const ProductsSection = () => {
   const { products, viewStyle, filter } = useContext(StoreContext);
@@ -21,10 +22,19 @@ const ProductsSection = () => {
 
   return (
     <div className="flex flex-col  gap-5 relative ">
-      {viewStyle.gridView ? <GridStyleView /> : <RowStyleView />}
+      {CATALOG_SOURCE === "woo" ? (
+        <CatalogListing
+          view={viewStyle.gridView ? "grid" : "row"}
+          onFiltersChange={filter.hideWholeFilterSidebar}
+        />
+      ) : (
+        <>
+          {viewStyle.gridView ? <GridStyleView /> : <RowStyleView />}
 
-      {/* ============ */}
-      <ProductsPagination />
+          {/* ============ */}
+          <ProductsPagination />
+        </>
+      )}
 
       <AnimatePresence mode="wait">
         {filter.showBackdrop && (
