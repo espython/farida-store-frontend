@@ -11,7 +11,7 @@ const schema = z.object({
   perPage: z.coerce.number().int().min(1).max(48).default(12),
 });
 
-export const { GET, POST, PUT, PATCH, DELETE } = defineRoute({
+export const { GET, POST, PUT, PATCH, DELETE, OPTIONS } = defineRoute({
   GET: async (req) => {
     const { q, ...rest } = parseQuery(req, schema);
     return NextResponse.json(await listProducts({ ...rest, sort: "popularity", search: q }));

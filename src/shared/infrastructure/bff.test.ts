@@ -20,6 +20,13 @@ describe("defineRoute", () => {
     });
   });
 
+  it("answers OPTIONS with only the methods the route serves", async () => {
+    const route = defineRoute({ GET: async () => new Response("x") });
+    const res = await route.OPTIONS(req("/x", { method: "OPTIONS" }), {});
+    expect(res.status).toBe(204);
+    expect(res.headers.get("Allow")).toBe("GET, HEAD, OPTIONS");
+  });
+
   it("maps AppError and unknown errors to the shared shape", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     const route = defineRoute({

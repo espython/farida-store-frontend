@@ -22,9 +22,16 @@ export function errorResponse(err: unknown, extraHeaders?: HeadersInit): NextRes
  */
 export function defineRoute<C = unknown>(
   handlers: Partial<Record<Method, Handler<C>>>
-): Record<Method, (req: NextRequest, ctx: C) => Promise<Response>> {
-  const allow = METHODS.filter((m) => handlers[m]).join(", ");
-  const out = {} as Record<Method, (req: NextRequest, ctx: C) => Promise<Response>>;
+): Record<Method | "OPTIONS", (req: NextRequest, ctx: C) => Promise<Response>> {
+  const listed = METHODS.filter((m) => handlers[m]);
+  const allow = listed.join(", ");
+  const out = {} as Record<Method | "OPTIONS", (req: NextRequest, ctx: C) => Promise<Response>>;
+  // Next would otherwise advertise every exported method, including the ones we reject.
+  out.OPTIONS = async () =>
+    new Response(null, {
+      status: 204,
+      headers: { Allow: [...listed, ...(handlers.GET ? ["HEAD"] : []), "OPTIONS"].join(", ") },
+    });
   for (const m of METHODS) {
     const handler = handlers[m];
     out[m] = async (req, ctx) => {

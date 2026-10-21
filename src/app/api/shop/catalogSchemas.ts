@@ -7,7 +7,8 @@ export const slugSchema = z
   .string()
   .min(1)
   .max(200)
-  .regex(/^[^\s/\\?#]+$/, "Invalid slug");
+  .regex(/^[^\s/\\?#]+$/, "Invalid slug")
+  .refine((v) => !v.includes(".."), "Invalid slug");
 
 export const catalogFilterBase = z.object({
   locale: localeSchema,
@@ -19,7 +20,8 @@ export const catalogFilterBase = z.object({
   category: slugSchema.optional(),
   color: slugSchema.optional(),
   minPrice: z.coerce.number().int().min(0).max(10_000_000).optional(),
-  maxPrice: z.coerce.number().int().min(0).max(10_000_000).optional(),
+  // Woo treats max_price=0 as "no filter", so 0 is rejected rather than silently ignored.
+  maxPrice: z.coerce.number().int().min(1).max(10_000_000).optional(),
 });
 
 export const priceRangeValid = (v: { minPrice?: number; maxPrice?: number }) =>

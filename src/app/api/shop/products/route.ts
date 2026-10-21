@@ -8,7 +8,7 @@ const schema = catalogFilterBase
   .extend({ search: z.string().trim().min(1).max(100).optional() })
   .refine(priceRangeValid, priceRangeIssue);
 
-export const { GET, POST, PUT, PATCH, DELETE } = defineRoute({
+export const { GET, POST, PUT, PATCH, DELETE, OPTIONS } = defineRoute({
   GET: async (req) => {
     const q = parseQuery(req, schema);
     const page = await listProducts({

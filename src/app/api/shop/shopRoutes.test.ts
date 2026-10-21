@@ -51,7 +51,7 @@ describe("/api/shop routes", () => {
   });
 
   it("rejects invalid filters with the shared 400 shape", async () => {
-    for (const q of ["?page=0", "?sort=bogus", "?locale=fr", "?minPrice=500&maxPrice=100", "?perPage=500"]) {
+    for (const q of ["?page=0", "?sort=bogus", "?locale=fr", "?minPrice=500&maxPrice=100", "?maxPrice=0", "?perPage=500"]) {
       const res = await products.GET(req(`/api/shop/products${q}`), {});
       expect(res.status).toBe(400);
       expect((await res.json()).error.code).toBe("validation_error");
@@ -60,6 +60,11 @@ describe("/api/shop routes", () => {
   });
 
   it("GET /products/:slug returns the product or 404", async () => {
+    fetchMock.mockImplementation(async (url: string) =>
+      url.includes("/products/kettle")
+        ? new Response(JSON.stringify(woo()))
+        : new Response("{}", { status: 404 })
+    );
     const ok = await productDetail.GET(req("/api/shop/products/kettle"), { params: { slug: "kettle" } });
     expect(ok.status).toBe(200);
     expect((await ok.json()).slug).toBe("kettle");

@@ -41,13 +41,14 @@ const SORT: Record<ProductSort, { orderby: string; order: "asc" | "desc" }> = {
 const CATALOG_CACHE = { revalidate: 60, tags: ["catalog"] };
 
 // Woo stores Arabic slugs percent-encoded; compare them decoded.
-const normalizeSlug = (slug: string) => {
+const safeDecode = (slug: string) => {
   try {
-    return decodeURIComponent(slug).toLowerCase();
+    return decodeURIComponent(slug);
   } catch {
-    return slug.toLowerCase();
+    return slug;
   }
 };
+const normalizeSlug = (slug: string) => safeDecode(slug).toLowerCase();
 
 const intHeader = (headers: Headers, name: string, fallback: number) => {
   const n = Number.parseInt(headers.get(name) ?? "", 10);
@@ -74,7 +75,10 @@ export async function listProducts(q: ProductQuery): Promise<ProductPage> {
     category: q.category,
     min_price: q.minPrice,
     max_price: q.maxPrice,
-    search: q.search,
+    // Woo stores titles HTML-escaped ("Pots &amp; Pans") and matches the phrase as typed.
+    search: q.search?.replace(/&/g, "&amp;"),
+    // Hidden products must not show up in listings; search results use the search flag.
+    catalog_visibility: q.search ? "search" : "catalog",
     lang: q.locale,
   };
   if (q.color) {
@@ -97,13 +101,16 @@ export async function listProducts(q: ProductQuery): Promise<ProductPage> {
 }
 
 export async function getProductBySlug(slug: string, locale: Locale): Promise<Product> {
-  const res = await wooFetch<WooStoreProduct[]>({
-    path: "/wc/store/v1/products",
-    query: { slug, per_page: 1, lang: locale },
+  // The collection's ?slug= filter does not match percent-encoded Arabic slugs;
+  // the single-product route accepts an id or a slug (either hex case) and 404s drafts.
+  const res = await wooFetch<WooStoreProduct>({
+    path: `/wc/store/v1/products/${encodeURIComponent(safeDecode(slug))}`,
+    query: { lang: locale },
     next: CATALOG_CACHE,
   });
-  // Guard: if Woo ignored the slug filter we must not return an arbitrary product.
-  const match = res.data.find((p) => normalizeSlug(p.slug) === normalizeSlug(slug));
-  if (!match) throw new AppError("not_found", "Product not found", 404);
-  return toProduct(match, locale);
+  // Numeric slugs would resolve by id upstream; only accept a real slug match.
+  if (normalizeSlug(res.data.slug) !== normalizeSlug(slug)) {
+    throw new AppError("not_found", "Product not found", 404);
+  }
+  return toProduct(res.data, locale);
 }

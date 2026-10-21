@@ -100,20 +100,41 @@ describe("catalog client", () => {
     expect(fetchMock.mock.calls[0][1].headers.Authorization).toBeUndefined();
   });
 
-  it("finds a product by slug, including percent-encoded Arabic slugs", async () => {
+  it("fetches a product through /products/{slug}, including Arabic slugs", async () => {
     const encoded = "%d9%82%d8%af%d8%b1";
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue(json([product({ slug: encoded })]))
-    );
-    const p = await getProductBySlug("قدر", "ar");
+    const fetchMock = vi.fn().mockResolvedValue(json(product({ slug: encoded })));
+    vi.stubGlobal("fetch", fetchMock);
+    const p = await getProductBySlug("%D9%82%D8%AF%D8%B1", "ar");
     expect(p.slug).toBe(encoded);
+    // Re-encoded from the decoded text, whatever case the caller used.
+    expect(urlOf(fetchMock.mock.calls[0]).pathname).toBe(
+      "/wp-json/wc/store/v1/products/%D9%82%D8%AF%D8%B1"
+    );
   });
 
-  it("404s when Woo returns nothing or ignores the slug filter", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(json([])));
+  it("404s on an upstream 404 and when the slug does not match (numeric ids)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response("{}", { status: 404 }))
+    );
     await expect(getProductBySlug("kettle", "en")).rejects.toMatchObject({ status: 404 });
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(json([product({ slug: "other" })])));
-    await expect(getProductBySlug("kettle", "en")).rejects.toMatchObject({ status: 404 });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(json(product({ id: 1, slug: "kettle" }))));
+    await expect(getProductBySlug("1", "en")).rejects.toMatchObject({ status: 404 });
+  });
+
+  it("escapes ampersands in search terms to match Woo's stored titles", async () => {
+    const fetchMock = vi.fn().mockImplementation(async () => json([]));
+    vi.stubGlobal("fetch", fetchMock);
+    await listProducts({ ...query, search: "pots & pans" });
+    expect(urlOf(fetchMock.mock.calls[0]).searchParams.get("search")).toBe("pots &amp; pans");
+  });
+
+  it("restricts listings to catalog-visible products and search to search-visible", async () => {
+    const fetchMock = vi.fn().mockImplementation(async () => json([]));
+    vi.stubGlobal("fetch", fetchMock);
+    await listProducts(query);
+    await listProducts({ ...query, search: "kettle" });
+    expect(urlOf(fetchMock.mock.calls[0]).searchParams.get("catalog_visibility")).toBe("catalog");
+    expect(urlOf(fetchMock.mock.calls[1]).searchParams.get("catalog_visibility")).toBe("search");
   });
 });
