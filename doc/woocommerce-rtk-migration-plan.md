@@ -318,8 +318,8 @@ Note: `selectionAddressModal` is currently `new AddressModalStore()`; it becomes
 
 - [x] Phase 0: architecture review, missing features, spike checklist, data mapping, master plan
 - [ ] Phase 0: commit docs, create issues and project board
-- [ ] Phase 1: foundations (F1–F5)
-- [ ] Phase 2: Woo platform (W1–W9)
+- [ ] Phase 1: foundations (F1–F4 done; F5 legal pages waiting on owner content)
+- [ ] Phase 2: Woo platform (W1–W9). W9 spike partly done on local staging (#281); open: Polylang add-on decision, Paymob sandbox, JWT login and hash import
 - [ ] Phase 3: BFF and catalog (B1–B5)
 - [ ] Phase 4: accounts (A1–A4)
 - [ ] Phase 5: cart and checkout (C1–C4)
