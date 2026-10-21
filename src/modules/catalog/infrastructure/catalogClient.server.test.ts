@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { getProductBySlug, listCategories, listProducts } from "./catalogClient.server";
+import { getProductBySlug, listCategories, listColors, listProducts } from "./catalogClient.server";
 import type { WooStoreCategory, WooStoreProduct } from "./wooProductDto";
 
 const product = (over: Partial<WooStoreProduct> = {}): WooStoreProduct => ({
@@ -127,6 +127,31 @@ describe("catalog client", () => {
     vi.stubGlobal("fetch", fetchMock);
     await listProducts({ ...query, search: "pots & pans" });
     expect(urlOf(fetchMock.mock.calls[0]).searchParams.get("search")).toBe("pots &amp; pans");
+  });
+
+  it("lists colours from the pa_color attribute terms, or none when it does not exist", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(json([{ id: 3, name: "Size", taxonomy: "pa_size" }, { id: 1, name: "Color", taxonomy: "pa_color" }]))
+      .mockResolvedValueOnce(json([{ id: 29, name: "Red", slug: "red", description: "#ff0000" }]));
+    vi.stubGlobal("fetch", fetchMock);
+    const colors = await listColors("en");
+    expect(urlOf(fetchMock.mock.calls[1]).pathname).toBe(
+      "/wp-json/wc/store/v1/products/attributes/1/terms"
+    );
+    expect(colors).toEqual([{ id: "29", slug: "red", name: "Red", hex: "#ff0000", locale: "en" }]);
+
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(async () => json([{ id: 3, name: "Size", taxonomy: "pa_size" }])));
+    expect(await listColors("en")).toEqual([]);
+  });
+
+  it("passes the on-sale filter", async () => {
+    const fetchMock = vi.fn().mockImplementation(async () => json([]));
+    vi.stubGlobal("fetch", fetchMock);
+    await listProducts({ ...query, onSale: true });
+    await listProducts(query);
+    expect(urlOf(fetchMock.mock.calls[0]).searchParams.get("on_sale")).toBe("true");
+    expect(urlOf(fetchMock.mock.calls[1]).searchParams.has("on_sale")).toBe(false);
   });
 
   it("restricts listings to catalog-visible products and search to search-visible", async () => {

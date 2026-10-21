@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { LOCALES } from "@/shared/kernel/Locale";
+import { DEFAULT_SORT, PRODUCT_SORTS } from "@/modules/catalog";
 
 export const localeSchema = z.enum(LOCALES).default("en");
 
@@ -14,9 +15,11 @@ export const catalogFilterBase = z.object({
   locale: localeSchema,
   page: z.coerce.number().int().min(1).max(1000).default(1),
   perPage: z.coerce.number().int().min(1).max(48).default(12),
-  sort: z
-    .enum(["newest", "price_asc", "price_desc", "popularity", "rating", "title"])
-    .default("newest"),
+  sort: z.enum(PRODUCT_SORTS).default(DEFAULT_SORT),
+  onSale: z
+    .enum(["1", "true", "0", "false"])
+    .optional()
+    .transform((v) => v === "1" || v === "true"),
   category: slugSchema.optional(),
   color: slugSchema.optional(),
   minPrice: z.coerce.number().int().min(0).max(10_000_000).optional(),

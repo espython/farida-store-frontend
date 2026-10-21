@@ -44,3 +44,17 @@ export interface WooStoreCategory {
   count: number;
   image?: { src: string; alt?: string } | null;
 }
+
+export interface WooStoreAttribute {
+  id: number;
+  name: string;
+  taxonomy: string;
+}
+
+export interface WooStoreTerm {
+  id: number;
+  name: string;
+  slug: string;
+  /** Convention: a "#rrggbb" value for colour terms. */
+  description?: string;
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { decodeEntities, toCategory, toProduct, toStockStatus } from "./productMapper";
+import { decodeEntities, toCategory, toColor, toProduct, toStockStatus } from "./productMapper";
 import type { WooStoreCategory, WooStoreProduct } from "./wooProductDto";
 
 const base: WooStoreProduct = {
@@ -128,5 +128,21 @@ describe("decodeEntities", () => {
     expect(decodeEntities("A &amp; B &#8211; C &#x27;D&#x27; &unknown;")).toBe(
       "A & B – C 'D' &unknown;"
     );
+  });
+});
+
+describe("toColor", () => {
+  it("reads a valid hex from the term description and nulls anything else", () => {
+    const term = { id: 29, name: "Red", slug: "red" };
+    expect(toColor({ ...term, description: "#FF0000" }, "en")).toEqual({
+      id: "29",
+      slug: "red",
+      name: "Red",
+      hex: "#ff0000",
+      locale: "en",
+    });
+    for (const d of [undefined, "", "red", "#fff", "#gggggg", "<p>#ff0000</p>"]) {
+      expect(toColor({ ...term, description: d }, "ar").hex).toBeNull();
+    }
   });
 });

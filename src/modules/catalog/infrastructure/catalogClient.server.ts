@@ -2,17 +2,16 @@ import { AppError } from "@/shared/kernel/AppError";
 import type { Locale } from "@/shared/kernel/Locale";
 import { wooFetch } from "@/shared/infrastructure/wooClient.server";
 import type { Category } from "../domain/Category";
+import type { Color } from "../domain/Color";
+import type { ProductSort } from "../domain/ProductSort";
 import type { Product, ProductPage } from "../domain/Product";
-import { toCategory, toProduct } from "./productMapper";
-import type { WooStoreCategory, WooStoreProduct } from "./wooProductDto";
-
-export type ProductSort =
-  | "newest"
-  | "price_asc"
-  | "price_desc"
-  | "popularity"
-  | "rating"
-  | "title";
+import { toCategory, toColor, toProduct } from "./productMapper";
+import type {
+  WooStoreAttribute,
+  WooStoreCategory,
+  WooStoreProduct,
+  WooStoreTerm,
+} from "./wooProductDto";
 
 export interface ProductQuery {
   locale: Locale;
@@ -26,6 +25,7 @@ export interface ProductQuery {
   maxPrice?: number;
   /** Colour term slug of the pa_color attribute. */
   color?: string;
+  onSale?: boolean;
   search?: string;
 }
 
@@ -64,6 +64,21 @@ export async function listCategories(locale: Locale): Promise<Category[]> {
   return res.data.map((c) => toCategory(c, locale));
 }
 
+export async function listColors(locale: Locale): Promise<Color[]> {
+  const attributes = await wooFetch<WooStoreAttribute[]>({
+    path: "/wc/store/v1/products/attributes",
+    next: CATALOG_CACHE,
+  });
+  const color = attributes.data.find((a) => a.taxonomy === "pa_color");
+  if (!color) return [];
+  const terms = await wooFetch<WooStoreTerm[]>({
+    path: `/wc/store/v1/products/attributes/${color.id}/terms`,
+    query: { per_page: 100, lang: locale },
+    next: CATALOG_CACHE,
+  });
+  return terms.data.map((t) => toColor(t, locale));
+}
+
 export async function listProducts(q: ProductQuery): Promise<ProductPage> {
   const sort = SORT[q.sort];
   const query: Record<string, string | number | undefined> = {
@@ -76,6 +91,7 @@ export async function listProducts(q: ProductQuery): Promise<ProductPage> {
     min_price: q.minPrice,
     max_price: q.maxPrice,
     // Woo stores titles HTML-escaped ("Pots &amp; Pans") and matches the phrase as typed.
+    on_sale: q.onSale ? "true" : undefined,
     search: q.search?.replace(/&/g, "&amp;"),
     // Hidden products must not show up in listings; search results use the search flag.
     catalog_visibility: q.search ? "search" : "catalog",

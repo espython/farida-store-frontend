@@ -2,8 +2,14 @@ import { AppError } from "@/shared/kernel/AppError";
 import type { Locale } from "@/shared/kernel/Locale";
 import { Money } from "@/shared/kernel/Money";
 import type { Category } from "../domain/Category";
+import type { Color } from "../domain/Color";
 import type { Product, StockStatus } from "../domain/Product";
-import type { WooPrices, WooStoreCategory, WooStoreProduct } from "./wooProductDto";
+import type {
+  WooPrices,
+  WooStoreCategory,
+  WooStoreProduct,
+  WooStoreTerm,
+} from "./wooProductDto";
 
 const NAMED_ENTITIES: Record<string, string> = {
   amp: "&",
@@ -89,6 +95,19 @@ export function toCategory(dto: WooStoreCategory, locale: Locale): Category {
     parentId: dto.parent ? String(dto.parent) : null,
     productCount: dto.count,
     image: dto.image ? { src: dto.image.src, alt: dto.image.alt ?? "" } : null,
+    locale,
+  };
+}
+
+const HEX_RE = /^#[0-9a-f]{6}$/i;
+
+export function toColor(dto: WooStoreTerm, locale: Locale): Color {
+  const hex = (dto.description ?? "").trim();
+  return {
+    id: String(dto.id),
+    slug: dto.slug,
+    name: decodeEntities(dto.name),
+    hex: HEX_RE.test(hex) ? hex.toLowerCase() : null,
     locale,
   };
 }
