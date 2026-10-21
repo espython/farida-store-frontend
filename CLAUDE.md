@@ -21,11 +21,19 @@ Next.js 13 (App Router), React 18, TypeScript, Tailwind + NextUI, framer-motion,
   - `strapi/[...path]` – proxy to Strapi; adds the user's JWT (from the `credentials` cookie) or falls back to `STRAPI_API_TOKEN`. Client code should call `STRAPI_ENDPOINT` (`/api/strapi`, see `src/api/config.ts`), not Strapi directly.
   - `auth/session` – sets/clears the httpOnly `credentials` JWT cookie and a readable `logged_in` cookie.
   - `contact` – contact form (uses `CONTACT_SHARED_SECRET`).
-- `src/store/` – Redux Toolkit store, typed hooks, `StoreProvider` and the RTK Query `baseApi` (new code goes here; see `doc/woocommerce-rtk-migration-plan.md`).
+- `src/store/` – Redux Toolkit root composition (`makeStore`, typed hooks, `StoreProvider`). `baseApi` lives in `src/shared/infrastructure/`. New code follows `doc/woocommerce-rtk-migration-plan.md` and the architecture rules below.
 - `src/stores/` – MobX stores (being migrated to `src/store/`), instantiated and exposed through context in `src/stores/index.tsx`. Add new stores there.
 - `src/services/paymobService.ts` – Paymob payment integration.
 - `src/middleware.ts` – auth redirects (protects `/user*`, `/order`, `/trackorder`, `/shipping`, `/confirmation`; bounces logged-in users off login/register) then next-intl routing.
 - `messages/en.json`, `messages/ar.json` – translations. Locale prefix is always present (`/en/...`, `/ar/...`); use `Link`/`useRouter` from `src/navigation.ts`, not `next/link`.
+
+## Architecture rules (DDD-lite, see `doc/ddd-architecture.md`)
+
+- New code goes in `src/modules/<context>/{domain,infrastructure,application,ui}` and `src/shared/{kernel,infrastructure,ui,lib}`. Legacy code moves only when a migration task touches it.
+- `domain` and `shared/kernel` import nothing from React, Redux, Next or other layers. `infrastructure` imports domain and shared only. `ui` never imports `infrastructure`.
+- Modules import each other only via `@/modules/<name>` (its `index.ts`); inside a module use relative imports.
+- `*.server.ts` files are imported only from `app/api`, server components and `infrastructure`.
+- Enforced by `no-restricted-imports` overrides in `.eslintrc.json`. Money is integer minor units (`shared/kernel/Money`).
 
 ## Conventions
 

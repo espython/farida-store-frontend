@@ -1,3 +1,186 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": [
+              "@/modules/*/*",
+              "@/modules/*/*/**"
+            ],
+            "message": "Import another module only through its index.ts (@/modules/<name>). Inside a module use relative imports."
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "src/modules/*/domain/**/*.{ts,tsx}",
+        "src/shared/kernel/**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@/modules/*/*",
+                  "@/modules/*/*/**"
+                ],
+                "message": "Import another module only through its index.ts (@/modules/<name>). Inside a module use relative imports."
+              },
+              {
+                "group": [
+                  "next/*",
+                  "@reduxjs/toolkit/*",
+                  "react-dom/*"
+                ],
+                "message": "The domain layer must stay framework-free."
+              },
+              {
+                "group": [
+                  "**/*.server"
+                ],
+                "message": "*.server.ts files may only be imported from app/api, server components and infrastructure."
+              },
+              {
+                "group": [
+                  "**/application/**",
+                  "**/infrastructure/**",
+                  "**/ui/**",
+                  "@/store/**",
+                  "@/app/**",
+                  "@/shared/lib/**"
+                ],
+                "message": "Domain may import only domain and shared/kernel."
+              }
+            ],
+            "paths": [
+              {
+                "name": "react",
+                "message": "The domain layer must stay framework-free."
+              },
+              {
+                "name": "react-dom",
+                "message": "The domain layer must stay framework-free."
+              },
+              {
+                "name": "react-redux",
+                "message": "The domain layer must stay framework-free."
+              },
+              {
+                "name": "next",
+                "message": "The domain layer must stay framework-free."
+              },
+              {
+                "name": "@reduxjs/toolkit",
+                "message": "The domain layer must stay framework-free."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "src/modules/*/infrastructure/**/*.{ts,tsx}",
+        "src/shared/infrastructure/**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@/modules/*/*",
+                  "@/modules/*/*/**"
+                ],
+                "message": "Import another module only through its index.ts (@/modules/<name>). Inside a module use relative imports."
+              },
+              {
+                "group": [
+                  "**/application/**",
+                  "**/ui/**",
+                  "@/store/**",
+                  "@/app/**"
+                ],
+                "message": "Infrastructure may import domain and shared only."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "src/modules/*/ui/**/*.{ts,tsx}",
+        "src/shared/ui/**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@/modules/*/*",
+                  "@/modules/*/*/**"
+                ],
+                "message": "Import another module only through its index.ts (@/modules/<name>). Inside a module use relative imports."
+              },
+              {
+                "group": [
+                  "**/*.server"
+                ],
+                "message": "*.server.ts files may only be imported from app/api, server components and infrastructure."
+              },
+              {
+                "group": [
+                  "**/infrastructure/**"
+                ],
+                "message": "UI must go through application or domain, never infrastructure."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "src/modules/*/application/**/*.{ts,tsx}",
+        "src/store/**/*.{ts,tsx}",
+        "src/stores/**/*.{ts,tsx}",
+        "src/components/**/*.{ts,tsx}",
+        "src/app/components/**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@/modules/*/*",
+                  "@/modules/*/*/**"
+                ],
+                "message": "Import another module only through its index.ts (@/modules/<name>). Inside a module use relative imports."
+              },
+              {
+                "group": [
+                  "**/*.server"
+                ],
+                "message": "*.server.ts files may only be imported from app/api, server components and infrastructure."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }

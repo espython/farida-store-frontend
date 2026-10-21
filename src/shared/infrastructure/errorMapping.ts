@@ -1,28 +1,9 @@
-export type ApiErrorCode =
-  | "validation_error"
-  | "not_found"
-  | "method_not_allowed"
-  | "rate_limited"
-  | "conflict"
-  | "upstream_error"
-  | "upstream_timeout"
-  | "internal_error"
-  | (string & {});
+import { AppError, type ApiErrorCode } from "../kernel/AppError";
+
+export { AppError, type ApiErrorCode };
 
 export interface ApiErrorBody {
   error: { code: ApiErrorCode; message: string; details?: unknown };
-}
-
-export class AppError extends Error {
-  constructor(
-    public readonly code: ApiErrorCode,
-    message: string,
-    public readonly status: number,
-    public readonly details?: unknown
-  ) {
-    super(message);
-    this.name = "AppError";
-  }
 }
 
 export function toErrorBody(err: unknown): { status: number; body: ApiErrorBody } {
