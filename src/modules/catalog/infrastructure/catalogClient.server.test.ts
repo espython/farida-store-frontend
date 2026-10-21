@@ -52,7 +52,6 @@ describe("catalog client", () => {
   it("lists products with filters, sort, locale and pagination headers", async () => {
     const fetchMock = vi
       .fn()
-      .mockResolvedValueOnce(json([category(7, "cookware")]))
       .mockResolvedValueOnce(
         json([product()], { "x-wp-total": "25", "x-wp-totalpages": "3" })
       );
@@ -67,13 +66,13 @@ describe("catalog client", () => {
       color: "red",
     });
 
-    const u = urlOf(fetchMock.mock.calls[1]);
+    const u = urlOf(fetchMock.mock.calls[0]);
     expect(Object.fromEntries(u.searchParams)).toMatchObject({
       page: "2",
       per_page: "12",
       orderby: "price",
       order: "asc",
-      category: "7",
+      category: "cookware",
       min_price: "10000",
       max_price: "90000",
       lang: "ar",
@@ -82,14 +81,6 @@ describe("catalog client", () => {
     });
     expect(page).toMatchObject({ page: 2, total: 25, totalPages: 3 });
     expect(page.items[0]).toMatchObject({ id: "1", locale: "ar" });
-  });
-
-  it("returns an empty page for an unknown category instead of the whole catalog", async () => {
-    const fetchMock = vi.fn().mockResolvedValueOnce(json([category(7, "cookware")]));
-    vi.stubGlobal("fetch", fetchMock);
-    const page = await listProducts({ ...query, category: "nope" });
-    expect(page).toEqual({ items: [], page: 2, total: 0, totalPages: 0 });
-    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it("lists categories for the locale", async () => {

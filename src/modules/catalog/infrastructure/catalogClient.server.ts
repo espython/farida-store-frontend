@@ -63,32 +63,15 @@ export async function listCategories(locale: Locale): Promise<Category[]> {
   return res.data.map((c) => toCategory(c, locale));
 }
 
-/** The Store API filters by category id, so the slug is resolved first. */
-async function categoryIdBySlug(slug: string, locale: Locale): Promise<number | null> {
-  const res = await wooFetch<WooStoreCategory[]>({
-    path: "/wc/store/v1/products/categories",
-    query: { per_page: 100, lang: locale },
-    next: CATALOG_CACHE,
-  });
-  return res.data.find((c) => c.slug === slug)?.id ?? null;
-}
-
 export async function listProducts(q: ProductQuery): Promise<ProductPage> {
-  let categoryId: number | undefined;
-  if (q.category) {
-    const id = await categoryIdBySlug(q.category, q.locale);
-    // Unknown category: an empty page, not an unfiltered catalog.
-    if (id === null) return { items: [], page: q.page, total: 0, totalPages: 0 };
-    categoryId = id;
-  }
-
   const sort = SORT[q.sort];
   const query: Record<string, string | number | undefined> = {
     page: q.page,
     per_page: q.perPage,
     orderby: sort.orderby,
     order: sort.order,
-    category: categoryId,
+    // The Store API takes a category slug; an unknown slug yields an empty page.
+    category: q.category,
     min_price: q.minPrice,
     max_price: q.maxPrice,
     search: q.search,
