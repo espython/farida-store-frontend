@@ -27,6 +27,15 @@ export const findColor = (
 export const visibleCategories = (categories: readonly Category[] | undefined): Category[] =>
   (categories ?? []).filter((c) => c.productCount > 0);
 
+/** Woo's default bucket for products without a category; not a useful shortcut. */
+const UNCATEGORIZED = "uncategorized";
+
+/** Categories to promote (home slider, search shortcuts): non-empty, real ones, biggest first. */
+export const featuredCategories = (categories: readonly Category[] | undefined): Category[] =>
+  visibleCategories(categories)
+    .filter((c) => c.slug !== UNCATEGORIZED)
+    .sort((a, b) => b.productCount - a.productCount);
+
 /** Fallback title from a slug when the category is not loaded yet or is unknown. */
 export const titleFromSlug = (slug: string): string => {
   try {

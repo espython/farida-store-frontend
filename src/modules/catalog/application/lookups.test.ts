@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Category } from "../domain/Category";
 import {
+  featuredCategories,
   findCategory,
   findColor,
   sameSlug,
@@ -40,6 +41,9 @@ describe("slug lookups", () => {
   it("hides empty categories and builds a readable fallback title", () => {
     expect(visibleCategories([cat("a", 0), cat("b", 2)]).map((c) => c.slug)).toEqual(["b"]);
     expect(visibleCategories(undefined)).toEqual([]);
+    expect(
+      featuredCategories([cat("a", 1), cat("uncategorized", 9), cat("b", 0), cat("c", 4)]).map((c) => c.slug)
+    ).toEqual(["c", "a"]);
     expect(titleFromSlug("pots-and_pans")).toBe("pots and pans");
     expect(titleFromSlug("%D9%82%D8%AF%D8%B1-%D8%B6%D8%BA%D8%B7")).toBe("قدر ضغط");
     expect(titleFromSlug("%E0%A4%A")).toBe("%E0%A4%A");
