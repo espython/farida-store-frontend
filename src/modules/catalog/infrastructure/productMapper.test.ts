@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { decodeEntities, toCategory, toColor, toProduct, toStockStatus } from "./productMapper";
+import { toCategory, toColor, toProduct, toStockStatus } from "./productMapper";
 import type { WooStoreCategory, WooStoreProduct } from "./wooProductDto";
 
 const base: WooStoreProduct = {
@@ -120,14 +120,6 @@ describe("toCategory", () => {
       parentId: "3",
       image: null,
     });
-  });
-});
-
-describe("decodeEntities", () => {
-  it("decodes named and numeric entities and leaves unknown ones", () => {
-    expect(decodeEntities("A &amp; B &#8211; C &#x27;D&#x27; &unknown;")).toBe(
-      "A & B – C 'D' &unknown;"
-    );
   });
 });
 

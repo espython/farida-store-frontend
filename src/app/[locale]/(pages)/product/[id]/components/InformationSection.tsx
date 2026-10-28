@@ -1,11 +1,16 @@
-import React from "react";
+import React, { type ReactNode } from "react";
 import { AiOutlineGlobal } from "react-icons/ai";
 import { RiExchangeDollarLine } from "react-icons/ri";
 import { MdOutlinePayment } from "react-icons/md";
 import BestSellerMenu from "./BestSellerMenu";
 import { useTranslations } from "next-intl";
 
-const InformationSection = () => {
+interface InformationSectionProps {
+  /** Best-seller list; defaults to the Strapi one. */
+  bestSellers?: ReactNode;
+}
+
+const InformationSection = ({ bestSellers = <BestSellerMenu /> }: InformationSectionProps) => {
   const t = useTranslations("productPage");
   return (
     <div className="flex flex-col gap-5 order-3 md:order-none ">
@@ -38,7 +43,7 @@ const InformationSection = () => {
       </div>
       <div className="flex flex-col gap-2">
         <h1 className="capitalize text-lg md:text-xl">{t("bestSeller")}</h1>
-        <BestSellerMenu />
+        {bestSellers}
       </div>
     </div>
   );

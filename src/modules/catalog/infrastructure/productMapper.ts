@@ -1,6 +1,7 @@
 import { AppError } from "@/shared/kernel/AppError";
 import type { Locale } from "@/shared/kernel/Locale";
 import { Money } from "@/shared/kernel/Money";
+import { decodeEntities } from "@/shared/lib/htmlText";
 import type { Category } from "../domain/Category";
 import type { Color } from "../domain/Color";
 import type { Product, StockStatus } from "../domain/Product";
@@ -10,26 +11,6 @@ import type {
   WooStoreProduct,
   WooStoreTerm,
 } from "./wooProductDto";
-
-const NAMED_ENTITIES: Record<string, string> = {
-  amp: "&",
-  lt: "<",
-  gt: ">",
-  quot: '"',
-  apos: "'",
-  nbsp: " ",
-};
-
-/** Woo returns names HTML-escaped (e.g. "Pots &amp; Pans"); titles are plain text here. */
-export function decodeEntities(text: string): string {
-  return text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, body: string) => {
-    if (body[0] === "#") {
-      const code = body[1].toLowerCase() === "x" ? parseInt(body.slice(2), 16) : parseInt(body.slice(1), 10);
-      return Number.isFinite(code) ? String.fromCodePoint(code) : match;
-    }
-    return NAMED_ENTITIES[body.toLowerCase()] ?? match;
-  });
-}
 
 function toMoney(prices: WooPrices, value: string): Money {
   if (prices.currency_code !== "EGP" || prices.currency_minor_unit !== 2) {
