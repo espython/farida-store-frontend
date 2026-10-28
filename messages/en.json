@@ -133,7 +133,9 @@
     "search": "search products",
     "common": "common search :",
     "type": "type to search...",
-    "results": "show all results"
+    "results": "show all results",
+    "noResults": "no products match your search",
+    "resultsFor": "search results"
   },
   "userPage": {
     "account": "your account",

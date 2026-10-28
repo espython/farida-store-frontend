@@ -15,7 +15,7 @@ const QuickSearchMenu = () => {
   const router = useRouter();
 
   const searchForResult = (query: string) => {
-    router.push(`/search?q=${query}`);
+    router.push(`/search?q=${encodeURIComponent(query.trim())}`);
     searchBox.hideWholeSearchBox();
 
     searchBox.setSearchInputValue("");

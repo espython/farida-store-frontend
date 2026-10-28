@@ -48,4 +48,5 @@ export { default as ColorOptions } from "./ui/ColorOptions";
 export { default as BestSellers } from "./ui/BestSellers";
 export { default as ProductDetails } from "./ui/ProductDetails";
 export { default as ProductGallery } from "./ui/ProductGallery";
+export { default as QuickSearch } from "./ui/QuickSearch";
 export { findCategory, findColor, sameSlug } from "./application/lookups";
