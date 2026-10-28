@@ -51,3 +51,4 @@ export { default as ProductDetails } from "./ui/ProductDetails";
 export { default as ProductGallery } from "./ui/ProductGallery";
 export { default as QuickSearch } from "./ui/QuickSearch";
 export { findCategory, findColor, sameSlug } from "./application/lookups";
+export { productJsonLd, productMetaDescription, serializeJsonLd } from "./application/productSeo";

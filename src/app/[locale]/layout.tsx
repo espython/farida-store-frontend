@@ -20,7 +20,7 @@ import Uiproviders from "@/providers/UiProviders";
 import ReduxStoreProvider from "@/store/StoreProvider";
 
 export const metadata = {
-  title: "Farida Store",
+  title: { default: "Farida Store", template: "%s | Farida Store" },
   description: "The Market of Farida Store",
 };
 
