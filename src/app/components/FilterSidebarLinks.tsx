@@ -6,8 +6,9 @@ import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { Link } from "@/navigation";
 import { useParams } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
+import { CATALOG_SOURCE, CategoryLinks } from "@/modules/catalog";
 
-const FilterSidebarLinks = () => {
+const StrapiFilterSidebarLinks = () => {
   const { categories } = useContext(StoreContext);
   const urlParams: Params = useParams();
   const locale = useLocale();
@@ -45,4 +46,14 @@ const FilterSidebarLinks = () => {
   );
 };
 
-export default observer(FilterSidebarLinks);
+const ObservedStrapiLinks = observer(StrapiFilterSidebarLinks);
+
+const WooFilterSidebarLinks = () => {
+  const { filter } = useContext(StoreContext);
+  return <CategoryLinks onSelect={filter.hideWholeFilterSidebar} />;
+};
+
+const FilterSidebarLinks = () =>
+  CATALOG_SOURCE === "woo" ? <WooFilterSidebarLinks /> : <ObservedStrapiLinks />;
+
+export default FilterSidebarLinks;

@@ -4,8 +4,9 @@ import ColorChoice from "./ColorChoice";
 import { StoreContext } from "@/contexts/StoreContext";
 import { observer } from "mobx-react-lite";
 import { useLocale } from "next-intl";
+import { CATALOG_SOURCE, ColorOptions } from "@/modules/catalog";
 
-const ColorsMenu = () => {
+const StrapiColorsMenu = () => {
   const { colors } = useContext(StoreContext);
   const locale = useLocale();
 
@@ -32,4 +33,14 @@ const ColorsMenu = () => {
   );
 };
 
-export default observer(ColorsMenu);
+const ObservedStrapiColors = observer(StrapiColorsMenu);
+
+const WooColorsMenu = () => {
+  const { filter } = useContext(StoreContext);
+  return <ColorOptions onSelect={filter.hideWholeFilterSidebar} />;
+};
+
+const ColorsMenu = () =>
+  CATALOG_SOURCE === "woo" ? <WooColorsMenu /> : <ObservedStrapiColors />;
+
+export default ColorsMenu;

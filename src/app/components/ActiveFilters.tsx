@@ -6,15 +6,15 @@ import { useRouter, usePathname } from "@/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { StoreContext } from "@/contexts/StoreContext";
 import { observer } from "mobx-react-lite";
+import { CATALOG_SOURCE, findColor, useGetColorsQuery } from "@/modules/catalog";
+import type { Locale } from "@/shared/kernel/Locale";
 
-const ActiveFilters = () => {
+const ActiveFiltersView = ({ colorLabel }: { colorLabel: string }) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
   const t = useTranslations("activeFilters");
   const currency = useTranslations("currency");
-  const locale = useLocale();
-  const { colors } = useContext(StoreContext);
 
   const params = new URLSearchParams(searchParams);
 
@@ -27,11 +27,6 @@ const ActiveFilters = () => {
     router.replace(`${pathname}?${params.toString()}`);
   };
 
-  useEffect(() => {
-    colors.getArabicColor(colorName ?? "");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colorName]);
-
   return (
     <div className="flex gap-x-5 gap-y-2 items-center md:justify-start justify-center flex-wrap">
       <h1 className="capitalize text-sm md:text-xl font-semibold">
@@ -41,9 +36,7 @@ const ActiveFilters = () => {
         <MiniActiveFilter
           filterName={t("color")}
           deleteFilter={deleteFilter}
-          filterTitle={`${t("color")} : ${
-            locale === "en" ? colorName : colors.arabicColorName
-          }`}
+          filterTitle={`${t("color")} : ${colorLabel}`}
         />
       )}
       {min_price && (
@@ -68,4 +61,37 @@ const ActiveFilters = () => {
   );
 };
 
-export default observer(ActiveFilters);
+const StrapiActiveFilters = observer(() => {
+  const searchParams = useSearchParams();
+  const locale = useLocale();
+  const { colors } = useContext(StoreContext);
+  const colorName = searchParams.get("color");
+
+  useEffect(() => {
+    colors.getArabicColor(colorName ?? "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [colorName]);
+
+  return (
+    <ActiveFiltersView
+      colorLabel={locale === "en" ? colorName ?? "" : colors.arabicColorName}
+    />
+  );
+});
+StrapiActiveFilters.displayName = "StrapiActiveFilters";
+
+// The Woo colour list is already localized, so no extra lookup per colour.
+const WooActiveFilters = () => {
+  const searchParams = useSearchParams();
+  const locale = useLocale() as Locale;
+  const colorSlug = searchParams.get("color");
+  const { data } = useGetColorsQuery(locale);
+  return (
+    <ActiveFiltersView colorLabel={findColor(data, colorSlug)?.name ?? colorSlug ?? ""} />
+  );
+};
+
+const ActiveFilters = () =>
+  CATALOG_SOURCE === "woo" ? <WooActiveFilters /> : <StrapiActiveFilters />;
+
+export default ActiveFilters;
