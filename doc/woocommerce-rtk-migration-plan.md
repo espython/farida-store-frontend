@@ -17,6 +17,7 @@ This is the single complete plan. It replaces the Strapi-specific parts of `rtk-
 | 2026-10-14 | `react-redux` **8.1.x** with `@reduxjs/toolkit` 2.x | `react-redux` 9.3 failed to install (`ERESOLVE`): it requires `@types/react` ≥ 18.2.25 while the repo pins 18.2.7. v8.1 is supported by RTK 2. Revisit when the type packages are upgraded. |
 | 2026-10-14 | `backend-admin` (Strapi) is **not deleted** until after cutover and a stable period | Needed for the data export and for rollback. |
 | 2026-10-14 | Adopt **DDD-lite**: bounded-context modules (`src/modules/<context>`) with domain / infrastructure / application / ui layers, a shared kernel, and an anti-corruption layer for Woo | Keeps Woo and RTK specifics out of components and makes pricing, coupon, cancellation and status rules pure and testable. See `ddd-architecture.md`. |
+| 2026-10-29 | Keep **NextUI** through the migration; after launch, move to **HeroUI** (option 1) rather than shadcn/ui | NextUI is used in ~100 files and the migration should not double as a redesign. NextUI was renamed HeroUI and `@nextui-org/*` no longer gets updates; HeroUI is the same library under a new name, so the move is mostly a package rename. A gradual move to shadcn/ui stays possible later. |
 
 ## 2. Goals and non-goals
 
@@ -220,13 +221,19 @@ Estimates are rough, for one developer, and exclude waiting time on hosting and 
 - Related and recently viewed products; low-stock badge; back-in-stock alerts.
 - Newsletter, comparison, WhatsApp button, sharing, Q&A, loyalty, PWA.
 
+**H1. NextUI → HeroUI** (own PR, after the stable period)
+- Replace `@nextui-org/react` with `@heroui/react` and the `nextui()` Tailwind plugin with `heroui()`; update the theme provider and the Tailwind `content` path for the theme package.
+- Rename imports across the ~100 files (`@nextui-org/react` → `@heroui/react`); component names and props are mostly unchanged, so this is a codemod plus a review of anything that changed (check the HeroUI migration notes).
+- Check peer dependencies before starting: the HeroUI major that still supports Tailwind 3 (newer majors target Tailwind 4), and the `framer-motion` version it needs (the repo is on 10.x).
+- Accept: `grep -r @nextui-org src package.json` finds nothing; tests, build and an en/ar visual pass of home, category, product, cart, checkout and account pages show no regressions.
+
 ## 6. Priority summary (for the project board)
 
 | Priority | Items |
 |---|---|
 | **P0** | F1 RTK foundation · W1–W9 Woo setup and acceptance |
 | **P1** | F2 boundaries · F3 housekeeping · F4 tests · F5 legal pages · B1–B5 BFF and catalog · A1–A4 accounts · C1–C4 cart and checkout · O1–O3 orders and reviews · M1–M4 migration · X1–X4 cutover |
-| **P2** | O4 wishlist · U1–U3 UI state and cleanup · analytics · merchandising |
+| **P2** | O4 wishlist · U1–U3 UI state and cleanup · H1 NextUI → HeroUI · analytics · merchandising |
 | **P3** | Growth features |
 
 ## 7. Strapi endpoint → Woo mapping
@@ -303,6 +310,7 @@ Note: `selectionAddressModal` is currently `new AddressModalStore()`; it becomes
 | Large change across ~100 consumer files | Medium | One slice per PR; MobX and Redux coexist until Phase 8 |
 | WordPress upkeep falls on a non-technical owner | Medium | Managed hosting, automatic updates, backups, named technical owner |
 | `react-redux` 8 + `@types/react` 18.2.7 are old | Low | Plan a dependency upgrade after cutover |
+| NextUI (`@nextui-org/*`) is no longer maintained | Low | H1 moves to HeroUI after launch; do it together with the dependency upgrade |
 
 ## 11. Open questions
 
