@@ -1,6 +1,7 @@
 import React from "react";
 import ProductsSlider from "./ProductsSlider";
 import { useTranslations } from "next-intl";
+import { CATALOG_SOURCE, CategorySlider } from "@/modules/catalog";
 
 const MiniProducts = () => {
   const t = useTranslations("home");
@@ -11,7 +12,7 @@ const MiniProducts = () => {
         {t("title")}
       </h1>
 
-      <ProductsSlider />
+      {CATALOG_SOURCE === "woo" ? <CategorySlider /> : <ProductsSlider />}
     </div>
   );
 };

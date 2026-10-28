@@ -5,6 +5,7 @@ import { Link } from "@/navigation";
 import type { Locale } from "@/shared/kernel/Locale";
 import { Money } from "@/shared/kernel/Money";
 import { useGetCategoriesQuery } from "../application/catalogApi";
+import { featuredCategories } from "../application/lookups";
 import { useQuickSearch } from "../application/useQuickSearch";
 import type { Product } from "../domain/Product";
 
@@ -18,8 +19,6 @@ interface Props {
 }
 
 const COMMON_CATEGORIES = 4;
-/** Woo's default bucket for products without a category; not a useful shortcut. */
-const UNCATEGORIZED = "uncategorized";
 
 /** Search overlay body on the Woo catalog: popular categories, then live results while typing. */
 const QuickSearch = ({ term, onPick, onShowAll }: Props) => {
@@ -113,10 +112,7 @@ const QuickSearchItem = ({ product, onPick }: { product: Product; onPick: () => 
 const CommonSearches = ({ locale, onPick }: { locale: Locale; onPick: () => void }) => {
   const t = useTranslations("search");
   const { data } = useGetCategoriesQuery(locale);
-  const top = [...(data ?? [])]
-    .filter((c) => c.productCount > 0 && c.slug !== UNCATEGORIZED)
-    .sort((a, b) => b.productCount - a.productCount)
-    .slice(0, COMMON_CATEGORIES);
+  const top = featuredCategories(data).slice(0, COMMON_CATEGORIES);
 
   if (top.length === 0) return null;
 
