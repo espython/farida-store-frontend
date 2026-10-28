@@ -11,6 +11,7 @@ import { observer } from "mobx-react-lite";
 import SearchBoxCommonSearches from "./SearchBoxCommonSearches";
 import { useScreenSize } from "react-screen-size-helper";
 import { useLocale, useTranslations } from "next-intl";
+import { CATALOG_SOURCE, QuickSearch } from "@/modules/catalog";
 
 const SearchBox = () => {
   const { searchBox, categories } = useContext(StoreContext);
@@ -22,14 +23,20 @@ const SearchBox = () => {
   const locale = useLocale();
   const t = useTranslations("search");
 
-  const searchForResult = (query: string) => {
-    router.push(`/${locale}/search?q=${query}`);
+  const closeSearch = () => {
     searchBox.hideWholeSearchBox();
-
     searchBox.setSearchInputValue("");
   };
 
+  const searchForResult = (query: string) => {
+    // The localized router adds the locale prefix itself.
+    router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+    closeSearch();
+  };
+
   useEffect(() => {
+    // Woo common searches come from the catalog module.
+    if (CATALOG_SOURCE === "woo") return;
     categories.getSomeCategories(4, locale);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,11 +91,23 @@ const SearchBox = () => {
         //   onValueChange={searchBox.setSearchInputValue}
       />
 
-      {searchBox.quickProducts.length === 0 && (
-        <SearchBoxCommonSearches searchForResult={searchForResult} />
-      )}
+      {CATALOG_SOURCE === "woo" ? (
+        <div className="w-full">
+          <QuickSearch
+            term={searchBox.searchInputValue}
+            onPick={closeSearch}
+            onShowAll={searchForResult}
+          />
+        </div>
+      ) : (
+        <>
+          {searchBox.quickProducts.length === 0 && (
+            <SearchBoxCommonSearches searchForResult={searchForResult} />
+          )}
 
-      <QuickSearchMenu />
+          <QuickSearchMenu />
+        </>
+      )}
     </div>
   );
 };
