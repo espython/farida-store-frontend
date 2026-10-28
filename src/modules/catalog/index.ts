@@ -45,4 +45,7 @@ export { default as CatalogProductCard } from "./ui/CatalogProductCard";
 export { default as CategoryLinks } from "./ui/CategoryLinks";
 export { default as CategoryTitle } from "./ui/CategoryTitle";
 export { default as ColorOptions } from "./ui/ColorOptions";
+export { default as BestSellers } from "./ui/BestSellers";
+export { default as ProductDetails } from "./ui/ProductDetails";
+export { default as ProductGallery } from "./ui/ProductGallery";
 export { findCategory, findColor, sameSlug } from "./application/lookups";

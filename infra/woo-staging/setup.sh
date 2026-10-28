@@ -24,6 +24,10 @@ cat > wp-content/mu-plugins/local-rest-https.php <<'PHP'
 <?php
 if ( isset( $_SERVER['REQUEST_URI'] ) && false !== strpos( $_SERVER['REQUEST_URI'], '/wp-json/' ) ) {
 	$_SERVER['HTTPS'] = 'on';
+	// Media is still served over plain http locally; keep image URLs loadable.
+	add_filter( 'wp_get_attachment_url', function ( $url ) {
+		return set_url_scheme( $url, 'http' );
+	}, PHP_INT_MAX );
 }
 PHP
 

@@ -10,13 +10,15 @@ import DetailsSection from "./DetailsSection";
 import { getTheLengthOfAllowedRatings } from "@/functions/getTheLengthOfAllowedRatings";
 import ReviewsSection from "./ReviewsSection";
 import { useLocale } from "next-intl";
+import { CATALOG_SOURCE } from "@/modules/catalog";
+import WooProductPage from "./WooProductPage";
 
 interface ProductPageContainerProps {
   // Define your props here
   id: string;
 }
 
-const ProductPageContainer = ({ id }: ProductPageContainerProps) => {
+const StrapiProductPageContainer = observer(({ id }: ProductPageContainerProps) => {
   const { products } = useContext(StoreContext);
   const locale = useLocale();
 
@@ -82,6 +84,11 @@ const ProductPageContainer = ({ id }: ProductPageContainerProps) => {
       </div>
     </div>
   );
-};
+});
+StrapiProductPageContainer.displayName = "StrapiProductPageContainer";
 
-export default observer(ProductPageContainer);
+/** The [id] segment is a Strapi id on the legacy catalog and a product slug on Woo. */
+const ProductPageContainer = ({ id }: ProductPageContainerProps) =>
+  CATALOG_SOURCE === "woo" ? <WooProductPage slug={id} /> : <StrapiProductPageContainer id={id} />;
+
+export default ProductPageContainer;
