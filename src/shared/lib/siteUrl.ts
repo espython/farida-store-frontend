@@ -3,3 +3,6 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3
 
 /** Absolute URL for a site path such as `/en/product/kettle`. */
 export const absoluteUrl = (path: string) => `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+
+/** Open Graph `og:locale` for a storefront locale. */
+export const ogLocale = (locale: "en" | "ar") => (locale === "ar" ? "ar_EG" : "en_US");
