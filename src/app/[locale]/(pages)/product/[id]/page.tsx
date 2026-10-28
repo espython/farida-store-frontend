@@ -12,7 +12,7 @@ import { getProductBySlug } from "@/modules/catalog/index.server";
 import { AppError } from "@/shared/kernel/AppError";
 import { isLocale, LOCALES } from "@/shared/kernel/Locale";
 import type { Locale } from "@/shared/kernel/Locale";
-import { absoluteUrl, SITE_URL } from "@/shared/lib/siteUrl";
+import { absoluteUrl, ogLocale, SITE_URL } from "@/shared/lib/siteUrl";
 import ProductPageContainer from "./components/ProductPageContainer";
 
 interface productPageProps {
@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: productPageProps): Promise<Me
       url: productPath(locale, product.slug),
       title: product.title,
       description,
-      locale: locale === "ar" ? "ar_EG" : "en_US",
+      locale: ogLocale(locale),
       images: image ? [{ url: image.src, alt: image.alt || product.title }] : undefined,
     },
   };
