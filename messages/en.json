@@ -530,7 +530,7 @@
     }
   },
   "activeFilters": {
-    "active": "active filters :",
+    "active": "active filters",
     "color": "color",
     "minPrice": "min price",
     "maxPrice": "max price"
