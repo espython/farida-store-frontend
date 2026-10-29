@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { StoreContext } from "@/contexts/StoreContext";
 import { observer } from "mobx-react-lite";
@@ -13,6 +13,15 @@ const CartSideBar = () => {
   const divRef = useRef<HTMLDivElement>(null);
 
   const locale = useLocale();
+
+  useEffect(() => {
+    if (!cartSidebar.showCartSideBar) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") cartSidebar.hideWholeCartSidebar();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [cartSidebar, cartSidebar.showCartSideBar]);
 
   return (
     <div className="relative max-w-screen h-auto ">
@@ -29,30 +38,22 @@ const CartSideBar = () => {
       </AnimatePresence>
 
       <motion.div
-        // initial={{ scaleX: 0 }}
-        // animate={{ scaleX: cartSidebar.showCartSideBar?1:0}}
-        // exit={{scaleX:0}}
-        ref={divRef}
-        // initial={{ x: 1000 }}
-        initial={{
-          x: locale === "en" ? 1000 : -1000,
-        }}
-        animate={{
-          x: cartSidebar.showCartSideBar
-            ? 0
-            : divRef?.current?.offsetHeight &&
-              (locale === "en"
-                ? divRef.current?.offsetHeight
-                : -divRef.current?.offsetHeight),
-        }}
-        // exit={{ x: divRef.current?.offsetHeight }}
+        initial={false}
+        animate={
+          cartSidebar.showCartSideBar
+            ? { x: 0, visibility: "visible" }
+            : { x: locale === "en" ? "105%" : "-105%", transitionEnd: { visibility: "hidden" } }
+        }
         transition={{
           type: "tween",
           duration: 0.5,
         }}
-        className={`origin-right bg-mainWhite w-full  lmob:w-96 h-screen fixed top-0  z-[100] ${
-          locale === "en" ? "right-0" : "left-0"
-        }  `}
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={!cartSidebar.showCartSideBar}
+        className={`bg-cream text-garden w-[92vw] max-w-[26rem] h-[100dvh] fixed top-0 z-[100] shadow-xl ${
+          locale === "en" ? "right-0 rounded-s-3xl" : "left-0 rounded-e-3xl"
+        } overflow-hidden`}
         dir={locale === "en" ? "ltr" : "rtl"}
       >
         <CartSideBarContent />

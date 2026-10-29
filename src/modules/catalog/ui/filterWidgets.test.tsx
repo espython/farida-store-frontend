@@ -96,8 +96,8 @@ describe("CategoryLinks", () => {
     state.categories.data = [cat("قدر", "قدور", 2), cat("pans", "Pans", 1)];
     state.route = { name: "%D9%82%D8%AF%D8%B1" };
     wrap(<CategoryLinks />, "ar");
-    expect(screen.getByRole("link", { name: /قدور/ }).className).toContain("text-mainPink");
-    expect(screen.getByRole("link", { name: /Pans/ }).className).not.toContain("text-mainPink");
+    expect(screen.getByRole("link", { name: /قدور/ })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: /Pans/ })).not.toHaveAttribute("aria-current");
   });
 
   it("calls onSelect when a link is clicked", () => {

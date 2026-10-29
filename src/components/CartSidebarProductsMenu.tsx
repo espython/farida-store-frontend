@@ -27,13 +27,13 @@ const CartSidebarProductsMenu = () => {
   ]);
 
   return (
-    <div className="flex flex-col  gap-3 p-5 overflow-auto h-full w-full">
+    <div className="flex-1 min-h-0 flex flex-col gap-3 p-5 overflow-auto w-full">
       {uiCondition
         ? cart.userCartItems.map((product) => (
             <div key={product.id} className="flex flex-col gap-3">
               <CartSidebarProduct product={product} />
 
-              <Divider />
+              <Divider className="bg-line" />
             </div>
           ))
         : cart.cartProducts.map((product) => (
@@ -42,7 +42,7 @@ const CartSidebarProductsMenu = () => {
                 product={{ ...product, cartItemId: product.id }}
               />
 
-              <Divider />
+              <Divider className="bg-line" />
             </div>
           ))}
     </div>

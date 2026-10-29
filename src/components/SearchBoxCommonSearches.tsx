@@ -1,7 +1,6 @@
 "use client";
 
 import { StoreContext } from "@/contexts/StoreContext";
-import { Chip } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useTranslations } from "next-intl";
 import React, { useContext } from "react";
@@ -17,27 +16,21 @@ const SearchBoxCommonSearches = ({ searchForResult }: commonSearchProps) => {
   return (
     <div
       key={"common search"}
-      className="flex flex-wrap items-center justify-center gap-2 md:gap-5"
+      className="flex flex-wrap items-center justify-center gap-2"
     >
-      <h1 className="text-sm md:text-xl capitalize">{t("common")}</h1>
+      <span className="text-sm font-semibold capitalize text-garden-muted">{t("common")}</span>
 
       {categories.someCategories?.map((cat) => (
-        <div
+        <button
+          type="button"
           key={cat.id}
           onClick={() => {
             searchForResult(cat.attributes.name);
           }}
+          className="inline-flex items-center h-10 px-4 rounded-full bg-white border border-line text-sm font-semibold hover:border-garden transition-colors"
         >
-          <Chip
-            variant="bordered"
-            className="cursor-pointer text-xs md:text-sm"
-            classNames={{
-              base: "hover:text-mainBlack hover:border-mainBlack transition-all",
-            }}
-          >
-            {cat.attributes.name}
-          </Chip>
-        </div>
+          {cat.attributes.name}
+        </button>
       ))}
     </div>
   );

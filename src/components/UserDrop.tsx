@@ -3,6 +3,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { observer } from "mobx-react-lite";
+import TextField from "@/shared/ui/TextField";
+import { buttonClass } from "@/shared/ui/Button";
 import { StoreContext } from "@/contexts/StoreContext";
 import UserLoggedInUi from "./UserLoggedInUi";
 
@@ -35,17 +37,15 @@ const UserDrop = () => {
         scaleY: userDrop.isUserMenuDisplayed ? 1 : 0,
         opacity: userDrop.isUserMenuDisplayed ? 1 : 0,
       }}
-      className={`origin-top flex flex-col gap-5 bg-mainWhite min-w-[20rem] capitalize w-auto h-auto ${
-        uiCondition ? "p-3 px-5" : ""
-      } text-mainBlack absolute top-20 ${
-        locale === "en" ? "right-36" : "left-36"
-      } z-10 border-1 border-solid border-mainBlack border-t-0`}
+      className={`origin-top flex flex-col gap-5 w-[22rem] text-garden absolute top-full end-0 z-[100] bg-white rounded-3xl shadow-xl border border-line overflow-hidden ${
+        uiCondition ? "p-5" : ""
+      }`}
       dir={locale === "en" ? "ltr" : "rtl"}
     >
       {uiCondition ? (
         <div>
-          <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold">{t("login")}</h1>
+          <div className="flex justify-between items-center mb-4">
+            <p className="font-display text-xl capitalize">{t("login")}</p>
             <div className="flex items-center">
               <GoogleProvider format="small" />
             </div>
@@ -59,14 +59,13 @@ const UserDrop = () => {
                 router.refresh();
               }
             }}
-            className="flex flex-col gap-5"
+            className="flex flex-col gap-4"
           >
-            <div className="flex flex-col gap-2">
-              <label className="input-label">{t("labels.email")}</label>
-              <input
-                type="email"
-                className="nav-input"
-                value={loginForm.email}
+            <TextField
+              label={t("labels.email")}
+              type="email"
+              autoComplete="email"
+              value={loginForm.email}
                 onChange={(e) => {
                   // userDrop.setEmailValue(e.target.value)
                   loginForm.setEmail(e.target.value);
@@ -77,14 +76,12 @@ const UserDrop = () => {
                 onBlur={() => {
                   userDrop.setEmailFocus(false);
                 }}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label className="input-label">{t("labels.password")}</label>
-              <input
-                type="password"
-                className="nav-input"
-                value={loginForm.password}
+            />
+            <TextField
+              label={t("labels.password")}
+              type="password"
+              autoComplete="current-password"
+              value={loginForm.password}
                 onChange={(e) => {
                   // userDrop.setPasswordValue(e.target.value)
                   loginForm.setPassword(e.target.value);
@@ -95,12 +92,11 @@ const UserDrop = () => {
                 onBlur={() => {
                   userDrop.setPasswordFocus(false);
                 }}
-              />
-            </div>
-            <div className="flex gap-5 items-center">
+            />
+            <div className="flex flex-col gap-2">
               <Button
                 isLoading={loginForm.isLoading}
-                className="bg-mainBlack text-mainWhite p-3 px-10 rounded-lg capitalize"
+                className={`${buttonClass({ full: true })} capitalize`}
                 type="submit"
               >
                 {t("submit")}
@@ -110,7 +106,11 @@ const UserDrop = () => {
                       <label htmlFor='remeber' className='cursor-pointer'>remeber me</label>
                   </div> */}
               {/* <h1 className='text-sm text-red-500'>{ userDrop.errorMessage.slice(22,userDrop.errorMessage.length-2)}</h1> */}
-              <h1 className="text-sm text-red-500">{loginForm.errorMessage}</h1>
+              {loginForm.errorMessage && (
+                <p role="alert" className="text-sm text-[#b42318]">
+                  {loginForm.errorMessage}
+                </p>
+              )}
             </div>
           </form>
         </div>

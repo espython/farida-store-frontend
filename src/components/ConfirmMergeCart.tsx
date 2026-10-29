@@ -1,14 +1,12 @@
 "use client";
 import { StoreContext } from "@/contexts/StoreContext";
-import { Button } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
+import { buttonClass } from "@/shared/ui/Button";
 import { useTranslations } from "next-intl";
 import React, { useContext } from "react";
-import { useScreenSize } from "react-screen-size-helper";
 
 const ConfirmMergeCart = () => {
   const { user, cart, cartSidebar } = useContext(StoreContext);
-  const { currentWidth } = useScreenSize({});
   const t = useTranslations("mergeCart");
 
   const accept = () => {
@@ -30,27 +28,15 @@ const ConfirmMergeCart = () => {
   };
 
   return (
-    <div className="px-5 flex flex-col gap-2 pt-2 justify-self-end w-full">
-      <h1 className="text-sm md:text-xl text-center smob:ltr:text-left smob:rtl:text-right capitalize">
-        {t("merge")}
-      </h1>
-      <div className="grid grid-cols-1 smob:grid-cols-2 gap-2">
-        <Button
-          size={currentWidth > 768 ? "md" : "sm"}
-          radius="none"
-          className="bg-mainBlack text-mainWhite capitalize"
-          onClick={accept}
-        >
+    <div role="status" className="m-5 mb-0 p-4 rounded-2xl bg-[#fbe9c4] flex flex-col gap-3">
+      <p className="font-semibold capitalize">{t("merge")}</p>
+      <div className="grid grid-cols-2 gap-2">
+        <button type="button" className={`${buttonClass()} capitalize px-3`} onClick={accept}>
           {t("yes")}
-        </Button>
-        <Button
-          size={currentWidth > 768 ? "md" : "sm"}
-          radius="none"
-          className="text-mainBlack bg-mainBlack/20 capitalize"
-          onClick={refuse}
-        >
+        </button>
+        <button type="button" className={`${buttonClass({ variant: "ghost" })} capitalize px-3 bg-white`} onClick={refuse}>
           {t("no")}
-        </Button>
+        </button>
       </div>
     </div>
   );

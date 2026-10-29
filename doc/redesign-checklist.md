@@ -37,19 +37,19 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [x] `NavLinks`, `NavIcons`, `NavMenuIcon`, `LanguageIcon`, `Icon`
 - [x] `FullCartIcon`, `FullUserIcon`, `FullWishlistIcon`, `FullSearchIcon` (labels)
 - [x] `shared/ui/BrandLogo`, `HeaderSearch`
-- [ ] `Cartdrop`, `CartDropProductsMenu`, `CartDropProduct`, `CartDropTotalPrice`, `EmptyCartDrop` (cart hover dropdown)
-- [ ] `UserDrop` (account hover dropdown)
-- [~] `TopPositionedAds`, `ShowHideFastAdsButton` (announcement bar: check height 36 px, toggle button)
-- [ ] `SearchMenu`, `SearchBox`, `QuickSearchMenu`, `MiniSearchProduct`, `SearchBoxCommonSearches`, `catalog/ui/QuickSearch` (search overlay)
-- [ ] `Sidebar`, `SidebarContent`, `SidebarResponsiveContent`, `UserSidebarMenu`, `UserLoggedInUi` (menu drawer)
-- [ ] `CartSideBar`, `CartSideBarContent`, `CartSidebarHeader`, `CartSidebarProductsMenu`, `CartSidebarProduct`, `CartSidebarFooter`, `CartSidebarEmptyCart` (cart drawer)
+- [x] `Cartdrop`, `CartDropProductsMenu`, `CartDropProduct`, `CartDropTotalPrice`, `EmptyCartDrop` (cart hover dropdown)
+- [x] `UserDrop` (account hover dropdown)
+- [x] `TopPositionedAds`, `ShowHideFastAdsButton` (announcement bar: check height 36 px, toggle button)
+- [x] `SearchMenu`, `SearchBox`, `QuickSearchMenu`, `MiniSearchProduct`, `SearchBoxCommonSearches`, `catalog/ui/QuickSearch` (search overlay)
+- [x] `Sidebar`, `SidebarContent`, `UserSidebarMenu`, `UserLoggedInUi` (menu drawer; one drawer for all sizes, Woo categories in Woo mode — it was empty before; `SidebarResponsiveContent` removed)
+- [x] `CartSideBar`, `CartSideBarContent`, `CartSidebarHeader`, `CartSidebarProductsMenu`, `CartSidebarProduct`, `CartSidebarFooter`, `CartSidebarEmptyCart` (cart drawer)
 - [x] `BottomNavigation` (phone tab bar)
 - [x] `CartFloatingButton` (desktop only)
-- [ ] `GoTopFloatingButton` (position next to the cart button, phone clearance)
+- [x] `GoTopFloatingButton` (position next to the cart button, phone clearance)
 - [x] `Footer`, `shared/ui/PerksStrip`
-- [ ] `ConfirmMergeCart` (modal)
-- [ ] `LoadingOverlay`, `feedback/PageSkeleton`
-- [ ] Remove now-unused `IconCard`, `PaymentStatusIndicator` (no references)
+- [x] `ConfirmMergeCart` (modal)
+- [x] `LoadingOverlay`, `feedback/PageSkeleton`
+- [x] Remove now-unused `IconCard`, `PaymentStatusIndicator` (no references)
 
 ## 2. Catalog building blocks
 

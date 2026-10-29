@@ -34,7 +34,7 @@ const CartDropProductsMenu = () => {
         ? cart.userCartItems.map((product) => (
             <div key={product.id} className="flex flex-col gap-3">
               <CartDropProduct product={product} />
-              <Divider />
+              <Divider className="bg-line" />
             </div>
           ))
         : cart.cartProducts.map((product) => (
@@ -42,7 +42,7 @@ const CartDropProductsMenu = () => {
               <CartDropProduct
                 product={{ ...product, cartItemId: product.id }}
               />
-              <Divider />
+              <Divider className="bg-line" />
             </div>
           ))}
     </div>

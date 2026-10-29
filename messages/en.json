@@ -1,5 +1,17 @@
 {
+  "goTop": {
+    "top": "Back to top"
+  },
+  "quantity": {
+    "label": "Quantity",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity"
+  },
+  "announcement": {
+    "dismiss": "Hide announcements"
+  },
   "header": {
+    "closeMenu": "Close menu",
     "searchLabel": "Search products",
     "searchPlaceholder": "What are you cooking today?",
     "account": "Account",
@@ -68,12 +80,14 @@
     "home": "home"
   },
   "cartSidebar": {
+    "close": "Close cart",
     "cart": "shopping cart",
     "total": "total",
     "empty": "your cart is empty",
     "complete": "complete your order"
   },
   "cartDrop": {
+    "remove": "Remove",
     "cart": "shopping cart",
     "total": "total",
     "empty": "your cart is empty",
@@ -184,6 +198,7 @@
     "continue": "continue with google"
   },
   "search": {
+    "close": "Close search",
     "search": "search products",
     "common": "common search :",
     "type": "type to search...",

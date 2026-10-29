@@ -5,23 +5,27 @@ import { SearchIcon } from "lucide-react";
 import { Link } from "@/navigation";
 import { useSearchParams } from "next/navigation";
 import { useRouter, usePathname } from "@/navigation";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import QuickSearchMenu from "./QuickSearchMenu";
 import { observer } from "mobx-react-lite";
 import SearchBoxCommonSearches from "./SearchBoxCommonSearches";
-import { useScreenSize } from "react-screen-size-helper";
 import { useLocale, useTranslations } from "next-intl";
 import { CATALOG_SOURCE, QuickSearch } from "@/modules/catalog";
 
 const SearchBox = () => {
   const { searchBox, categories } = useContext(StoreContext);
-  const { isMobile, isTablet } = useScreenSize({});
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
   const locale = useLocale();
   const t = useTranslations("search");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Put the caret in the field whenever the overlay opens.
+  useEffect(() => {
+    if (searchBox.showSearchBox) setTimeout(() => inputRef.current?.focus(), 300);
+  }, [searchBox.showSearchBox]);
 
   const closeSearch = () => {
     searchBox.hideWholeSearchBox();
@@ -65,30 +69,39 @@ const SearchBox = () => {
   return (
     <div className="w-full flex flex-col gap-5 items-center justify-center">
       <Input
-        size={isMobile ? "sm" : isTablet ? "md" : "lg"}
+        ref={inputRef}
+        type="search"
+        aria-label={t("search")}
         radius="full"
+        size="lg"
         value={searchBox.searchInputValue}
         placeholder={query ? query : t("type")}
+        classNames={{
+          inputWrapper: "h-14 bg-white border border-line shadow-none data-[hover=true]:bg-white group-data-[focus=true]:bg-white group-data-[focus=true]:border-garden",
+          input: "text-base text-garden placeholder:text-garden-muted",
+        }}
         endContent={
           !searchBox.quickProductsLoading ? (
-            <SearchIcon
-              className="cursor-pointer text-mainBlack"
+            <button
+              type="button"
+              aria-label={t("search")}
+              className="w-11 h-11 -me-2 grid place-items-center rounded-full bg-garden text-cream"
               onClick={() => {
                 if (searchBox.searchInputValue.length > 0) {
                   searchForResult(searchBox.searchInputValue);
                 }
               }}
-            />
+            >
+              <SearchIcon className="text-cream" aria-hidden="true" />
+            </button>
           ) : (
-            <Spinner color="default" />
+            <Spinner color="primary" size="sm" />
           )
         }
-        className="w-full md:w-3/4"
+        className="w-full"
         onChange={(e) => {
           searchBox.setSearchInputValue(e.target.value);
         }}
-
-        //   onValueChange={searchBox.setSearchInputValue}
       />
 
       {CATALOG_SOURCE === "woo" ? (

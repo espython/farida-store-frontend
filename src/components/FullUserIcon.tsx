@@ -25,6 +25,7 @@ const FullUserIcon = () => {
 
   return (
     <div
+      className="relative"
       onMouseOver={userDrop.displayUserMenu}
       onMouseLeave={userDrop.hideUserMenu}
     >

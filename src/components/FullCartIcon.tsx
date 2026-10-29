@@ -17,7 +17,7 @@ const FullCartIcon = () => {
   const t = useTranslations("header");
 
   return (
-    <div onMouseOver={cart.displayCartMenu} onMouseLeave={cart.hideCartMenu}>
+    <div className="relative" onMouseOver={cart.displayCartMenu} onMouseLeave={cart.hideCartMenu}>
       <Link href={"/cart"} aria-label={t("cart")}>
         <Icon
           icon={<AiOutlineShoppingCart />}

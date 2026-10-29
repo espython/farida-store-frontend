@@ -1,11 +1,12 @@
 "use client";
 import { StoreContext } from "@/contexts/StoreContext";
-import { Button } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useTranslations } from "next-intl";
 
 import { useRouter } from "@/navigation";
 import React, { useContext } from "react";
+import { buttonClass } from "@/shared/ui/Button";
+import { formatAmount } from "@/shared/lib/price";
 
 const CartDropTotalPrice = () => {
   const router = useRouter();
@@ -22,28 +23,19 @@ const CartDropTotalPrice = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl capitalize">{t("total")} :</h1>
-        <h1 className="text-xl font-bold text-emerald-500">
-          {cart.totalPrice.toFixed(2)}
-          <span className="text-sm ml-1">{currency("currency")} </span>
-        </h1>
+      <div className="flex items-baseline justify-between">
+        <p className="text-lg capitalize">{t("total")}</p>
+        <p className="text-xl font-bold">
+          {formatAmount(cart.totalPrice)} <span className="text-sm">{currency("currency")}</span>
+        </p>
       </div>
       <div className="grid grid-cols-2 gap-2">
-        <Button
-          radius="sm"
-          className="bg-mainBlack capitalize text-mainWhite text-lg"
-          onClick={goToCartPage}
-        >
+        <button type="button" className={`${buttonClass({ variant: "outline" })} capitalize px-3`} onClick={goToCartPage}>
           {t("go")}
-        </Button>
-        <Button
-          radius="sm"
-          className="bg-mainPink capitalize text-mainWhite text-lg"
-          onClick={goToShippingSection}
-        >
+        </button>
+        <button type="button" className={`${buttonClass()} capitalize px-3`} onClick={goToShippingSection}>
           {t("complete")}
-        </Button>
+        </button>
       </div>
     </div>
   );

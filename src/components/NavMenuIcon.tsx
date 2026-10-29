@@ -14,7 +14,7 @@ const NavMenuIcon = () => {
       type="button"
       aria-label={t("menu")}
       onClick={sidebar.displayWholeSidebar}
-      className="xl:hidden w-11 h-11 grid place-items-center rounded-full text-garden hover:bg-sand transition-colors shrink-0"
+      className="w-11 h-11 grid place-items-center rounded-full text-garden hover:bg-sand transition-colors shrink-0"
     >
       <IoMenuOutline size="1.5rem" aria-hidden="true" />
     </button>

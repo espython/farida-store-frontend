@@ -12,6 +12,8 @@ import LoadingOverlay from "./LoadingOverlay";
 import { isUserLoggedIn } from "@/functions/credentials";
 import { userCartProductType } from "@/stores/specificTypes/userCartProductType";
 import { useLocale, useTranslations } from "next-intl";
+import QuantityStepper from "@/shared/ui/QuantityStepper";
+import { formatAmount } from "@/shared/lib/price";
 
 interface cartDropProductProps {
   product: userCartProductType;
@@ -22,6 +24,7 @@ const CartDropProduct = ({ product }: cartDropProductProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const locale = useLocale();
   const currency = useTranslations("currency");
+  const t = useTranslations("cartDrop");
 
   const { cart, user } = useContext(StoreContext);
 
@@ -85,62 +88,32 @@ const CartDropProduct = ({ product }: cartDropProductProps) => {
     setCounter(product.quantity);
   }, [product.quantity]);
 
+  const title = locale === "en" ? product.title : product.localizatons.title;
+
   return (
-    <div className="relative ">
+    <div className="relative">
       {isLoading && <LoadingOverlay />}
-      <div className="grid grid-cols-[1fr_2.5fr]  gap-3  px-3">
-        <div className="w-full aspect-square">
-          <img
-            src={product.imgSrc}
-            alt=""
-            className="w-full h-full object-contain"
-          />
+      <div className="grid grid-cols-[4.5rem_1fr] gap-3">
+        <div className="w-[4.5rem] aspect-square rounded-xl overflow-hidden bg-sand">
+          <img src={product.imgSrc} alt="" className="w-full h-full object-cover" />
         </div>
-        <div className="grid grid-rows-2">
-          <div className="grid grid-cols-[auto_auto] gap-1  overflow-hidden">
-            <h1 className="text-lg capitalize  line-clamp-2 ">
-              {locale === "en" ? product.title : product.localizatons.title}
-            </h1>
-            <CgClose
-              className="text-2xl cursor-pointer justify-self-end"
+        <div className="flex flex-col gap-2 min-w-0">
+          <div className="flex items-start gap-2">
+            <p className="flex-1 font-semibold leading-snug line-clamp-2">{title}</p>
+            <button
+              type="button"
               onClick={deleteItem}
-            />
-            {/* <h1 className="text-lg text-mainPink font-bold">
-            {product.price}
-            <span className="text-sm ml-1">EGP</span>
-          </h1> */}
+              aria-label={`${t("remove")} ${title}`}
+              className="-mt-2 -me-2 w-9 h-9 shrink-0 grid place-items-center rounded-full hover:bg-sand"
+            >
+              <CgClose className="text-lg" aria-hidden="true" />
+            </button>
           </div>
-          <div className="grid grid-cols-2 items-end justify-between h-full   ">
-            <div className="flex items-center justify-between">
-              <div key={"counter"} className="flex items-center">
-                <button
-                  className="p-1 text-lg border-mainBlack border-1 border-solid "
-                  onClick={increase}
-                >
-                  +
-                </button>
-                <h1 className="text-lg p-1 px-2 border-y-1 border-mainBlack border-solid">
-                  {counter}
-                </h1>
-                <button
-                  className="p-1 text-lg border-mainBlack border-1 border-solid "
-                  onClick={decrease}
-                >
-                  -
-                </button>
-              </div>
-            </div>
-            {/* <h1 className="text-xl font-bold text-emerald-500">
-            {" "}
-            {(product.price * product.quantity).toFixed(2)}
-            <span className="text-sm ml-1">EGP</span>
-          </h1> */}
-            <h1 className="text-xl font-bold text-emerald-500 justify-self-end">
-              {product.price}
-              <span className="text-sm ltr:ml-1 rtl:mr-1">
-                {currency("currency")}
-              </span>
-            </h1>
+          <div className="flex items-center justify-between gap-2">
+            <QuantityStepper size="sm" value={counter} onIncrement={increase} onDecrement={decrease} />
+            <p className="font-bold">
+              {formatAmount(product.price)} <span className="text-sm">{currency("currency")}</span>
+            </p>
           </div>
         </div>
       </div>

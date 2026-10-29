@@ -1,26 +1,25 @@
 "use client";
-import { Button } from "@nextui-org/react";
 import React, { useContext } from "react";
-import { FaArrowUp } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { IoMdClose } from "react-icons/io";
 import { observer } from "mobx-react-lite";
+import { useTranslations } from "next-intl";
 import { StoreContext } from "@/contexts/StoreContext";
 
+/** Dismiss button at the end of the announcement bar. */
 const ShowHideFastAdsButton = () => {
   const { fastAds } = useContext(StoreContext);
+  const t = useTranslations("announcement");
 
+  if (!fastAds.showTheAds) return null;
   return (
-    <div
-      className="absolute top-full  bg-mainDarkBlue  text-mainWhite z-10 cursor-pointer text-xs md:text-lg p-1 hover:bg-mainDarkBlue/90 rounded-b-full"
+    <button
+      type="button"
       onClick={fastAds.toggleShowingAds}
+      aria-label={t("dismiss")}
+      className="absolute top-0 end-1 z-10 w-9 h-9 grid place-items-center text-cream/80 hover:text-cream"
     >
-      <motion.div
-        initial={{ rotateZ: 0 }}
-        animate={{ rotateZ: fastAds.showTheAds ? 0 : 180 }}
-      >
-        <FaArrowUp />
-      </motion.div>
-    </div>
+      <IoMdClose aria-hidden="true" />
+    </button>
   );
 };
 

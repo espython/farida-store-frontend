@@ -2,6 +2,7 @@
 import { StoreContext } from "@/contexts/StoreContext";
 import React, { useContext, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
+import { buttonClass } from "@/shared/ui/Button";
 import { Button, Chip, Divider, User } from "@nextui-org/react";
 import { IoMdLogOut } from "react-icons/io";
 import { IoBagOutline } from "react-icons/io5";
@@ -42,22 +43,23 @@ const UserLoggedInUi = () => {
   }, []);
 
   return (
-    <div className="m-w-[20rem] w-auto h-auto flex flex-col justify-start items-center py-5 ">
-      <div className="flex flex-col gap-5 w-full h-full ">
-        <Link href={"/user"} className="flex justify-center items-center">
+    <div className="w-full flex flex-col py-3">
+      <div className="flex flex-col w-full">
+        <Link href={"/user"} className="flex items-center px-5 py-3 hover:bg-sand">
           <User
             name={user.strapiUserdata?.username}
             description={user.strapiUserdata?.email}
             // avatarProps={{
             //   src: `${process.env.NEXT_PUBLIC_HOST}${user.strapiUserdata.avatar?.url}`,
             // }}
-            className="px-3 lowercase"
+            className="lowercase justify-start"
+            classNames={{ name: "font-bold text-garden", description: "text-garden-muted" }}
           />
         </Link>
-        <Divider />
+        <Divider className="bg-line my-1" />
         <Link
           href={"/userorders"}
-          className="flex items-center justify-between gap-2 px-3"
+          className="flex items-center justify-between gap-2 px-5 min-h-[48px] hover:bg-sand"
         >
           <div className="flex gap-2 items-center ">
             <IoBagOutline />
@@ -66,31 +68,31 @@ const UserLoggedInUi = () => {
           <div className="flex items-center gap-5">
             <Chip
               classNames={{
-                base: "bg-mainBlack text-mainWhite",
+                base: "bg-saffron text-garden font-bold",
               }}
             >
               {/* {user.strapiUserdata.reviews.length} */}
               {user.strapiUserdata.order_details?.length}
             </Chip>
-            <FaArrowRight className="text-sm" />
+            <FaArrowRight className="text-sm rtl:rotate-180" aria-hidden="true" />
           </div>
         </Link>
         <Link
           href={"/userprofile"}
-          className="flex items-center justify-between gap-2 px-3"
+          className="flex items-center justify-between gap-2 px-5 min-h-[48px] hover:bg-sand"
         >
           <div className="flex gap-2 items-center">
             <RiUserSettingsLine />
             <h1>{t("profile")}</h1>
           </div>
           <div className="flex items-center gap-5">
-            <FaArrowRight className="text-sm" />
+            <FaArrowRight className="text-sm rtl:rotate-180" aria-hidden="true" />
           </div>
         </Link>
 
         <div>
-          <Divider />
-          <div className="flex pt-2 px-5 justify-center items-center text-lg bg-transparent ">
+          <Divider className="bg-line my-1" />
+          <div className="flex pt-2 px-5 justify-center items-center">
             <Button
               //   endContent={
 
@@ -99,7 +101,7 @@ const UserLoggedInUi = () => {
               //     }
               radius="sm"
               isLoading={user.isLoading}
-              className="text-lg bg-red-600 text-mainWhite w-full"
+              className={`${buttonClass({ variant: "outline", full: true })} !border-[#b42318] !text-[#b42318] hover:!bg-[#b42318] hover:!text-white`}
               onClick={logout}
             >
               {t("logout")}
