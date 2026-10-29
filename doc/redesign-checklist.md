@@ -101,7 +101,7 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [~] `ShippingContent`, `ShippingForm`, `CustomizedInput` (form fields), `ShippingOrderAndPrice`, `ShippingRowDetails`, `OrderedItem` — restyled (7/5 grid, labelled fields, summary card), NOT checked in the browser (needs a logged-in Strapi user); line totals were multiplied by quantity twice — fixed; shipping is a flat 100 EGP and the coupon box does nothing (C3)
 
 ### Payment `/cart/payment`
-- [ ] `PaymentSummary`, `PaymentIframe` (frame container)
+- [~] `PaymentSummary`, `PaymentIframe` (frame container) — restyled (radio cards, summary card), 37 inline en/ar strings moved to `paymentFlow`; NOT browser-checked (needs login). Totals disagree between steps: shipping step adds 100 EGP, payment adds 50 EGP + 14% tax (C3, business logic, left as is)
 
 ### Confirmation `/cart/confirmation`
 - [ ] `ConfirmationPageContainer`, `Thanks`, `Orderinfo`, `InfoCard`, `PaymentDetails`, `OrderAddress`, `ItemsContainer`, `CompletedOrderedItem`, `NoOrder`

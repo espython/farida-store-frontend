@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { StoreContext } from "@/contexts/StoreContext";
 import { observer } from "mobx-react-lite";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Button, Card, CardBody, Spinner } from "@nextui-org/react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
@@ -15,6 +15,7 @@ interface PaymentIframeProps {
 const PaymentIframe = ({ iframeUrl, onSuccess, onError }: PaymentIframeProps) => {
   const { payment } = useContext(StoreContext);
   const locale = useLocale();
+  const pf = useTranslations("paymentFlow");
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -111,8 +112,8 @@ const PaymentIframe = ({ iframeUrl, onSuccess, onError }: PaymentIframeProps) =>
 
   return (
     <>
-      <div className={`min-h-screen bg-gray-50 ${locale === "ar" ? "rtl" : "ltr"}`}>
-        <div className="max-w-6xl mx-auto p-4">
+      <div className="pb-8">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8">
         {/* Header */}
         <div className="mb-6">
           <Button
@@ -121,33 +122,29 @@ const PaymentIframe = ({ iframeUrl, onSuccess, onError }: PaymentIframeProps) =>
             startContent={locale === "ar" ? <FaArrowRight /> : <FaArrowLeft />}
             className="mb-4"
           >
-            {locale === "ar" ? "العودة" : "Go Back"}
+            {pf("goBack")}
           </Button>
           
-          <h1 className="text-2xl font-bold text-center">
-            {locale === "ar" ? "إتمام الدفع" : "Complete Payment"}
+          <h1 className="font-display text-3xl md:text-[2.75rem] leading-tight font-medium text-center">
+            {pf("completePayment")}
           </h1>
           
-          <p className="text-center text-gray-600 mt-2">
-            {locale === "ar" 
-              ? "أدخل بيانات بطاقتك لإتمام عملية الدفع بأمان"
-              : "Enter your card details to complete the payment securely"
+          <p className="text-center text-garden-muted mt-2">
+            {pf("enterYourCardDetails")
             }
           </p>
         </div>
 
         {/* Payment Status */}
         {payment.isProcessingPayment && (
-          <Card className="mb-6">
+          <Card className="mb-6 rounded-3xl shadow-none bg-white">
             <CardBody className="text-center py-8">
-              <Spinner size="lg" className="mb-4" />
+              <Spinner size="lg" color="primary" className="mb-4" />
               <p className="text-lg font-semibold">
-                {locale === "ar" ? "جاري معالجة الدفع..." : "Processing payment..."}
+                {pf("processingPayment")}
               </p>
-              <p className="text-gray-600 mt-2">
-                {locale === "ar" 
-                  ? "يرجى عدم إغلاق هذه الصفحة"
-                  : "Please do not close this page"
+              <p className="text-garden-muted mt-2">
+                {pf("pleaseDoNotClose")
                 }
               </p>
             </CardBody>
@@ -155,14 +152,14 @@ const PaymentIframe = ({ iframeUrl, onSuccess, onError }: PaymentIframeProps) =>
         )}
 
         {/* Payment Iframe */}
-        <Card className="overflow-hidden">
+        <Card className="overflow-hidden rounded-3xl shadow-none bg-white">
           <CardBody className="p-0">
             {isLoading && (
               <div className="flex items-center justify-center py-20">
                 <div className="text-center">
-                  <Spinner size="lg" className="mb-4" />
+                  <Spinner size="lg" color="primary" className="mb-4" />
                   <p className="text-lg">
-                    {locale === "ar" ? "جاري تحميل نموذج الدفع..." : "Loading payment form..."}
+                    {pf("loadingPaymentForm")}
                   </p>
                 </div>
               </div>
@@ -183,12 +180,10 @@ const PaymentIframe = ({ iframeUrl, onSuccess, onError }: PaymentIframeProps) =>
 
         {/* Security Notice */}
         <div className="mt-6 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-lg">
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-            <span className="text-sm text-green-700">
-              {locale === "ar" 
-                ? "اتصال آمن ومشفر - بيانات بطاقتك محمية"
-                : "Secure encrypted connection - Your card data is protected"
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#dcebe0] rounded-full">
+            <div className="w-3 h-3 bg-garden-600 rounded-full"></div>
+            <span className="text-sm text-garden">
+              {pf("secureEncryptedConnectionYour")
               }
             </span>
           </div>
@@ -196,19 +191,19 @@ const PaymentIframe = ({ iframeUrl, onSuccess, onError }: PaymentIframeProps) =>
 
         {/* Payment Error */}
         {payment.paymentError && (
-          <Card className="mt-6 border-red-200">
-            <CardBody className="bg-red-50">
+          <Card className="mt-6 border-transparent">
+            <CardBody className="bg-[#fde8e6]">
               <div className="text-center">
                 <h3 className="text-lg font-semibold text-red-700 mb-2">
-                  {locale === "ar" ? "حدث خطأ في الدفع" : "Payment Error"}
+                  {pf("paymentError")}
                 </h3>
-                <p className="text-red-600 mb-4">{payment.paymentError}</p>
+                <p className="text-[#b42318] mb-4">{payment.paymentError}</p>
                 <Button
                   color="danger"
                   variant="bordered"
                   onClick={handleGoBack}
                 >
-                  {locale === "ar" ? "المحاولة مرة أخرى" : "Try Again"}
+                  {pf("tryAgain")}
                 </Button>
               </div>
             </CardBody>
@@ -216,11 +211,9 @@ const PaymentIframe = ({ iframeUrl, onSuccess, onError }: PaymentIframeProps) =>
         )}
 
         {/* Help Text */}
-        <div className="mt-8 text-center text-sm text-gray-500">
+        <div className="mt-8 text-center text-sm text-garden-muted">
           <p>
-            {locale === "ar"
-              ? "في حالة مواجهة أي مشاكل، يرجى التواصل مع خدمة العملاء"
-              : "If you encounter any issues, please contact customer support"
+            {pf("ifYouEncounterAny")
             }
           </p>
         </div>

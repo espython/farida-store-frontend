@@ -4,7 +4,9 @@ import { StoreContext } from "@/contexts/StoreContext";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "@/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Button, Card, CardBody, CardHeader, Spinner } from "@nextui-org/react";
+import PageContainer from "@/shared/ui/PageContainer";
+import { buttonClass } from "@/shared/ui/Button";
+import { Button, Spinner } from "@nextui-org/react";
 import { FaCreditCard, FaMoneyBillWave } from "react-icons/fa";
 import { MdPayment } from "react-icons/md";
 import { toast } from "react-toastify";
@@ -21,6 +23,7 @@ const PaymentPage = () => {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("paymentPage");
+  const pf = useTranslations("paymentFlow");
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
     "card" | "cod"
@@ -63,7 +66,7 @@ const PaymentPage = () => {
   const processCardPayment = async () => {
     if (!user.strapiUserdata.id) {
       toast.error(
-        locale === "ar" ? "يجب تسجيل الدخول أولاً" : "Please login first"
+        pf("pleaseLoginFirst")
       );
       return;
     }
@@ -71,9 +74,7 @@ const PaymentPage = () => {
     const shippingData = await getShippingAddress();
     if (!shippingData) {
       toast.error(
-        locale === "ar"
-          ? "أدخل بيانات الشحن أولاً"
-          : "Please complete shipping data first"
+        pf("pleaseCompleteShippingData")
       );
       return;
     }
@@ -112,7 +113,7 @@ const PaymentPage = () => {
     } catch (error) {
       console.error("Payment error:", error);
       toast.error(
-        locale === "ar" ? "حدث خطأ في الدفع" : "Payment error occurred"
+        pf("paymentErrorOccurred")
       );
     } finally {
       setIsProcessingOrder(false);
@@ -123,7 +124,7 @@ const PaymentPage = () => {
   const processCODPayment = async () => {
     if (!user.strapiUserdata.id) {
       toast.error(
-        locale === "ar" ? "يجب تسجيل الدخول أولاً" : "Please login first"
+        pf("pleaseLoginFirst")
       );
       return;
     }
@@ -131,9 +132,7 @@ const PaymentPage = () => {
     const shippingData = await getShippingAddress();
     if (!shippingData) {
       toast.error(
-        locale === "ar"
-          ? "أدخل بيانات الشحن أولاً"
-          : "Please complete shipping data first"
+        pf("pleaseCompleteShippingData")
       );
       return;
     }
@@ -175,9 +174,7 @@ const PaymentPage = () => {
         localStorage.removeItem("shippingAddressId");
 
         toast.success(
-          locale === "ar"
-            ? "تم إنشاء الطلب بنجاح"
-            : "Order created successfully"
+          pf("orderCreatedSuccessfully")
         );
         router.push(
           `/cart/confirmation?order_number=${orderData?.data?.id}`
@@ -188,7 +185,7 @@ const PaymentPage = () => {
     } catch (error) {
       console.error("COD order error:", error);
       toast.error(
-        locale === "ar" ? "حدث خطأ في إنشاء الطلب" : "Order creation failed"
+        pf("orderCreationFailed")
       );
     } finally {
       setIsProcessingOrder(false);
@@ -216,7 +213,7 @@ const PaymentPage = () => {
       localStorage.removeItem("shippingAddressId");
 
       toast.success(
-        locale === "ar" ? "تم الدفع بنجاح" : "Payment successful"
+        pf("paymentSuccessful")
       );
       router.push(
         `/cart/confirmation?order_number=${orderId}`
@@ -224,7 +221,7 @@ const PaymentPage = () => {
     } catch (error) {
       console.error("Order creation after payment error:", error);
       toast.error(
-        locale === "ar" ? "حدث خطأ بعد الدفع" : "Error after payment"
+        pf("errorAfterPayment")
       );
     }
   };
@@ -242,117 +239,70 @@ const PaymentPage = () => {
     );
   }
 
+  const methods = [
+    { id: "card" as const, icon: <FaCreditCard aria-hidden="true" />, title: pf("creditdebitCard"), text: pf("paySecurelyWithYour") },
+    { id: "cod" as const, icon: <FaMoneyBillWave aria-hidden="true" />, title: pf("cashOnDelivery"), text: pf("payCashWhenYou") },
+  ];
+  const busy = isProcessingOrder || payment.isInitiatingPayment;
+
   return (
-    <div
-      className={`min-h-screen bg-gray-50 py-8 px-4 ${
-        locale === "ar" ? "rtl" : "ltr"
-      }`}
-    >
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl md:text-3xl font-bold text-center mb-8">
-          {t("title")}
-        </h1>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Payment Methods */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <h2 className="text-xl font-semibold flex items-center gap-2">
-                  <MdPayment />
-                  {locale === "ar" ? "طرق الدفع" : "Payment Methods"}
-                </h2>
-              </CardHeader>
-              <CardBody className="space-y-4">
-                {/* Credit Card Payment */}
-                <div
-                  className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                    selectedPaymentMethod === "card"
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-200 hover:border-gray-300"
+    <PageContainer className="pb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+        <div className="lg:col-span-7 flex flex-col gap-5">
+          <fieldset className="bg-white rounded-3xl p-5 md:p-8 flex flex-col gap-4">
+            <legend className="sr-only">{pf("paymentMethods")}</legend>
+            <h2 aria-hidden="true" className="font-display text-2xl md:text-[2rem] font-medium flex items-center gap-3">
+              <MdPayment aria-hidden="true" />
+              {pf("paymentMethods")}
+            </h2>
+            {methods.map((m) => {
+              const on = selectedPaymentMethod === m.id;
+              return (
+                <label
+                  key={m.id}
+                  className={`flex items-center gap-4 p-4 rounded-2xl border-2 cursor-pointer transition-colors ${
+                    on ? "border-garden bg-cream" : "border-line hover:border-garden-muted"
                   }`}
-                  onClick={() => handlePaymentMethodChange("card")}
                 >
-                  <div className="flex items-center gap-3">
-                    <FaCreditCard className="text-2xl text-blue-600" />
-                    <div>
-                      <h3 className="font-semibold">
-                        {locale === "ar"
-                          ? "بطاقة ائتمان/خصم"
-                          : "Credit/Debit Card"}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {locale === "ar"
-                          ? "ادفع بأمان باستخدام بطاقتك"
-                          : "Pay securely with your card"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                  <input
+                    type="radio"
+                    name="payment-method"
+                    value={m.id}
+                    checked={on}
+                    onChange={() => handlePaymentMethodChange(m.id)}
+                    className="w-5 h-5 accent-[#1e3a2b]"
+                  />
+                  <span className="w-11 h-11 grid place-items-center rounded-full bg-sand text-xl">{m.icon}</span>
+                  <span className="flex flex-col">
+                    <span className="font-bold">{m.title}</span>
+                    <span className="text-sm text-garden-muted">{m.text}</span>
+                  </span>
+                </label>
+              );
+            })}
+          </fieldset>
 
-                {/* Cash on Delivery */}
-                <div
-                  className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                    selectedPaymentMethod === "cod"
-                      ? "border-green-500 bg-green-50"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                  onClick={() => handlePaymentMethodChange("cod")}
-                >
-                  <div className="flex items-center gap-3">
-                    <FaMoneyBillWave className="text-2xl text-green-600" />
-                    <div>
-                      <h3 className="font-semibold">
-                        {locale === "ar"
-                          ? "الدفع عند الاستلام"
-                          : "Cash on Delivery"}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {locale === "ar"
-                          ? "ادفع نقداً عند استلام طلبك"
-                          : "Pay cash when you receive your order"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
+          <Button
+            className={buttonClass({ size: "lg", full: true })}
+            onClick={selectedPaymentMethod === "card" ? processCardPayment : processCODPayment}
+            isLoading={busy}
+            isDisabled={busy}
+          >
+            {busy ? null : selectedPaymentMethod === "card" ? pf("payWithCard") : pf("confirmOrder")}
+          </Button>
 
-            {/* Payment Button */}
-            <Button
-              size="lg"
-              className="w-full bg-blue-600 text-white hover:bg-blue-700"
-              onClick={
-                selectedPaymentMethod === "card"
-                  ? processCardPayment
-                  : processCODPayment
-              }
-              isLoading={isProcessingOrder || payment.isInitiatingPayment}
-              isDisabled={isProcessingOrder || payment.isInitiatingPayment}
-            >
-              {isProcessingOrder || payment.isInitiatingPayment
-                ? null
-                : selectedPaymentMethod === "card"
-                ? locale === "ar"
-                  ? "ادفع بالبطاقة"
-                  : "Pay with Card"
-                : locale === "ar"
-                ? "تأكيد الطلب"
-                : "Confirm Order"}
-            </Button>
+          {payment.paymentError && (
+            <p role="alert" className="p-4 rounded-2xl bg-[#fde8e6] text-[#b42318] text-sm">
+              {payment.paymentError}
+            </p>
+          )}
+        </div>
 
-            {payment.paymentError && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-600 text-sm">{payment.paymentError}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Order Summary */}
+        <div className="lg:col-span-5 lg:sticky lg:top-24">
           <PaymentSummary />
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 
