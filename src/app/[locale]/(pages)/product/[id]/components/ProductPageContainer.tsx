@@ -4,12 +4,16 @@ import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect } from "react";
 import AddToCartButton from "./AddToCartButton";
 import Breads from "./Breads";
-import InformationSection from "./InformationSection";
+import BestSellerMenu from "./BestSellerMenu";
+import PageSkeleton from "@/components/feedback/PageSkeleton";
+import PageContainer from "@/shared/ui/PageContainer";
+import SectionHeading from "@/shared/ui/SectionHeading";
+import TrustList from "@/shared/ui/TrustList";
 import ImagesSection from "./ImagesSection";
 import DetailsSection from "./DetailsSection";
 import { getTheLengthOfAllowedRatings } from "@/functions/getTheLengthOfAllowedRatings";
 import ReviewsSection from "./ReviewsSection";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { CATALOG_SOURCE } from "@/modules/catalog";
 import type { Product } from "@/modules/catalog";
 import WooProductPage from "./WooProductPage";
@@ -22,6 +26,7 @@ interface ProductPageContainerProps {
 const StrapiProductPageContainer = observer(({ id }: ProductPageContainerProps) => {
   const { products } = useContext(StoreContext);
   const locale = useLocale();
+  const tPage = useTranslations("productPage");
 
   useEffect(() => {
     products.getSingleProduct(id)
@@ -30,59 +35,51 @@ const StrapiProductPageContainer = observer(({ id }: ProductPageContainerProps) 
 
   // Show loading state if product is not loaded yet
   if (!products.targetProduct) {
-    return (
-      <div className="relative" dir={locale === "en" ? "ltr" : "rtl"}>
-        <div className="relative px-5 medmob:px-10 lmob:px-20 sm:px-32 md:px-20 lg:px-10 pb-5 mt-5">
-          <div className="flex justify-center items-center h-64">
-            <div className="text-lg">Loading product...</div>
-          </div>
-        </div>
-      </div>
-    );
+    return <PageSkeleton variant="detail" />;
   }
 
-  return (
-    <div className="relative" dir={locale === "en" ? "ltr" : "rtl"}>
-      <AddToCartButton product={products.targetProduct} />
+  const title =
+    locale === "en"
+      ? products.targetProduct?.attributes?.title
+      : products.targetProduct?.attributes?.localizations?.data?.[0]?.attributes?.title;
 
-      <div className="relative px-5  medmob:px-10 lmob:px-20 sm:px-32 md:px-20 lg:px-10 pb-5 mt-5">
-        <Breads
-          title={
-            locale === "en"
-              ? (products.targetProduct?.attributes?.title?.slice(0, 40) || "Product") + "..."
-              : (products.targetProduct?.attributes?.localizations?.data?.[0]?.attributes?.title?.slice(
-                  0,
-                  40
-                ) || "Product") + "..."
-          }
-        />
-        <div className="grid grid-cols-1 grid-rows-[auto_auto_auto] md:grid-cols-[3fr_6fr] lg:grid-cols-[2fr_6fr] xl:grid-cols-[1.5fr_6fr] md:grid-rows-1 pt-10 gap-10">
-          <InformationSection />
-          <div className="flex flex-col gap-20">
-            <div className="grid grid-cols-1 grid-rows-[auto_auto] lg:grid-cols-2 lg:grid-rows-1 gap-10">
-              <ImagesSection
-                allImages={products.targetProduct?.attributes?.images}
-              />
+  return (
+    <div dir={locale === "en" ? "ltr" : "rtl"}>
+      <AddToCartButton product={products.targetProduct} placement="bar" />
+
+      <PageContainer className="pt-4 md:pt-6 flex flex-col gap-12 md:gap-16">
+        <div className="flex flex-col gap-5">
+          <Breads title={title && title.length > 40 ? `${title.slice(0, 40)}…` : title || "Product"} />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            <div className="lg:col-span-7">
+              <ImagesSection allImages={products.targetProduct?.attributes?.images} />
+            </div>
+            <div className="lg:col-span-5 lg:sticky lg:top-24 flex flex-col gap-5">
               <DetailsSection
                 product={products.targetProduct}
-                averageRating={products.getAverageRatings(
-                  products.targetProductReviews
-                )}
+                averageRating={products.getAverageRatings(products.targetProductReviews)}
                 priceAfterDiscount={products.getPriceAfterDiscount(
                   products.targetProduct?.attributes?.discount?.data,
                   products.targetProduct?.attributes?.price
                 )}
-                ratingsLength={getTheLengthOfAllowedRatings(
-                  products.targetProductReviews
-                )}
+                ratingsLength={getTheLengthOfAllowedRatings(products.targetProductReviews)}
                 arabicData={products.targetProductArabicData}
               />
+              <AddToCartButton product={products.targetProduct} placement="inline" />
+              <TrustList />
             </div>
-
-            <ReviewsSection product={products.targetProduct} />
           </div>
         </div>
-      </div>
+
+        <ReviewsSection product={products.targetProduct} />
+
+        <section className="flex flex-col gap-4 md:gap-6">
+          <SectionHeading>
+            <span className="capitalize">{tPage("bestSeller")}</span>
+          </SectionHeading>
+          <BestSellerMenu />
+        </section>
+      </PageContainer>
     </div>
   );
 });

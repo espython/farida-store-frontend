@@ -10,5 +10,6 @@ describe("formatAmount", () => {
   });
   it("passes through what it cannot parse", () => {
     expect(formatAmount("n/a")).toBe("n/a");
+    expect(formatAmount(undefined)).toBe("");
   });
 });

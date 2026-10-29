@@ -1,7 +1,6 @@
 "use client";
 import React, { useContext, useEffect } from "react";
 import BestProduct from "./BestProduct";
-import { Divider } from "@nextui-org/react";
 import { StoreContext } from "@/contexts/StoreContext";
 import { observer } from "mobx-react-lite";
 import { useLocale } from "next-intl";
@@ -19,9 +18,9 @@ const BestSellerMenu = () => {
   }, []);
 
   return (
-    <div className="w-full h-auto border-2 border-mainGray border-solid">
-      {products.bestSellerProducts.map((p) => (
-        <div key={p.id}>
+    <ul className="grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-4 md:gap-6">
+      {products.bestSellerProducts.slice(0, 4).map((p) => (
+        <li key={p.id}>
           <BestProduct
             id={`${p.id}`}
             imageUrl={`${process.env.NEXT_PUBLIC_HOST}${p.attributes?.thumbnail?.data.attributes.url}`}
@@ -38,10 +37,9 @@ const BestSellerMenu = () => {
               ) ?? 0
             }
           />
-          <Divider />
-        </div>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 };
 

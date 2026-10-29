@@ -18,6 +18,7 @@ const CatalogListing = ({ view, onFiltersChange }: Props) => {
   const locale = useLocale() as Locale;
   const t = useTranslations("errorPage");
   const loading = useTranslations("loading");
+  const listing = useTranslations("listing");
   const { isDesktop, isMobile } = useScreenSize({});
   const { filtersKey, page, setPage, data, isLoading, isFetching, isError, refetch } =
     useCatalogListing(locale);
@@ -57,6 +58,11 @@ const CatalogListing = ({ view, onFiltersChange }: Props) => {
 
   return (
     <div dir={locale === "en" ? "ltr" : "rtl"} className="flex flex-col gap-5">
+      {data.items.length > 0 && (
+        <p className="text-sm text-garden-muted" aria-live="polite">
+          {listing("count", { count: data.total })}
+        </p>
+      )}
       {data.items.length === 0 ? (
         <EmptyProducts />
       ) : (

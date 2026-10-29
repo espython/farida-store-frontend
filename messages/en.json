@@ -1,4 +1,7 @@
 {
+  "listing": {
+    "count": "{count, plural, one {# product} other {# products}}"
+  },
   "goTop": {
     "top": "Back to top"
   },

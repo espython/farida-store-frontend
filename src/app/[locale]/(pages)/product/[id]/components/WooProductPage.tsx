@@ -12,7 +12,12 @@ import {
 import type { Product } from "@/modules/catalog";
 import type { Locale } from "@/shared/kernel/Locale";
 import Breads from "./Breads";
-import InformationSection from "./InformationSection";
+import PageContainer from "@/shared/ui/PageContainer";
+import EmptyState from "@/shared/ui/EmptyState";
+import SectionHeading from "@/shared/ui/SectionHeading";
+import TrustList from "@/shared/ui/TrustList";
+import { buttonClass } from "@/shared/ui/Button";
+import { htmlToText } from "@/shared/lib/htmlText";
 
 const BREAD_TITLE_MAX = 40;
 
@@ -29,6 +34,7 @@ interface Props {
 const WooProductPage = ({ slug, initialProduct }: Props) => {
   const locale = useLocale() as Locale;
   const t = useTranslations("errorPage");
+  const details = useTranslations("productPage");
   const { data, isLoading, isError, error, refetch } = useGetProductQuery({ locale, slug });
   // Server data until the client query answers; a failed refresh keeps showing it.
   const product = data ?? initialProduct;
@@ -37,12 +43,17 @@ const WooProductPage = ({ slug, initialProduct }: Props) => {
   if (isError && "status" in error && error.status === 404) notFound();
   if (!product) {
     return (
-      <div className="w-full min-h-[50vh] flex flex-col items-center justify-center gap-4" role="alert">
-        <h1 className="text-lg md:text-2xl text-mainBlack/70">{t("title")}</h1>
-        <Button className="bg-mainPink text-mainWhite" onClick={() => refetch()}>
-          {t("retry")}
-        </Button>
-      </div>
+      <PageContainer className="py-16">
+        <EmptyState
+          role="alert"
+          title={t("title")}
+          action={
+            <Button className={buttonClass()} onClick={() => refetch()}>
+              {t("retry")}
+            </Button>
+          }
+        />
+      </PageContainer>
     );
   }
 
@@ -50,19 +61,39 @@ const WooProductPage = ({ slug, initialProduct }: Props) => {
     product.title.length > BREAD_TITLE_MAX
       ? `${product.title.slice(0, BREAD_TITLE_MAX)}…`
       : product.title;
+  const description = htmlToText(product.description);
 
   return (
-    <div className="relative" dir={locale === "en" ? "ltr" : "rtl"}>
-      <div className="relative px-5 medmob:px-10 lmob:px-20 sm:px-32 md:px-20 lg:px-10 pb-5 mt-5">
-        <Breads title={breadTitle} />
-        <div className="grid grid-cols-1 grid-rows-[auto_auto_auto] md:grid-cols-[3fr_6fr] lg:grid-cols-[2fr_6fr] xl:grid-cols-[1.5fr_6fr] md:grid-rows-1 pt-10 gap-10">
-          <InformationSection bestSellers={<BestSellers excludeId={product.id} />} />
-          <div className="grid grid-cols-1 grid-rows-[auto_auto] lg:grid-cols-2 lg:grid-rows-1 gap-10 content-start">
-            <ProductGallery images={product.images} title={product.title} />
-            <ProductDetails product={product} />
+    <div dir={locale === "en" ? "ltr" : "rtl"}>
+      <PageContainer className="pt-4 md:pt-6 flex flex-col gap-12 md:gap-16">
+        <div className="flex flex-col gap-5">
+          <Breads title={breadTitle} />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            <div className="lg:col-span-7">
+              <ProductGallery images={product.images} title={product.title} />
+            </div>
+            <div className="lg:col-span-5 lg:sticky lg:top-24">
+              <ProductDetails product={product} showDescription={false} footer={<TrustList />} />
+            </div>
           </div>
         </div>
-      </div>
+
+        {description && (
+          <section className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12">
+            <h2 className="lg:col-span-4 font-display text-2xl md:text-[2rem] font-medium capitalize">
+              {details("details.description")}
+            </h2>
+            <p className="lg:col-span-8 whitespace-pre-line leading-relaxed">{description}</p>
+          </section>
+        )}
+
+        <section className="flex flex-col gap-4 md:gap-6">
+          <SectionHeading>
+            <span className="capitalize">{details("bestSeller")}</span>
+          </SectionHeading>
+          <BestSellers excludeId={product.id} />
+        </section>
+      </PageContainer>
     </div>
   );
 };

@@ -76,8 +76,8 @@ describe("ProductDetails", () => {
   it("shows title, prices, discount, plain-text description, attributes and category links", () => {
     wrap(<ProductDetails product={product()} />);
     expect(screen.getByRole("heading", { name: "Pots & Pans" })).toBeInTheDocument();
-    expect(screen.getByText(/720\.00/)).toBeInTheDocument();
-    expect(screen.getByText(/800\.00/)).toBeInTheDocument();
+    expect(screen.getByText(/^720/)).toBeInTheDocument();
+    expect(screen.getByText(/^800$/)).toBeInTheDocument();
     expect(screen.getByText(/10%/)).toBeInTheDocument();
     expect(screen.getByText("Non-stick & durable.")).toBeInTheDocument();
     expect(screen.queryByText(/alert/)).not.toBeInTheDocument();

@@ -2,7 +2,7 @@
 
 Style B ("Kitchen Garden") from the design canvas, applied page by page. Layout rules: the spec sheet on the canvas (1280 px column, 16/32 px gutters, 4/3/2 product columns, 1:1 product images, 44 px targets, 56/72 px header).
 
-Tick an item only when it meets **all** of the definition of done. `[~]` = colours follow the palette (token remap) but layout and components are still the old ones.
+Tick an item only when it meets **all** of the definition of done. `[~]` = colours follow the palette (token remap) but layout and components are still the old ones, or restyled in code but not yet checked in the browser (noted on the item).
 
 ## Definition of done (every item)
 
@@ -70,26 +70,26 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 ### Home `/`
 - [x] Woo: hero, "Browse the kitchen", all products
 - [~] Strapi: `MiniProducts`, `AdsSlider`, `ProductsSlider`, `SliderProduct` (palette only)
-- [ ] Decide: keep or drop the banner slider once B5 brings ads from Woo
+- [ ] Decide (owner): keep or drop the banner slider once B5 brings ads from Woo
 
 ### Category `/categories/[name]`
 - [x] Container, title, filter bar, grid
-- [ ] `MiniAdsSection`, `MiniAdCard` (mini ad band)
-- [ ] `loading.tsx`
+- [x] `MiniAdsSection`, `MiniAdCard` (mini ad band)
+- [x] `loading.tsx` (PageSkeleton)
 
 ### Search `/search`
 - [x] Container, heading, filter bar, grid
-- [ ] Results heading design ("Results for “kettle”" + count), no-results state
-- [ ] `loading.tsx`
+- [x] Results heading design ("Results for “kettle”" + count), no-results state
+- [x] `loading.tsx`
 
 ### Product `/product/[id]`
-- [ ] Layout: gallery 7 cols / buy box 5 cols, sticky buy box on desktop; phone sticky add-to-cart bar (64 px)
-- [ ] Woo: `WooProductPage`, `catalog/ui/ProductGallery`, `ProductDetails`, `BestSellers`
-- [ ] Strapi: `ProductPageContainer`, `ImagesSection`, `ZoomedImage`, `DetailsSection`, `InformationSection`, `AddToCartButton`, `Breads`, `BestSellerMenu`, `BestProduct`
-- [ ] Price ("15,900 EGP", old price, saffron discount badge), stock line, colour options
-- [ ] Reviews: `ReviewsSection`, `UserReview`, `AddYourReviewSection`, `ReviewLoginCondition`, `ReviewSendedSuccesfuly`
-- [ ] Trust bullets (shipping, returns, payments) as in `PerksStrip`
-- [ ] `loading.tsx`, unknown product state
+- [x] Layout: gallery 7 cols / buy box 5 cols, sticky buy box on desktop; phone sticky add-to-cart bar (64 px) — phone sticky bar on the Strapi page; Woo gets it with the cart (C1–C3)
+- [x] Woo: `WooProductPage`, `catalog/ui/ProductGallery`, `ProductDetails`, `BestSellers`
+- [~] Strapi: `ProductPageContainer`, `ImagesSection`, `ZoomedImage`, `DetailsSection`, `InformationSection`, `AddToCartButton`, `Breads`, `BestSellerMenu`, `BestProduct` — class-level restyle, NOT checked visually (mock Strapi has no products); `InformationSection` removed; best sellers showed the discounted price struck through — fixed
+- [x] Price ("15,900 EGP", old price, saffron discount badge), stock line, colour options
+- [x] Reviews: `ReviewsSection`, `UserReview`, `AddYourReviewSection`, `ReviewLoginCondition`, `ReviewSendedSuccesfuly` — Description tab printed "slkdslk" when empty — fixed
+- [x] Trust bullets (shipping, returns, payments) as in `PerksStrip`
+- [x] `loading.tsx`, unknown product state
 
 ### Cart `/cart`
 - [ ] `CartPageContainer`, `CartLayoutContainer`, `LayoutTabs`, `CartTab` (checkout steps)

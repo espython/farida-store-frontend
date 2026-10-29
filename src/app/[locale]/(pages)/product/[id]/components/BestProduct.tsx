@@ -4,6 +4,7 @@ import { Image, Skeleton } from "@nextui-org/react";
 import { Link } from "@/navigation";
 import React from "react";
 import { useTranslations } from "next-intl";
+import { formatAmount } from "@/shared/lib/price";
 
 interface bestProductProps {
   id: string;
@@ -21,56 +22,31 @@ const BestProduct = ({
   prePrice = 0,
 }: bestProductProps) => {
   const currency = useTranslations("currency");
+  // `prePrice` is the price after discount (0 when there is none): it is the price paid now.
+  const onSale = prePrice > 0 && prePrice < price;
   return (
-    <div className="flex flex-col p-3 ">
-      <Skeleton isLoaded={imageUrl.length > 0}>
-        <Link
-          href={`/product/${id}`}
-          className="w-full h-auto flex items-center justify-center aspect-square"
-        >
-          <Image
-            src={imageUrl}
-            alt=""
-            className="w-full h-full"
-            classNames={{
-              img: "w-full  object-contain",
-            }}
-          />
+    <article className="flex flex-col gap-3">
+      <Skeleton isLoaded={imageUrl.length > 0} className="rounded-[20px]">
+        <Link href={`/product/${id}`} className="block aspect-square rounded-[20px] overflow-hidden bg-sand" tabIndex={-1} aria-hidden="true">
+          <Image src={imageUrl} alt="" radius="none" removeWrapper className="w-full h-full object-cover" />
         </Link>
       </Skeleton>
-
-      <div className="flex flex-col gap-2 pt-2">
-        <Skeleton isLoaded={title.length > 0}>
-          <Link href={`/product/${id}`}>
-            <h1 className="text-lg md:text-xl transition-all hover:text-mainPink line-clamp-2">
-              {title}
-            </h1>
+      <Skeleton isLoaded={title.length > 0} className="rounded-lg">
+        <h3 className="font-semibold leading-snug line-clamp-2 min-h-[2.75em]">
+          <Link href={`/product/${id}`} className="hover:text-saffron-ink">
+            {title}
           </Link>
-        </Skeleton>
-        <div className="flex flex-wrap items-center gap-5">
-          {prePrice > 0 && (
-            <div className="relative ">
-              <div className="absolute top-1/2 -translate-y-1/2 w-full h-[2px] bg-black/50 -rotate-3" />
-              <h2 className="text-xl md:text-2xl text-mainBlack/30 font-bold  text-center">
-                {prePrice}{" "}
-                <span className="text-sm ltr:ml-1 rtl:mr-1">
-                  {currency("currency")}
-                </span>
-              </h2>
-            </div>
-          )}
-
-          <Skeleton isLoaded={price > 0}>
-            <h2 className="text-xl md:text-2xl text-mainBlack/70 font-bold">
-              {price}{" "}
-              <span className="text-sm ltr:ml-1 rtl:mr-1">
-                {currency("currency")}
-              </span>
-            </h2>
-          </Skeleton>
-        </div>
-      </div>
-    </div>
+        </h3>
+      </Skeleton>
+      <Skeleton isLoaded={price > 0} className="rounded-lg">
+        <p className="flex flex-wrap items-baseline gap-x-2">
+          <span className="text-lg font-bold">
+            {formatAmount(onSale ? prePrice : price)} <span className="text-sm font-semibold">{currency("currency")}</span>
+          </span>
+          {onSale && <span className="text-sm text-garden-muted line-through">{formatAmount(price)}</span>}
+        </p>
+      </Skeleton>
+    </article>
   );
 };
 
