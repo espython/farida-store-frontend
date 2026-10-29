@@ -38,7 +38,9 @@ const SORT: Record<ProductSort, { orderby: string; order: "asc" | "desc" }> = {
   title: { orderby: "title", order: "asc" },
 };
 
-const CATALOG_CACHE = { revalidate: 60, tags: ["catalog"] };
+/** Fetch-cache tag on every Woo catalog read; `/api/revalidate` clears it on product webhooks. */
+export const CATALOG_CACHE_TAG = "catalog";
+const CATALOG_CACHE = { revalidate: 60, tags: [CATALOG_CACHE_TAG] };
 
 // Woo stores Arabic slugs percent-encoded; compare them decoded.
 const safeDecode = (slug: string) => {

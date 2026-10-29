@@ -31,6 +31,18 @@ if ( isset( $_SERVER['REQUEST_URI'] ) && false !== strpos( $_SERVER['REQUEST_URI
 }
 PHP
 
+# Local only: WordPress refuses to send webhooks to private hosts and non-standard ports.
+# Let Woo deliver to the Next dev server on the Docker host (create-webhooks.sh).
+cat > wp-content/mu-plugins/local-webhooks.php <<'PHP'
+<?php
+add_filter( 'http_request_host_is_external', function ( $external, $host ) {
+	return $external || 'host.docker.internal' === $host;
+}, 10, 2 );
+add_filter( 'http_allowed_safe_ports', function ( $ports ) {
+	return array_merge( $ports, array( 3000, 3111 ) );
+} );
+PHP
+
 # Hardening that must also ship to production: hide the user list from anonymous visitors.
 cat > wp-content/mu-plugins/farida-hardening.php <<'PHP'
 <?php
