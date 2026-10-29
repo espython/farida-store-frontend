@@ -49,6 +49,7 @@ services:
       - wp:/var/www/html
       - ./setup.sh:/setup.sh:ro
       - ./create-keys.php:/create-keys.php:ro
+      - ./create-webhooks.sh:/create-webhooks.sh:ro
 
 volumes:
   db:
