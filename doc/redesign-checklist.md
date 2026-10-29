@@ -26,10 +26,10 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [x] `<html dir>` per locale, body cream background, subtle scrollbar
 - [x] `PageContainer` (`shared/ui`)
 - [x] `Money.toDisplay` ("3,490") for shop prices
-- [ ] Shared UI primitives in `shared/ui`: `Button` (primary / outline / ghost, 44 px), `Badge`, `Chip`, `SectionHeading`, `EmptyState`, `TextField` (label + error), so pages stop styling NextUI one by one
-- [ ] NextUI theme overrides (radius, primary colour) so Select, Checkbox, Modal, Pagination, Spinner, Breadcrumbs match without per-use classes
-- [ ] Toast style (`react-toastify`) in the palette, RTL position
-- [ ] Swiper bullets/arrows in the palette (`--swiper-theme-color` done; check sizes)
+- [x] Shared UI primitives in `shared/ui`: `Button` (primary / outline / ghost, 44 px), `Badge`, `Chip`, `SectionHeading`, `EmptyState`, `TextField` (label + error), so pages stop styling NextUI one by one
+- [x] NextUI theme overrides (radius, primary colour) so Select, Checkbox, Modal, Pagination, Spinner, Breadcrumbs match without per-use classes
+- [x] Toast style (`react-toastify`) in the palette, RTL position; one global `shared/ui/Toaster` (payment and payment-callback toasts were never shown before)
+- [x] Swiper bullets/arrows in the palette (`--swiper-theme-color` done; check sizes)
 
 ## 1. Global chrome (every page)
 

@@ -4,9 +4,8 @@ import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useScreenSize } from "react-screen-size-helper";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
-import "react-toastify/dist/ReactToastify.css";
 const ComplaintForm = () => {
   const { currentWidth } = useScreenSize({});
   const { register, handleSubmit, reset } = useForm<{ name: string; email: string; message: string }>();
@@ -105,7 +104,6 @@ const ComplaintForm = () => {
           {t("form.action")}
         </Button>
       </form>
-      <ToastContainer />
     </div>
   );
 };

@@ -5,8 +5,7 @@ import { Button } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import CustomizedInput from "../../cart/shipping/components/CustomizedInput";
 import { useLocale, useTranslations } from "next-intl";
 import { useScreenSize } from "react-screen-size-helper";
@@ -95,7 +94,6 @@ const ModalDataContainer = () => {
           {t("actions.modal")}
         </Button>
       </form>
-      <ToastContainer />
     </>
   );
 };

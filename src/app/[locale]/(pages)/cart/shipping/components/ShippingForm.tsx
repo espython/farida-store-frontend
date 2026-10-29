@@ -12,8 +12,7 @@ import { useRouter } from "@/navigation";
 import React, { useContext, useEffect } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { MdOutlineDiscount } from "react-icons/md";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import AddressSelectionModal from "../../confirmation/components/AddressSelectionModal";
 import CustomizedInput from "../components/CustomizedInput";
 import { useScreenSize } from "react-screen-size-helper";
@@ -255,7 +254,6 @@ const ShippingForm = () => {
           {t("details.form.action.continue")}
         </Button>
       </form>
-      <ToastContainer />
     </div>
   );
 };

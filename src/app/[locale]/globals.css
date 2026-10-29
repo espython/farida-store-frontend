@@ -6,6 +6,23 @@
 :root {
   --swiper-theme-color: #2d5a40 !important;
   --font-display: var(--font-fraunces);
+  /* react-toastify in the Kitchen Garden palette */
+  --toastify-font-family: inherit;
+  --toastify-color-light: #ffffff;
+  --toastify-text-color-light: #1e3a2b;
+  --toastify-color-success: #2d5a40;
+  --toastify-color-info: #1e3a2b;
+  --toastify-color-warning: #8a5a00;
+  --toastify-color-error: #b42318;
+  --toastify-color-progress-light: #e9c46a;
+}
+
+/* Swiper pagination: small cream dots, the active one a saffron pill. */
+.swiper-pagination-bullet {
+  @apply w-2 h-2 bg-line opacity-100 transition-all;
+}
+.swiper-pagination-bullet-active {
+  @apply w-6 rounded-full bg-saffron;
 }
 
 :lang(ar) {

@@ -49,4 +49,23 @@ export const theme = {
 
 export const darkMode = "class";
 
-export const plugins = [nextui()];
+// NextUI components (Select, Checkbox, Modal, Pagination, Spinner...) take the Kitchen Garden palette.
+export const plugins = [
+  nextui({
+    layout: {
+      radius: { small: "8px", medium: "12px", large: "20px" },
+    },
+    themes: {
+      light: {
+        colors: {
+          background: "#f6f5ef",
+          foreground: "#1e3a2b",
+          focus: "#2d5a40",
+          primary: { DEFAULT: "#1e3a2b", foreground: "#f6f5ef" },
+          secondary: { DEFAULT: "#e9c46a", foreground: "#1e3a2b" },
+          success: { DEFAULT: "#2d5a40", foreground: "#f6f5ef" },
+        },
+      },
+    },
+  }),
+];
