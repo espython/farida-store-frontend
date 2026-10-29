@@ -3,7 +3,8 @@
     "currency": "EGP"
   },
   "home": {
-    "title": "products"
+    "title": "products",
+    "metaDescription": "Shop kitchen appliances online at Farida Store: blenders, mixers, kettles and more."
   },
   "navbar": {
     "home": "home",
