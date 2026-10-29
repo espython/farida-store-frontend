@@ -1,5 +1,4 @@
 "use client";
-import { Divider } from "@nextui-org/react";
 import React, { useContext } from "react";
 import ShippingRowDetails from "./ShippingRowDetails";
 import { StoreContext } from "@/contexts/StoreContext";
@@ -13,62 +12,36 @@ const ShippingOrderAndPrice = () => {
   const locale = useLocale();
 
   return (
-    <div className="flex flex-col gap-5">
-      <h1 className="capitalize text-lg md:text-2xl font-bold">
+    <section aria-labelledby="shipping-summary" className="bg-white rounded-3xl p-5 md:p-6 flex flex-col gap-4">
+      <h2 id="shipping-summary" className="font-display text-xl md:text-2xl capitalize">
         {t("order.title")}
-      </h1>
-
-      <div className="flex flex-col gap-2">
-        <div className="grid grid-cols-[2fr_.5fr] gap-3 capitalize text-sm md:text-xl text-mainBlack/50 ">
-          <h1> {t("order.table.product")}</h1>
-          <h1 className="hidden lmob:block">{t("order.table.total")}</h1>
-        </div>
-        <Divider />
-
+      </h2>
+      <ul className="divide-y divide-line">
         {cart.userCartItems.map((product) => (
-          <div key={product.id} className="">
-            {/* <ShippingRowDetails title={product.title} price={product.price} /> */}
-
+          <li key={product.id} className="py-3">
+            {/* Unit price: OrderedItem multiplies by the quantity itself. */}
             <OrderedItem
-              title={
-                locale === "en" ? product.title : product.localizatons.title
-              }
-              price={product.price * product.quantity}
+              title={locale === "en" ? product.title : product.localizatons.title}
+              price={product.price}
               imgSrc={product.imgSrc}
               quantity={product.quantity}
             />
-            <Divider />
-          </div>
+          </li>
         ))}
-
-        <br />
-
-        <ShippingRowDetails
-          title={t("order.footer.totalPrices")}
-          price={cart.totalPrice}
-          titleStyle="font-bold capitalize "
-          priceStyle="text-red-500"
-        />
-        <Divider />
-        <ShippingRowDetails
-          title={t("order.footer.shipping")}
-          price={100}
-          titleStyle="font-bold capitalize "
-          priceStyle="text-emerald-500"
-        />
-        <Divider />
+      </ul>
+      <div className="flex flex-col gap-2 pt-4 border-t border-line">
+        <ShippingRowDetails title={t("order.footer.totalPrices")} price={cart.totalPrice} />
+        {/* Flat 100 EGP until shipping zones come from Woo (C3). */}
+        <ShippingRowDetails title={t("order.footer.shipping")} price={100} />
         <ShippingRowDetails
           title={t("order.footer.total")}
           price={cart.totalPrice + 100}
-          titleStyle="font-bold capitalize "
-          priceStyle="text-mainPink"
+          titleStyle="font-bold"
+          priceStyle="text-xl font-bold"
         />
       </div>
-
-      <h1 className="capitalize text-xs md:text-sm mt-10">
-        {t("order.check")}
-      </h1>
-    </div>
+      <p className="text-sm text-garden-muted first-letter:uppercase">{t("order.check")}</p>
+    </section>
   );
 };
 

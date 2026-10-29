@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useId } from "react";
 
 interface formInputProps extends Partial<HTMLInputElement> {
   formHookRegister: any;
@@ -21,29 +21,27 @@ const CustomizedInput = ({
   type,
   inputMode,
 }: formInputProps) => {
+  const id = useId();
   return (
-    <div
-      className={`${labelPlacement === "top" && `grid grid-rows-2`} ${
-        labelPlacement === "left" && `flex gap-2 items-center`
-      }`}
-    >
+    <div className={labelPlacement === "left" ? "flex gap-3 items-center" : "flex flex-col gap-1.5"}>
       {label && (
-        <label
-          className={`text-sm md:text-xl capitalize font-bold ${classNames?.label}`}
-        >
+        <label htmlFor={id} className={`text-sm font-semibold capitalize ${classNames?.label ?? ""}`}>
           {label}
-          {required && <span className="text-red-500 pl-1">*</span>}
+          {required && (
+            <span className="text-[#b42318] ps-1" aria-hidden="true">
+              *
+            </span>
+          )}
         </label>
       )}
       <input
         {...formHookRegister}
-        // type={inputType}
-
+        id={id}
         type={type}
         inputMode={inputMode}
         placeholder={placeholder}
         required={required}
-        className={`h-8 md:h-10 bg-mainGray border-none outline-none hover:bg-mainBlack/10 text-sm md:text-lg py-1 px-2 w-full ${classNames?.inputContainer}`}
+        className={`h-12 w-full rounded-xl bg-white border border-line px-4 text-base text-garden placeholder:text-garden-muted outline-none transition-colors focus:border-garden focus:ring-2 focus:ring-garden/20 ${classNames?.inputContainer ?? ""}`}
       />
     </div>
   );

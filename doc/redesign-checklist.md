@@ -98,7 +98,7 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [x] `EmptyCart`, `loading.tsx`
 
 ### Shipping `/cart/shipping`
-- [ ] `ShippingContent`, `ShippingForm`, `CustomizedInput` (form fields), `ShippingOrderAndPrice`, `ShippingRowDetails`, `OrderedItem`
+- [~] `ShippingContent`, `ShippingForm`, `CustomizedInput` (form fields), `ShippingOrderAndPrice`, `ShippingRowDetails`, `OrderedItem` — restyled (7/5 grid, labelled fields, summary card), NOT checked in the browser (needs a logged-in Strapi user); line totals were multiplied by quantity twice — fixed; shipping is a flat 100 EGP and the coupon box does nothing (C3)
 
 ### Payment `/cart/payment`
 - [ ] `PaymentSummary`, `PaymentIframe` (frame container)
