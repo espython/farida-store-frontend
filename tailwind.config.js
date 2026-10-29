@@ -17,16 +17,23 @@ export const theme = {
     colors: {
       accent: "#ff8f9c",
       blackish: "#1b1b1b",
+      // Legacy names, remapped to the Kitchen Garden palette so untouched pages match.
       mainWhite: "#ffffff",
-      mainBlack: "#161616",
-      mainPink: "#e5087e",
-      // mainPink: "#007F73",
-      mainDarkBlue: "#171d2f",
-      mainGray: "#f6f5f6",
+      mainBlack: "#1c2b22",
+      mainPink: "#2d5a40",
+      mainDarkBlue: "#1e3a2b",
+      mainGray: "#f6f5ef",
+      // Kitchen Garden palette (style B).
+      garden: { DEFAULT: "#1e3a2b", 600: "#2d5a40", muted: "#55685c" },
+      cream: "#f6f5ef",
+      sand: "#ebe8da",
+      line: "#dcdacb",
+      saffron: { DEFAULT: "#e9c46a", ink: "#8a5a00" },
     },
 
     fontFamily: {
       cairo: ["cairo", "sans-serif"],
+      display: ["var(--font-display)", "Georgia", "serif"],
       rubik: ["rubik", "sans-serif"],
     },
     // fontSize: {

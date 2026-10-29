@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import { Image } from "@nextui-org/react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/navigation";
-import Rating from "@/components/Rating";
 import { Money } from "@/shared/kernel/Money";
 import type { Product } from "../domain/Product";
 import { discountPercent } from "../domain/pricing";
@@ -16,8 +15,7 @@ interface Props {
   actions?: ReactNode;
 }
 
-const money = (m: Money) => Money.toDecimal(m);
-
+/** Kitchen Garden product card: 1:1 image, 2-line title, price first, rating beside it. */
 const CatalogProductCard = ({ product, row = false, actions }: Props) => {
   const locale = useLocale();
   const t = useTranslations("product");
@@ -25,67 +23,74 @@ const CatalogProductCard = ({ product, row = false, actions }: Props) => {
   const pct = discountPercent(product);
   const image = product.images[0];
   const left = product.stock.status === "low" ? product.stock.quantity : null;
+  const href = `/product/${product.slug}`;
 
   return (
-    <div
-      className="flex p-3 lmob:px-2 md:px-10 lg:p-0 w-full shadow-sm"
+    <article
       dir={locale === "en" ? "ltr" : "rtl"}
       data-testid="catalog-product-card"
+      className={`flex w-full ${row ? "flex-row gap-4 items-center" : "flex-col gap-3"}`}
     >
-      <div className={`relative flex w-full ${row ? "flex-row gap-4" : "flex-col"}`}>
-        <div
-          className={`flex flex-col gap-1 absolute top-2 z-10 ${
-            locale === "en" ? "left-2" : "right-2"
-          }`}
-        >
+      <div className={`relative shrink-0 aspect-square rounded-[20px] overflow-hidden bg-sand ${row ? "w-1/3" : "w-full"}`}>
+        <Link href={href} className="block w-full h-full" tabIndex={-1} aria-hidden="true">
+          <Image
+            src={image?.src ?? ""}
+            alt=""
+            radius="none"
+            removeWrapper
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.03]"
+          />
+        </Link>
+        <div className="absolute z-20 top-3 start-3 flex flex-col items-start gap-1.5 pointer-events-none">
           {pct > 0 && (
-            <span className="px-3 rounded-md text-white bg-red-700 text-sm">
-              {t("sale")} -{pct}%
+            <span className="px-3 py-0.5 rounded-full bg-saffron text-garden text-[0.8125rem] font-bold">
+              <span className="sr-only">{t("sale")} </span>
+              <span dir="ltr">-{pct}%</span>
             </span>
           )}
           {product.stock.status === "out_of_stock" && (
-            <span className="px-3 rounded-md text-white bg-gray-500 text-sm">
+            <span className="px-3 py-0.5 rounded-full bg-garden text-cream text-[0.8125rem] font-semibold">
               {t("outOfStock")}
             </span>
           )}
         </div>
-        <Link
-          href={`/product/${product.slug}`}
-          className={`grid place-items-center overflow-hidden ${row ? "w-1/3" : "w-full"}`}
-        >
-          <Image
-            src={image?.src ?? ""}
-            radius="sm"
-            alt={image?.alt || product.title}
-            className="w-full aspect-square grid place-items-center overflow-hidden"
-            classNames={{ img: "w-full h-full object-contain justify-self-center" }}
-          />
-        </Link>
-        <div className="p-2 flex flex-col gap-2 flex-1">
-          <h2 className="text-sm md:text-xl line-clamp-1">{product.title}</h2>
-          <div className="flex items-center gap-2">
-            <Rating rating={product.rating.average} size="1rem" />
-            <span className="text-mainBlack/50 text-sm">({product.rating.count})</span>
-          </div>
-          <div className="flex items-center gap-5">
-            {product.regularPrice && (
-              <span className="text-sm md:text-xl text-mainBlack/30 font-bold line-through">
-                {money(product.regularPrice)}
-                <span className="text-sm ltr:ml-1 rtl:mr-1">{currency("currency")}</span>
-              </span>
-            )}
-            <span className="text-sm md:text-xl text-mainBlack/70 font-bold">
-              {money(product.price)}
-              <span className="text-sm ltr:ml-1 rtl:mr-1">{currency("currency")}</span>
+      </div>
+
+      <div className="flex flex-col gap-2 flex-1 min-w-0">
+        <h3 className="text-base md:text-[1.0625rem] font-semibold leading-snug line-clamp-2 min-h-[2.75em]">
+          <Link href={href} className="hover:text-saffron-ink transition-colors">
+            {product.title}
+          </Link>
+        </h3>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col">
+            <span className="text-lg md:text-xl font-bold">
+              {Money.toDisplay(product.price)}{" "}
+              <span className="text-sm font-semibold">{currency("currency")}</span>
+            </span>
+            <span className="text-sm text-garden-muted">
+              {product.regularPrice && (
+                <>
+                  <span className="line-through">{Money.toDisplay(product.regularPrice)}</span>
+                  {product.rating.count > 0 && " · "}
+                </>
+              )}
+              {product.rating.count > 0 && (
+                <span>
+                  <span aria-hidden="true">★</span> {product.rating.average.toFixed(1)} ({product.rating.count})
+                </span>
+              )}
             </span>
           </div>
-          {left !== null && (
-            <span className="text-sm text-amber-700">{t("onlyLeft")}: {left}</span>
-          )}
           {actions}
         </div>
+        {left !== null && (
+          <span className="text-sm font-bold text-saffron-ink">
+            {t("onlyLeft")}: {left}
+          </span>
+        )}
       </div>
-    </div>
+    </article>
   );
 };
 

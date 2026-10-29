@@ -4,12 +4,17 @@
 
 
 :root {
-  --swiper-theme-color: #e5087e !important;
+  --swiper-theme-color: #2d5a40 !important;
+  --font-display: var(--font-fraunces);
+}
+
+:lang(ar) {
+  --font-display: var(--font-el-messiri);
 }
 
 
 body {
-  @apply bg-mainWhite scroll-smooth;
+  @apply bg-cream text-garden scroll-smooth;
 }
 
 @layer components {
@@ -21,7 +26,7 @@ body {
     @apply hover:text-yellow-600;
   }
   .nav-link {
-    @apply transition-all hover:text-mainPink;
+    @apply transition-colors hover:text-saffron-ink;
   }
   .input-label {
     @apply text-mainBlack/50;
@@ -44,6 +49,14 @@ body {
   .product-table td,
   .product-table th {
     @apply border-2 border-mainBlack border-dashed;
+  }
+
+  /* Swipe rows (category strip) scroll without a visible bar. */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 
   .filter-link {
@@ -92,10 +105,10 @@ body {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  @apply bg-mainPink;
+  @apply bg-line rounded-full;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-mainPink/50;
+  @apply bg-garden-muted;
 }

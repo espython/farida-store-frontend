@@ -30,7 +30,7 @@ const PageTitle = ({ title }: pageTitleProps) => {
           {title}
         </BreadcrumbItem>
       </Breadcrumbs>
-      <h1 className="text-center text-2xl md:text-5xl font-bold capitalize">
+      <h1 className="text-center font-display text-3xl md:text-[2.75rem] leading-tight font-medium capitalize">
         {title}
       </h1>
     </div>

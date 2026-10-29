@@ -1,12 +1,58 @@
 {
+  "header": {
+    "searchLabel": "Search products",
+    "searchPlaceholder": "What are you cooking today?",
+    "account": "Account",
+    "wishlist": "Wishlist",
+    "cart": "Cart",
+    "menu": "Menu"
+  },
+  "bottomNav": {
+    "label": "Quick navigation",
+    "home": "Home",
+    "search": "Search",
+    "wishlist": "Saved",
+    "account": "Account"
+  },
+  "homeHero": {
+    "label": "Featured",
+    "kicker": "Kitchen essentials",
+    "title": "Good tools make good food",
+    "shop": "Shop",
+    "saleTitle": "On sale now",
+    "saleCta": "Shop the deals",
+    "browse": "Browse"
+  },
+  "perks": {
+    "label": "Why shop with us",
+    "shipping": {
+      "title": "Shipping all over Egypt",
+      "text": "Delivered to your door"
+    },
+    "cod": {
+      "title": "Cash on delivery",
+      "text": "Or pay securely by card"
+    },
+    "returns": {
+      "title": "14-day returns",
+      "text": "Exchange or return with ease"
+    },
+    "secure": {
+      "title": "Secure payments",
+      "text": "Your payments are fully protected"
+    }
+  },
   "currency": {
     "currency": "EGP"
   },
   "home": {
+    "browse": "Browse the kitchen",
+    "shopAll": "All products",
     "title": "products",
     "metaDescription": "Shop kitchen appliances online at Farida Store: blenders, mixers, kettles and more."
   },
   "navbar": {
+    "label": "Main",
     "home": "home",
     "products": "products",
     "order": "order",
@@ -93,6 +139,10 @@
     "no": "no"
   },
   "filters": {
+    "sort": "Sort by",
+    "pageSize": "Products per page",
+    "gridView": "Grid view",
+    "rowView": "List view",
     "filter": "filter",
     "sales": "sales only",
     "popularity": "sort by popularity",
@@ -121,6 +171,9 @@
     "again": " please try again"
   },
   "footer": {
+    "apps": "Get the app",
+    "payments": "Payment methods",
+    "cod": "Cash on delivery",
     "help": "We are always here to help you",
     "support": " Reach out to us through any of these support channels",
     "email": "email support",

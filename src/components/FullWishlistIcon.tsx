@@ -6,6 +6,7 @@ import Icon from "./Icon";
 import { observer } from "mobx-react-lite";
 import { StoreContext } from "@/contexts/StoreContext";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslations } from "next-intl";
 
 interface fullWishlistIconProps {
   className?: string;
@@ -23,6 +24,7 @@ const FullWishlistIcon = ({
   const { wishlist, userWishlist, loginForm, registerForm } =
     useContext(StoreContext);
   const { isLoggedIn } = useAuth();
+  const t = useTranslations("header");
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -40,7 +42,7 @@ const FullWishlistIcon = ({
 
   return (
     <div>
-      <Link href={"/wishlist"}>
+      <Link href={"/wishlist"} aria-label={t("wishlist")}>
         <Icon
           icon={<FaRegHeart className={className} />}
           hasBorder={hasBorder}

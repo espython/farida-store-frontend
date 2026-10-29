@@ -4,7 +4,8 @@ import FiltersSection from "@/app/components/FiltersSection";
 import MiniProducts from "@/app/components/MiniProducts";
 import ProductsSection from "@/app/components/ProductsSection";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
-import { CATALOG_SOURCE, serializeJsonLd } from "@/modules/catalog";
+import { CATALOG_SOURCE, CategorySlider, HomeHero, serializeJsonLd } from "@/modules/catalog";
+import PageContainer from "@/shared/ui/PageContainer";
 import { isLocale, LOCALES } from "@/shared/kernel/Locale";
 import { absoluteUrl, ogLocale, SITE_URL } from "@/shared/lib/siteUrl";
 
@@ -52,23 +53,41 @@ const websiteJsonLd = (locale: string) => ({
   },
 });
 
-const HomePage = ({ params: { locale } }: HomePageProps) => {
+const HomePage = async ({ params: { locale } }: HomePageProps) => {
   unstable_setRequestLocale(locale);
+  const t = await getTranslations("home");
 
   return (
     <main>
-      {CATALOG_SOURCE === "woo" && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: serializeJsonLd(websiteJsonLd(locale)) }}
-        />
+      {CATALOG_SOURCE === "woo" ? (
+        <>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: serializeJsonLd(websiteJsonLd(locale)) }}
+          />
+          <PageContainer className="pt-2 md:pt-6 flex flex-col gap-12 md:gap-16">
+            <HomeHero />
+            <section className="flex flex-col gap-4 md:gap-6">
+              <h2 className="font-display text-2xl md:text-[2rem] font-medium">{t("browse")}</h2>
+              <CategorySlider />
+            </section>
+            <section className="flex flex-col gap-4 md:gap-6">
+              <h2 className="font-display text-2xl md:text-[2rem] font-medium">{t("shopAll")}</h2>
+              <FiltersSection />
+              <ProductsSection />
+            </section>
+          </PageContainer>
+        </>
+      ) : (
+        <>
+          <MiniProducts />
+          <AdsSlider />
+          <PageContainer className="flex flex-col gap-5">
+            <FiltersSection />
+            <ProductsSection />
+          </PageContainer>
+        </>
       )}
-      <MiniProducts />
-
-      <AdsSlider />
-
-      <FiltersSection />
-      <ProductsSection />
     </main>
   );
 };

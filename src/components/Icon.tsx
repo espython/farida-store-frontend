@@ -24,45 +24,51 @@ interface iconProps {
   icon: ReactElement<IconType>;
   className?: string;
   whenClick?: () => void;
+  /** Accessible name; icon-only buttons need one. */
+  label?: string;
 }
 
+/** Round 44 px icon button of the Kitchen Garden header, with an optional count badge. */
 const Icon = ({
   icon,
   color,
   hasBorder = false,
-  borderColor = "mainGray",
   count = 0,
   showPop = false,
-  borderSize = "2",
-  hasBorderHover = hasBorder && true,
-  backColor = "transparent",
+  backColor,
   whenClick,
-  className,
+  className = "",
+  label,
 }: iconProps) => {
   return (
     <div
-      className={`relative text-[.8rem] lg:text-[1rem] ${
-        color ? `text-` + color : `mainBlack`
-      } ${
-        hasBorder
-          ? `border-solid border-${borderSize} border-${borderColor}`
-          : ``
-      } ${
-        hasBorderHover ? `hover:border-mainPink` : ``
-      }  transition-all cursor-pointer  p-3   rounded-full ${className}`}
+      className={`relative grid place-items-center w-11 h-11 rounded-full text-xl transition-colors cursor-pointer ${
+        color ? `text-${color}` : "text-garden"
+      } ${backColor ? "" : "bg-white hover:bg-sand"} ${hasBorder ? "ring-1 ring-line" : ""} ${className}`}
       onClick={whenClick}
-      style={{
-        backgroundColor: backColor,
-      }}
+      role={whenClick ? "button" : undefined}
+      tabIndex={whenClick ? 0 : undefined}
+      aria-label={label}
+      onKeyDown={
+        whenClick
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                whenClick();
+              }
+            }
+          : undefined
+      }
+      style={backColor ? { backgroundColor: backColor } : undefined}
     >
       {showPop && (
-        <motion.div
+        <motion.span
           initial={{ scale: 0 }}
           animate={{ scale: count > 0 ? 1 : 0 }}
-          className="bg-mainPink h-5 aspect-square  flex justify-center  items-center text-white rounded-full p-1   absolute -top-2 -right-2 text-xs"
+          className="absolute -top-1 -end-1 min-w-[1.125rem] h-[1.125rem] px-1 grid place-items-center rounded-full bg-saffron text-garden text-[0.6875rem] font-bold"
         >
-          <div className="text-center ">{count}</div>
-        </motion.div>
+          {count}
+        </motion.span>
       )}
 
       {icon}

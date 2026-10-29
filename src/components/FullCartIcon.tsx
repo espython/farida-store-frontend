@@ -10,13 +10,15 @@ import { observer } from "mobx-react-lite";
 
 import { StoreContext } from "@/contexts/StoreContext";
 import { Link } from "@/navigation";
+import { useTranslations } from "next-intl";
 
 const FullCartIcon = () => {
   const { cart } = useContext(StoreContext);
+  const t = useTranslations("header");
 
   return (
     <div onMouseOver={cart.displayCartMenu} onMouseLeave={cart.hideCartMenu}>
-      <Link href={"/cart"}>
+      <Link href={"/cart"} aria-label={t("cart")}>
         <Icon
           icon={<AiOutlineShoppingCart />}
           hasBorder={true}

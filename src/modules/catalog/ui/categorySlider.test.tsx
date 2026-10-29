@@ -60,7 +60,10 @@ describe("CategorySlider", () => {
     renderSlider();
     const links = screen.getAllByRole("link");
     expect(links.map((l) => l.getAttribute("href"))).toEqual(["/categories/b", "/categories/a"]);
-    expect(screen.getByRole("img")).toHaveAttribute("alt", "B");
+    // The tile prints the name, so its photo is decorative.
+    expect(links[0].querySelector("img")).toHaveAttribute("src", "/b.jpg");
+    expect(links[0].querySelector("img")).toHaveAttribute("alt", "");
+    expect(links[0]).toHaveTextContent("B");
     expect(screen.getByTestId("category-image-empty")).toBeInTheDocument();
   });
 
