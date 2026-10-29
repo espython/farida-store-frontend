@@ -9,24 +9,33 @@ import {
   ProductGallery,
   useGetProductQuery,
 } from "@/modules/catalog";
+import type { Product } from "@/modules/catalog";
 import type { Locale } from "@/shared/kernel/Locale";
 import Breads from "./Breads";
 import InformationSection from "./InformationSection";
 
 const BREAD_TITLE_MAX = 40;
 
+interface Props {
+  slug: string;
+  /** Fetched by the server page, so the first render (and the HTML) has the product. */
+  initialProduct?: Product;
+}
+
 /**
  * Product page on the Woo catalog. The route segment is the product slug (cards link
  * by slug). Add to cart and reviews come with the cart (C1-C3) and reviews (O3) work.
  */
-const WooProductPage = ({ slug }: { slug: string }) => {
+const WooProductPage = ({ slug, initialProduct }: Props) => {
   const locale = useLocale() as Locale;
   const t = useTranslations("errorPage");
-  const { data: product, isLoading, isError, error, refetch } = useGetProductQuery({ locale, slug });
+  const { data, isLoading, isError, error, refetch } = useGetProductQuery({ locale, slug });
+  // Server data until the client query answers; a failed refresh keeps showing it.
+  const product = data ?? initialProduct;
 
-  if (isLoading) return <PageSkeleton variant="detail" />;
+  if (isLoading && !product) return <PageSkeleton variant="detail" />;
   if (isError && "status" in error && error.status === 404) notFound();
-  if (isError || !product) {
+  if (!product) {
     return (
       <div className="w-full min-h-[50vh] flex flex-col items-center justify-center gap-4" role="alert">
         <h1 className="text-lg md:text-2xl text-mainBlack/70">{t("title")}</h1>

@@ -74,7 +74,7 @@ const ProductPage = async ({ params }: productPageProps) => {
           }}
         />
       )}
-      <ProductPageContainer id={params.id} />
+      <ProductPageContainer id={params.id} initialProduct={product} />
     </>
   );
 };

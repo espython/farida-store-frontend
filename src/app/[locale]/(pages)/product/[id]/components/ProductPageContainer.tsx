@@ -11,6 +11,7 @@ import { getTheLengthOfAllowedRatings } from "@/functions/getTheLengthOfAllowedR
 import ReviewsSection from "./ReviewsSection";
 import { useLocale } from "next-intl";
 import { CATALOG_SOURCE } from "@/modules/catalog";
+import type { Product } from "@/modules/catalog";
 import WooProductPage from "./WooProductPage";
 
 interface ProductPageContainerProps {
@@ -88,7 +89,11 @@ const StrapiProductPageContainer = observer(({ id }: ProductPageContainerProps) 
 StrapiProductPageContainer.displayName = "StrapiProductPageContainer";
 
 /** The [id] segment is a Strapi id on the legacy catalog and a product slug on Woo. */
-const ProductPageContainer = ({ id }: ProductPageContainerProps) =>
-  CATALOG_SOURCE === "woo" ? <WooProductPage slug={id} /> : <StrapiProductPageContainer id={id} />;
+const ProductPageContainer = ({ id, initialProduct }: ProductPageContainerProps & { initialProduct?: Product }) =>
+  CATALOG_SOURCE === "woo" ? (
+    <WooProductPage slug={id} initialProduct={initialProduct} />
+  ) : (
+    <StrapiProductPageContainer id={id} />
+  );
 
 export default ProductPageContainer;
