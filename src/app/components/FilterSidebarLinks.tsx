@@ -25,24 +25,26 @@ const StrapiFilterSidebarLinks = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-3">
+    <ul className="flex flex-col">
       {categories.categories?.map((cat) => (
-        <Link
-          key={cat.id}
-          href={`/categories/${cat.attributes.name}`}
-          className={`filter-link ${
-            editedParams === cat.attributes.name && `text-mainPink`
-          }`}
-        >
-          <h1>
-            {locale === "en"
-              ? cat.attributes.name
-              : cat.attributes?.localizations?.data[0].attributes.name}
-          </h1>
-          <h1>({cat.attributes.products.data.length})</h1>
-        </Link>
+        <li key={cat.id}>
+          <Link
+            href={`/categories/${cat.attributes.name}`}
+            aria-current={editedParams === cat.attributes.name ? "page" : undefined}
+            className={`flex items-center justify-between gap-3 min-h-[44px] px-3 -mx-3 rounded-xl hover:bg-sand transition-colors capitalize ${
+              editedParams === cat.attributes.name ? "font-bold text-saffron-ink" : ""
+            }`}
+          >
+            <span>
+              {locale === "en"
+                ? cat.attributes.name
+                : cat.attributes?.localizations?.data[0].attributes.name}
+            </span>
+            <span className="text-sm text-garden-muted">({cat.attributes.products.data.length})</span>
+          </Link>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 };
 

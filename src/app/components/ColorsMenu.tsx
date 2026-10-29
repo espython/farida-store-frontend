@@ -16,7 +16,7 @@ const StrapiColorsMenu = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-wrap gap-2">
       {colors.colors?.map((clr) => (
         <ColorChoice
           key={clr.id}

@@ -124,7 +124,7 @@ describe("ColorOptions", () => {
 
   it("renders swatches with a fallback colour when there is no hex", () => {
     const { container } = wrap(<ColorOptions />);
-    const swatches = container.querySelectorAll("span.w-5");
+    const swatches = container.querySelectorAll('[data-testid="color-swatch"]');
     expect((swatches[0] as HTMLElement).style.backgroundColor).toBe("rgb(255, 0, 0)");
     expect((swatches[1] as HTMLElement).style.backgroundColor).toBe("rgb(209, 213, 219)");
   });

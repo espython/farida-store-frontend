@@ -153,6 +153,9 @@
     "no": "no"
   },
   "filters": {
+    "filters": "Filters",
+    "close": "Close filters",
+    "showResults": "Show results",
     "sort": "Sort by",
     "pageSize": "Products per page",
     "gridView": "Grid view",
@@ -601,6 +604,7 @@
     }
   },
   "activeFilters": {
+    "remove": "Remove filter",
     "active": "active filters",
     "color": "color",
     "minPrice": "min price",

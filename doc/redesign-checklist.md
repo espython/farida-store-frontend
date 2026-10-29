@@ -56,14 +56,14 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [x] `catalog/ui/CatalogProductCard`
 - [x] `catalog/ui/CatalogListing` (grid, pagination)
 - [x] `catalog/ui/CategorySlider` (tiles), `HomeHero`
-- [~] `catalog/ui/CategoryTitle` → `PageTitle` (heading done; breadcrumbs, alignment)
+- [x] `catalog/ui/CategoryTitle` → `PageTitle` (heading done; breadcrumbs, alignment)
 - [x] `FiltersSection`, `FilterButton`
-- [~] `ProductsSection` (filter drawer backdrop and slide-in)
-- [ ] `FilterSidebarContents`, `FilterSidebarLinks`, `catalog/ui/CategoryLinks`, `ColorsMenu`, `ColorChoice`, `catalog/ui/ColorOptions`, `PriceSlider` (filter drawer)
-- [ ] `ActiveFilters`, `MiniActiveFilter` (active filter chips)
-- [ ] `EmptyProducts`
-- [ ] `Rating` (stars in the palette; used on product page and reviews)
-- [ ] `ProductTypeLabel`
+- [x] `ProductsSection` (filter panel is now a fixed side drawer; fixes the panel clipped to the grid height)
+- [x] `FilterSidebarContents`, `FilterSidebarLinks`, `catalog/ui/CategoryLinks`, `ColorsMenu`, `ColorChoice`, `catalog/ui/ColorOptions`, `PriceSlider` (filter drawer)
+- [x] `ActiveFilters`, `MiniActiveFilter` (active filter chips; × deleted by translated label, so price chips and Arabic colour chips never cleared — fixed, with test)
+- [x] `EmptyProducts`
+- [x] `Rating` (stars in the palette; used on product page and reviews)
+- [x] `ProductTypeLabel`
 
 ## 3. Pages
 

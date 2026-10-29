@@ -32,27 +32,29 @@ const ColorOptions = ({ onSelect }: Props) => {
   };
 
   return (
-    <div className="flex flex-col gap-3">
-      {(data ?? []).map((color) => (
-        <button
-          key={color.id}
-          type="button"
-          className="flex items-center justify-between cursor-pointer"
-          aria-pressed={sameSlug(selected, color.slug)}
-          onClick={() => choose(color.slug)}
-        >
-          <span className="flex items-center gap-2">
+    <div className="flex flex-wrap gap-2">
+      {(data ?? []).map((color) => {
+        const on = sameSlug(selected, color.slug);
+        return (
+          <button
+            key={color.id}
+            type="button"
+            aria-pressed={on}
+            onClick={() => choose(color.slug)}
+            className={`inline-flex items-center gap-2 h-11 ps-2 pe-4 rounded-full bg-white border-2 font-semibold transition-colors ${
+              on ? "border-garden" : "border-transparent hover:border-line"
+            }`}
+          >
             <span
-              className="w-5 h-5 border border-black/10"
+              data-testid="color-swatch"
+              className="w-7 h-7 rounded-full border border-black/10"
               style={{ backgroundColor: color.hex ?? FALLBACK_SWATCH }}
             />
-            <span className="text-sm md:text-xl">{color.name}</span>
-          </span>
-          {sameSlug(selected, color.slug) && (
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-          )}
-        </button>
-      ))}
+            {color.name}
+            {on && <span aria-hidden="true">✓</span>}
+          </button>
+        );
+      })}
     </div>
   );
 };
