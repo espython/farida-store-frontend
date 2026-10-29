@@ -4,7 +4,6 @@ import { observer } from "mobx-react-lite";
 import React, { useContext } from "react";
 import CartTableProduct from "./CartTableProduct";
 import CartTableHeader from "./CartTableHeader";
-import { Divider } from "@nextui-org/react";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -13,23 +12,21 @@ const ProductsTable2 = () => {
   const { isLoggedIn } = useAuth();
 
   return (
-    <div className="relative flex flex-col gap-5  pt-4">
+    <div className="relative bg-white rounded-3xl px-4 md:px-6">
       <CartTableHeader />
-
-      {isLoggedIn
-        ? cart.userCartItems.map((item) => (
-            <div key={item.id} className="flex flex-col gap-2">
-              <CartTableProduct product={item} />
-              <Divider />
-            </div>
-          ))
-        : cart.cartProducts.map((item) => (
-            <div key={item.id} className="flex flex-col gap-2">
-              <CartTableProduct product={{ ...item, cartItemId: item.id }} />
-              <Divider />
-            </div>
-          ))}
-
+      <ul className="divide-y divide-line">
+        {isLoggedIn
+          ? cart.userCartItems.map((item) => (
+              <li key={item.id}>
+                <CartTableProduct product={item} />
+              </li>
+            ))
+          : cart.cartProducts.map((item) => (
+              <li key={item.id}>
+                <CartTableProduct product={{ ...item, cartItemId: item.id }} />
+              </li>
+            ))}
+      </ul>
       {user.isMergingOrRemovingLoading && <LoadingOverlay />}
     </div>
   );

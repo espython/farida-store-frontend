@@ -1,4 +1,8 @@
 {
+  "checkoutSteps": {
+    "label": "خطوات الطلب",
+    "progress": "الخطوة {current} من {total}"
+  },
   "listing": {
     "count": "{count, plural, zero {لا توجد منتجات} one {منتج واحد} two {منتجان} few {# منتجات} many {# منتجًا} other {# منتج}}"
   },

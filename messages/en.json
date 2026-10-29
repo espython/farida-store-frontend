@@ -1,4 +1,8 @@
 {
+  "checkoutSteps": {
+    "label": "Checkout steps",
+    "progress": "Step {current} of {total}"
+  },
   "listing": {
     "count": "{count, plural, one {# product} other {# products}}"
   },

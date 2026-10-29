@@ -92,10 +92,10 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [x] `loading.tsx`, unknown product state
 
 ### Cart `/cart`
-- [ ] `CartPageContainer`, `CartLayoutContainer`, `LayoutTabs`, `CartTab` (checkout steps)
-- [ ] `CartContent`, `ProductsTable`, `ProductsTable2`, `CartTableHeader`, `CartTableProduct`, `CartProductCard` (phone), `QuantityCounter`
-- [ ] `TotalPrice`, `TotalSingleCartProductPrice`, `CartFooter` (summary, prices via `Money.toDisplay`)
-- [ ] `EmptyCart`, `loading.tsx`
+- [x] `CartPageContainer`, `CartLayoutContainer`, `LayoutTabs`, `CartTab` (checkout steps) — one stepper (desktop numbered, phone "Step n of 4"); `CartTab` removed; cart renders after mount (hydration mismatch with a stored cart fixed)
+- [x] `CartContent`, `ProductsTable`, `ProductsTable2`, `CartTableHeader`, `CartTableProduct`, `CartProductCard` (phone), `QuantityCounter` — 8/4 grid, row list with QuantityStepper; unused `ProductsTable` removed
+- [x] `TotalPrice`, `TotalSingleCartProductPrice`, `CartFooter` (summary, prices via `Money.toDisplay`) — summary card; coupon field still has no behaviour (C3); unused `TotalSingleCartProductPrice` ($ prices) removed
+- [x] `EmptyCart`, `loading.tsx`
 
 ### Shipping `/cart/shipping`
 - [ ] `ShippingContent`, `ShippingForm`, `CustomizedInput` (form fields), `ShippingOrderAndPrice`, `ShippingRowDetails`, `OrderedItem`
