@@ -325,10 +325,10 @@ Note: `selectionAddressModal` is currently `new AddressModalStore()`; it becomes
 ## 12. Progress tracker
 
 - [x] Phase 0: architecture review, missing features, spike checklist, data mapping, master plan
-- [ ] Phase 0: commit docs, create issues and project board
-- [ ] Phase 1: foundations (F1–F5)
-- [ ] Phase 2: Woo platform (W1–W9)
-- [ ] Phase 3: BFF and catalog (B1–B5)
+- [x] Phase 0: commit docs, create issues and project board (#222–#276)
+- [ ] Phase 1: foundations (F1–F5). F1–F4 and D1 (module structure, boundary lint rules) done; F5 legal pages wait on owner content
+- [ ] Phase 2: Woo platform (W1–W9). W0 staging spike done on local Docker; W1–W9 not started. Open: Polylang add-on, Paymob sandbox keys, hosting
+- [ ] Phase 3: BFF and catalog (B1–B5). B1–B3 done; B4 code done (#293, #295–#298), Lighthouse SEO ≥ 90 on a deployed Woo build still to run; B5 waits on W7
 - [ ] Phase 4: accounts (A1–A4)
 - [ ] Phase 5: cart and checkout (C1–C4)
 - [ ] Phase 6: orders and wishlist (O1–O4)
