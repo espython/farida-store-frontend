@@ -1,5 +1,7 @@
 # Strapi → WooCommerce data mapping
 
+> **Not used (2026-10-31).** Strapi holds only test data, so there is no data migration (Phase 7 dropped, M1–M4 closed). Kept for the field mapping as reference only.
+
 Draft for the migration, built from the Strapi schemas in `../backend-admin/src/api/*/content-types/*/schema.json`. Only the local dev `data.db` was inspected (a handful of rows, not representative), so **row counts, data quality and the real shape of production products still have to be checked** before this is final. Items marked **decide** or **verify** need an answer first.
 
 ## Conventions
