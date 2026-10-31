@@ -3,7 +3,14 @@
 import { useEffect, useRef } from "react";
 import { Provider } from "react-redux";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import { useCartPersistence } from "@/modules/cart";
 import { makeStore, type AppStore } from "./index";
+
+// Reads the guest cart from storage after mount and follows other tabs.
+const CartPersistence = () => {
+  useCartPersistence();
+  return null;
+};
 
 // Redux store for server data (RTK Query) and client slices. It lives next to
 // the MobX provider until the stores are migrated (see doc/ master plan).
@@ -18,7 +25,12 @@ const StoreProvider = ({ children }: { children: React.ReactNode }) => {
     return setupListeners(storeRef.current!.dispatch);
   }, []);
 
-  return <Provider store={storeRef.current}>{children}</Provider>;
+  return (
+    <Provider store={storeRef.current}>
+      <CartPersistence />
+      {children}
+    </Provider>
+  );
 };
 
 export default StoreProvider;
