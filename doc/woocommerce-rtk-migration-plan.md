@@ -18,6 +18,7 @@ This is the single complete plan. It replaces the Strapi-specific parts of `rtk-
 | 2026-10-14 | ~~`backend-admin` (Strapi) is **not deleted** until after cutover and a stable period~~ | ~~Needed for the data export and for rollback.~~ Superseded 2026-10-31. |
 | 2026-10-14 | Adopt **DDD-lite**: bounded-context modules (`src/modules/<context>`) with domain / infrastructure / application / ui layers, a shared kernel, and an anti-corruption layer for Woo | Keeps Woo and RTK specifics out of components and makes pricing, coupon, cancellation and status rules pure and testable. See `ddd-architecture.md`. |
 | 2026-10-31 | **No data migration and no Strapi fallback.** Strapi holds only test data (no real customers, products or orders). Each feature replaces Strapi directly when it moves to Woo and deletes its Strapi code in the same change; no `*_SOURCE` switches, no import, no rollback. Phase 7 is dropped (M1–M4 closed) and Phase 9 becomes a launch. | Owner decision. The fallback and migration work protected data that does not exist. The only constraint left is that a feature works on Woo before its Strapi code is deleted. |
+| 2026-10-31 | **After launch, move to a feature-based, full DDD architecture** (`src/features/<feature>`, aggregates/value objects/domain events, ports and adapters, integration events). Until launch, DDD-lite stays the rule. | DDD-lite was right for the migration's speed; after launch the growing codebase needs enforced invariants, ports for testable use cases and a deliberate event model. Plan: `ddd-feature-architecture-plan.md`. |
 | 2026-10-29 | Keep **NextUI** through the migration; after launch, move to **HeroUI** (option 1) rather than shadcn/ui | NextUI is used in ~100 files and the migration should not double as a redesign. NextUI was renamed HeroUI and `@nextui-org/*` no longer gets updates; HeroUI is the same library under a new name, so the move is mostly a package rename. A gradual move to shadcn/ui stays possible later. |
 
 ## 2. Goals and non-goals
@@ -231,13 +232,16 @@ Not needed: Strapi holds only test data. M1–M4 (#257–#260) were closed. WooC
 - Check peer dependencies before starting: the HeroUI major that still supports Tailwind 3 (newer majors target Tailwind 4), and the `framer-motion` version it needs (the repo is on 10.x).
 - Accept: `grep -r @nextui-org src package.json` finds nothing; tests, build and an en/ar visual pass of home, category, product, cart, checkout and account pages show no regressions.
 
+### Phase 11 – Feature-based full DDD architecture · P2 · after launch
+Plan and tasks DF1–DF14: `ddd-feature-architecture-plan.md`. Strangler, one feature per PR, no behaviour change; the cart is the pilot.
+
 ## 6. Priority summary (for the project board)
 
 | Priority | Items |
 |---|---|
 | **P0** | F1 RTK foundation · W1–W9 Woo setup and acceptance |
 | **P1** | F2 boundaries · F3 housekeeping · F4 tests · F5 legal pages · B1–B6 BFF and catalog · A1–A5 accounts · C1–C4 cart and checkout · O1–O3 orders and reviews · X1, X2, X4 launch |
-| **P2** | B7 contact form · O4 wishlist · U1–U3 UI state and cleanup · H1 NextUI → HeroUI · analytics · merchandising |
+| **P2** | Phase 11 full DDD (DF1–DF14, after launch) · B7 contact form · O4 wishlist · U1–U3 UI state and cleanup · H1 NextUI → HeroUI · analytics · merchandising |
 | **P3** | Growth features |
 
 ## 7. Strapi endpoint → Woo mapping
@@ -338,3 +342,4 @@ Note: `selectionAddressModal` is currently `new AddressModalStore()`; it becomes
 - [ ] Phase 8: UI state and cleanup (U1–U3)
 - [ ] Phase 9: launch and Strapi removal (X1, X2, X4; X3 dropped)
 - [ ] Phase 10: post-launch
+- [ ] Phase 11: feature-based full DDD architecture (after launch)

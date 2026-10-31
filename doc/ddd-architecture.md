@@ -11,6 +11,8 @@ The migration swaps the backend (Strapi → WooCommerce) and the state library (
 - **Anti-corruption layer:** Woo DTOs are translated into our domain types in one place per context.
 - **Testable rules:** pricing, coupons, cancellation and status mapping become pure functions with unit tests. Today they are spread across MobX stores and components.
 
+> **After launch** this is replaced by the feature-based, full DDD architecture in `ddd-feature-architecture-plan.md` (Phase 11). Until then, follow the DDD-lite rules below.
+
 This is **DDD-lite for a frontend**: types plus pure functions, no event sourcing, no repository interfaces for their own sake, no class hierarchies. If a pattern does not remove a real coupling, we do not add it.
 
 ## Bounded contexts
