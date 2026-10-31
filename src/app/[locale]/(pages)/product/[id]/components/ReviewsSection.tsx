@@ -42,28 +42,27 @@ const ReviewsSection = ({ product }: reviewProps) => {
           aria-label="Options"
           color="primary"
           variant="underlined"
-          size={currentWidth > 768 ? "lg" : "sm"}
+          size="lg"
           classNames={{
-            tabList:
-              "gap-6 w-full relative rounded-none p-0 border-b border-divider",
-            cursor: "w-full bg-mainPink",
+            tabList: "gap-6 w-full relative rounded-none p-0 border-b border-line",
+            cursor: "w-full bg-garden",
             tab: "max-w-fit px-0 h-12",
-            tabContent: "group-data-[selected=true]:text-mainPink",
+            tabContent: "font-display text-lg md:text-2xl text-garden-muted group-data-[selected=true]:text-garden",
           }}
         >
           <Tab
             key="reviews"
             value={"reviews"}
             title={
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-2">
                 <VscPreview className="text-lg md:text-2xl" />
-                <span className="text-lg md:text-2xl">
+                <span>
                   {t("details.reviews")}
                 </span>
                 <Chip
                   size={currentWidth > 768 ? "md" : "sm"}
                   variant="shadow"
-                  className="bg-mainDarkBlue text-mainWhite hidden md:block"
+                  className="bg-saffron text-garden font-bold font-cairo"
                 >
                   {getTheLengthOfAllowedRatings(products.targetProductReviews)}
                 </Chip>
@@ -85,7 +84,7 @@ const ReviewsSection = ({ product }: reviewProps) => {
                         date={r?.attributes?.createdAt}
                         id={r?.id}
                       />
-                      <Divider />
+                      <Divider className="bg-line my-5" />
                     </div>
                   )
               )}
@@ -105,9 +104,9 @@ const ReviewsSection = ({ product }: reviewProps) => {
             key="more-info"
             value={"description"}
             title={
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-2">
                 <MdOutlineDescription className="text-lg md:text-2xl" />
-                <span className="text-lg md:text-2xl">
+                <span>
                   {t("details.description")}
                 </span>
               </div>
@@ -118,22 +117,20 @@ const ReviewsSection = ({ product }: reviewProps) => {
                 isLoaded={product?.attributes?.description?.length !== 0}
                 className="w-max"
               >
-                <h1 className="capitalize text-sm md:text-xl font-semibold">
-                  {t("details.description")} :-
-                </h1>
+                <h2 className="sr-only">{t("details.description")}</h2>
               </Skeleton>
 
               <Skeleton
                 isLoaded={product?.attributes?.description?.length !== 0}
               >
-                <h1 className="text-sm md:text-xl ">
+                <p className="whitespace-pre-line leading-relaxed">
                   {product?.attributes?.description
                     ? locale === "en"
                       ? product?.attributes?.description
                       : product?.attributes?.localizations?.data[0]?.attributes
                           ?.description
-                    : "slkdslk"}
-                </h1>
+                    : ""}
+                </p>
               </Skeleton>
             </div>
           </Tab>

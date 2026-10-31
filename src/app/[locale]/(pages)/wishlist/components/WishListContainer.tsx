@@ -1,20 +1,18 @@
 import PageTitle from "@/components/PageTitle";
 import React from "react";
 import WishListSections from "./WishListSections";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
+import PageContainer from "@/shared/ui/PageContainer";
 
-interface WishListContainerProps {
-  // Define your props here
-}
-
-const WishListContainer = ({}: WishListContainerProps) => {
+const WishListContainer = () => {
   const t = useTranslations("wishList");
-  const locale = useLocale();
   return (
-    <div dir={locale === "en" ? "ltr" : "rtl"}>
+    <>
       <PageTitle title={t("title")} />
-      <WishListSections />
-    </div>
+      <PageContainer className="pt-6 pb-8">
+        <WishListSections />
+      </PageContainer>
+    </>
   );
 };
 

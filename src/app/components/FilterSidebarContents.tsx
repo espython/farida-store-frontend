@@ -1,50 +1,54 @@
 "use client";
 import React, { useContext } from "react";
-
 import { observer } from "mobx-react-lite";
-
+import { IoMdClose } from "react-icons/io";
+import { useTranslations } from "next-intl";
 import FilterSidebarLinks from "./FilterSidebarLinks";
 import PriceSlider from "./PriceSlider";
 import ColorsMenu from "./ColorsMenu";
-import { IoMdClose } from "react-icons/io";
 import { StoreContext } from "@/contexts/StoreContext";
-import { useLocale, useTranslations } from "next-intl";
+import { buttonClass } from "@/shared/ui/Button";
 
+const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <section className="flex flex-col gap-3 px-5 py-5 border-b border-line last:border-b-0">
+    <h2 className="font-display text-lg capitalize">{title}</h2>
+    {children}
+  </section>
+);
+
+/** Filter drawer: categories, price, colours; filters apply as they change. */
 const FilterSidebarContents = () => {
   const { filter } = useContext(StoreContext);
-  const locale = useLocale();
   const t = useTranslations("filters");
 
   return (
-    <div
-      className="px-8 lmob:pl-16 lg:pl-28 py-10 lmob:pr-20 flex flex-col gap-10 border-solid border-mainGray border-4 lg:border-0"
-      dir={locale === "en" ? "ltr" : "rtl"}
-    >
-      <div className="flex flex-col gap-3">
-        <h1 className="text-lg md:text-2xl capitalize font-semibold">
-          {t("category")}
-        </h1>
-        <FilterSidebarLinks />
+    <div className="flex flex-col h-full">
+      <div className="flex items-center justify-between px-5 h-16 border-b border-line shrink-0">
+        <p className="font-display text-xl capitalize">{t("filters")}</p>
+        <button
+          type="button"
+          onClick={filter.hideWholeFilterSidebar}
+          aria-label={t("close")}
+          className="w-11 h-11 grid place-items-center rounded-full hover:bg-sand"
+        >
+          <IoMdClose className="text-2xl" aria-hidden="true" />
+        </button>
       </div>
-
-      <div className="flex flex-col gap-3">
-        <h1 className="text-lg md:text-2xl capitalize font-semibold">
-          {t("price")}
-        </h1>
-        <PriceSlider />
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        <Section title={t("category")}>
+          <FilterSidebarLinks />
+        </Section>
+        <Section title={t("price")}>
+          <PriceSlider />
+        </Section>
+        <Section title={t("colors")}>
+          <ColorsMenu />
+        </Section>
       </div>
-
-      <div className="flex flex-col gap-3">
-        <h1 className="text-lg md:text-2xl capitalize font-semibold">
-          {t("colors")}
-        </h1>
-        <ColorsMenu />
-      </div>
-      <div
-        onClick={filter.hideWholeFilterSidebar}
-        className="flex justify-center md:hidden"
-      >
-        <IoMdClose className="text-xl text-center" />
+      <div className="p-5 border-t border-line bg-white shrink-0">
+        <button type="button" className={`${buttonClass({ full: true })} capitalize`} onClick={filter.hideWholeFilterSidebar}>
+          {t("showResults")}
+        </button>
       </div>
     </div>
   );

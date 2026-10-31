@@ -20,7 +20,7 @@ const GridStyleView = () => {
         <div dir={locale === "en" ? "ltr" : "rtl"}>
           {products.products?.length > 0 ? (
             <div
-              className={`w-full  grid grid-cols-1 lmob:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-5 lmob:gap-2 lg:gap-10 px-5 md:px-10 lg:px-20 py-0  `}
+              className={`w-full  grid grid-cols-1 lmob:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-5 lmob:gap-2 lg:gap-10 py-0  `}
             >
               {products.products?.map((product) => (
                 <ProductCard product={product} key={product.id} />

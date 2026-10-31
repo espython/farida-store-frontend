@@ -1,146 +1,82 @@
 "use client";
 import React from "react";
-import CartTab from "./CartTab";
-import { Progress } from "@nextui-org/react";
-import { usePathname } from "@/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/navigation";
+import PageContainer from "@/shared/ui/PageContainer";
 
+const STEPS = [
+  { href: "/cart" },
+  { href: "/cart/shipping" },
+  { href: "/cart/payment" },
+  { href: "/cart/confirmation" },
+] as const;
+
+/** Checkout stepper: numbered steps on desktop, "Step n of 4" with a bar on phones. */
 const LayoutTabs = () => {
-  const currentLink = usePathname();
+  const pathname = usePathname();
   const t = useTranslations("cartPage");
-  const locale = useLocale();
+  const steps = useTranslations("checkoutSteps");
+  const current = Math.max(
+    0,
+    STEPS.findIndex((s) => s.href === pathname)
+  );
+  // Each step label is looked up literally so the i18n verifier can check it.
+  const titles = [t("tabs.step1.title"), t("tabs.step2.title"), t("tabs.step3.title"), t("tabs.step4.title")];
+  const texts = [t("tabs.step1.description"), t("tabs.step2.description"), t("tabs.step3.description"), t("tabs.step4.description")];
 
   return (
-    <div
-      className="flex flex-col gap-2 w-full h-auto px-5 md:px-9 lg:px-20 py-3"
-      dir={locale === "en" ? "ltr" : "rtl"}
-    >
-      <div className="w-full  grid grid-rows-[auto_auto_auto_auto] grid-cols-1 gap-y-5 mt-5 md:mt-0 md:grid-cols-4 md:grid-rows-1 gap-x-1  ">
-        <div className="grid grid-rows-[auto_auto] grid-cols-1 md:grid-rows-1 gap-2">
-          <CartTab
-            step={1}
-            title={t("tabs.step1.title")}
-            description={t("tabs.step1.description")}
-            targetLink={"/cart"}
-            opacity={currentLink === "/cart" ? "opacity-100" : "opacity-50"}
-            isChecked={
-              currentLink === "/cart/shipping" ||
-              currentLink === "/cart/confirmation"
-                ? true
-                : false
-            }
-          />
-          <Progress
-            aria-label="Loading..."
-            value={100}
-            size="sm"
-            radius="none"
-            className="w-full md:hidden ltr:rotate-0 rtl:rotate-180"
-            classNames={{
-              indicator: "bg-gradient-to-r from-mainPink to-mainPink",
-            }}
-          />
+    <PageContainer className="py-4">
+      <nav aria-label={steps("label")}>
+        <div className="md:hidden flex flex-col gap-2">
+          <p className="text-sm font-semibold">
+            {steps("progress", { current: current + 1, total: STEPS.length })} ·{" "}
+            <span className="capitalize">{titles[current]}</span>
+          </p>
+          <div className="h-2 rounded-full bg-sand overflow-hidden">
+            <div className="h-full bg-garden rounded-full transition-all" style={{ width: `${((current + 1) / STEPS.length) * 100}%` }} />
+          </div>
         </div>
-        <div className="grid grid-rows-[auto_auto] grid-cols-1 md:grid-rows-1 gap-2">
-          <CartTab
-            step={2}
-            title={t("tabs.step2.title")}
-            description={t("tabs.step2.description")}
-            opacity={
-              currentLink === "/cart/shipping" ? "opacity-100" : "opacity-50"
-            }
-            targetLink={"/cart/shipping"}
-            isChecked={currentLink === "/cart/confirmation" ? true : false}
-          />
-          <Progress
-            aria-label="Loading..."
-            value={
-              currentLink === "/cart/shipping" ||
-              currentLink === "/cart/confirmation"
-                ? 100
-                : 0
-            }
-            size="sm"
-            radius="none"
-            className="w-full md:hidden ltr:rotate-0 rtl:rotate-180"
-            classNames={{
-              indicator: "bg-gradient-to-r from-mainPink to-mainPink",
-            }}
-          />
-        </div>
-        <div className="grid grid-rows-[auto_auto] grid-cols-1 md:grid-rows-1 gap-2">
-          <CartTab
-            step={3}
-            title={t("tabs.step3.title")}
-            description={t("tabs.step3.description")}
-            opacity={
-              currentLink === "/cart/payment" ? "opacity-100" : "opacity-50"
-            }
-            targetLink={"/cart/payment"}
-            isChecked={currentLink === "/cart/payment" ? true : false}
-          />
-          <Progress
-            aria-label="Loading..."
-            value={
-              currentLink === "/cart/payment" ||
-              currentLink === "/cart/payment"
-                ? 100
-                : 0
-            }
-            size="sm"
-            radius="none"
-            className="w-full md:hidden ltr:rotate-0 rtl:rotate-180"
-            classNames={{
-              indicator: "bg-gradient-to-r from-mainPink to-mainPink",
-            }}
-          />
-        </div>
-        <div className="grid grid-rows-[auto_auto] grid-cols-1 md:grid-rows-1 gap-2">
-          <CartTab
-            step={4}
-            title={t("tabs.step4.title")}
-            description={t("tabs.step4.description")}
-            opacity={
-              currentLink === "/cart/confirmation"
-                ? "opacity-100"
-                : "opacity-50"
-            }
-            targetLink="/cart/confirmation"
-            isDisabled
-          />
-          <Progress
-            aria-label="Loading..."
-            value={currentLink === "/cart/confirmation" ? 100 : 0}
-            size="sm"
-            radius="none"
-            className="w-full md:hidden ltr:rotate-0 rtl:rotate-180"
-            classNames={{
-              indicator: "bg-gradient-to-r from-mainPink to-mainPink",
-            }}
-          />
-        </div>
-      </div>
-      <Progress
-        aria-label="Loading..."
-        value={
-          currentLink === "/cart"
-            ? 100 / 4
-            : currentLink === "/cart/shipping"
-            ? (100 / 4) * 2
-            : currentLink === "/cart/payment"
-            ? (100 / 4) * 3
-            : currentLink === "/cart/confirmation"
-            ? 100
-            : 0
-        }
-        size="sm"
-        radius="none"
-        className="w-full hidden md:block ltr:rotate-0 rtl:rotate-180"
-        classNames={{
-          indicator: "bg-gradient-to-r from-mainPink to-mainPink",
-        }}
-      />
-    </div>
+
+        <ol className="hidden md:grid grid-cols-4 gap-2">
+          {STEPS.map((step, i) => {
+            const done = i < current;
+            const active = i === current;
+            const circle = (
+              <span
+                className={`w-10 h-10 shrink-0 grid place-items-center rounded-full font-bold ${
+                  done ? "bg-garden text-cream" : active ? "bg-saffron text-garden" : "bg-white text-garden-muted border border-line"
+                }`}
+              >
+                {done ? "✓" : i + 1}
+              </span>
+            );
+            const label = (
+              <span className="flex flex-col min-w-0">
+                <span className={`capitalize font-semibold ${active ? "" : "text-garden-muted"}`}>{titles[i]}</span>
+                <span className="text-sm text-garden-muted truncate first-letter:uppercase">{texts[i]}</span>
+              </span>
+            );
+            return (
+              <li key={step.href} aria-current={active ? "step" : undefined} className="relative flex items-center gap-3">
+                {/* Earlier steps stay reachable; later ones only through the flow. */}
+                {done && i < 2 ? (
+                  <Link href={step.href} className="flex items-center gap-3 rounded-xl hover:text-saffron-ink">
+                    {circle}
+                    {label}
+                  </Link>
+                ) : (
+                  <>
+                    {circle}
+                    {label}
+                  </>
+                )}
+                {i < STEPS.length - 1 && <span aria-hidden="true" className={`hidden lg:block flex-1 h-0.5 ${done ? "bg-garden" : "bg-line"}`} />}
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+    </PageContainer>
   );
 };
 

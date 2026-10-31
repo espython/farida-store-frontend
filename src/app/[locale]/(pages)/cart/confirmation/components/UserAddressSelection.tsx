@@ -1,9 +1,12 @@
+"use client";
 import React, { useContext } from "react";
 import InfoCard from "./InfoCard";
-import { Button } from "@nextui-org/react";
 import { StoreContext } from "@/contexts/StoreContext";
 import { UserAddressType } from "@/stores/specificTypes/userAddressType";
-import { useScreenSize } from "react-screen-size-helper";
+import { useTranslations } from "next-intl";
+import { observer } from "mobx-react-lite";
+import Button from "@/shared/ui/Button";
+import { LuMapPin } from "react-icons/lu";
 
 interface userAddressProps {
   addressId: number | string;
@@ -28,19 +31,19 @@ const UserAddressSelection = ({
   secondPhone,
   postalCode,
 }: userAddressProps) => {
+  const t = useTranslations("confirmationPage");
   const information: { title: string; description: string }[] = [
-    { title: "state :", description: state },
-    { title: "country :", description: country },
-    { title: "city :", description: city },
-    { title: "street :", description: street },
-    { title: "postal code :", description: postalCode },
-    { title: "phone :", description: phone },
-    { title: "second_phone :", description: secondPhone },
+    { title: t("orderAddress.street"), description: street },
+    { title: t("orderAddress.city"), description: city },
+    { title: t("orderAddress.state"), description: state },
+    { title: t("orderAddress.country"), description: country },
+    { title: t("orderAddress.postal"), description: postalCode },
+    { title: t("orderAddress.phone1"), description: phone },
+    { title: t("orderAddress.phone2"), description: secondPhone },
   ];
 
   const { userAddresses, selectionAddressModal } = useContext(StoreContext);
-
-  const { currentWidth } = useScreenSize({});
+  const isSelected = userAddresses.selectedUserAddress?.id === addressId;
 
   const selectTheAddress = () => {
     userAddresses.setSelectedUserAddress = {} as UserAddressType;
@@ -59,30 +62,37 @@ const UserAddressSelection = ({
     selectionAddressModal.onClose();
   };
 
+  const heading = t("addressSelection.address", { index });
+
   return (
-    <div className="border-1 border-mainBlack/50 border-solid   flex flex-col gap-3 p-5">
-      <h1 className="text-center text-lg md:text-xl capitalize font-semibold">
-        address {index}
-      </h1>
-      <div className="flex flex-col md:grid md:grid-cols-2">
-        {information.map((info) => (
-          <InfoCard
-            key={info.title}
-            title={info.title}
-            description={info.description ? info.description : "not found"}
-          />
-        ))}
-      </div>
+    <article
+      aria-label={heading}
+      className={`bg-white rounded-2xl border-2 p-4 md:p-5 flex flex-col gap-4 ${
+        isSelected ? "border-garden" : "border-transparent"
+      }`}
+    >
+      <h3 className="flex items-center gap-2 font-bold">
+        <LuMapPin aria-hidden="true" className="text-garden" />
+        {heading}
+      </h3>
+      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {information.map(
+          (info) =>
+            info.description && (
+              <InfoCard key={info.title} title={info.title} description={info.description} />
+            )
+        )}
+      </dl>
       <Button
-        radius="none"
-        size={currentWidth > 768 ? "md" : "sm"}
-        className="bg-mainBlack text-mainWhite text-sm md:text-lg capitalize"
-        onPress={selectTheAddress}
+        variant={isSelected ? "primary" : "outline"}
+        className="self-start"
+        aria-pressed={isSelected}
+        onClick={selectTheAddress}
       >
-        select
+        {isSelected ? t("addressSelection.selected") : t("addressSelection.select")}
       </Button>
-    </div>
+    </article>
   );
 };
 
-export default UserAddressSelection;
+export default observer(UserAddressSelection);

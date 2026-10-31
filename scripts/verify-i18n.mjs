@@ -225,13 +225,15 @@ section("every static t(\"...\") lookup resolves in both catalogues");
       for (const m of text.matchAll(anyCall)) {
         const arg = m[1].trim();
         if (!arg) continue;
-        // A plain string literal, however it is wrapped or indented, is a
-        // static lookup. Anything else cannot be resolved here.
-        if (!/^['"]/.test(arg)) {
+        // A leading string literal, however it is wrapped or indented, is a
+        // static lookup, also when values follow: t("count", { count }).
+        // Anything else cannot be resolved here.
+        const literal = /^(['"])((?:(?!\1)[^\\]|\\.)*)\1\s*(?:,|$)/.exec(arg);
+        if (!literal) {
           dynamic += 1;
           continue;
         }
-        const key = arg.slice(1, -1);
+        const key = literal[2];
         const full = ns ? `${ns}.${key}` : key;
         checked += 1;
         for (const [label, tree] of [

@@ -1,4 +1,5 @@
 "use client";
+import { formatAmount } from "@/shared/lib/price";
 import React, { useContext, useEffect } from "react";
 import MiniActiveFilter from "./MiniActiveFilter";
 import { useSearchParams } from "next/navigation";
@@ -28,33 +29,28 @@ const ActiveFiltersView = ({ colorLabel }: { colorLabel: string }) => {
   };
 
   return (
-    <div className="flex gap-x-5 gap-y-2 items-center md:justify-start justify-center flex-wrap">
-      <h1 className="capitalize text-sm md:text-xl font-semibold">
-        {t("active")} :
-      </h1>
+    <div className="flex gap-2 items-center flex-wrap">
+      <span className="capitalize text-sm font-semibold text-garden-muted">{t("active")}</span>
+      {/* Chips delete by URL param name, not by their (translated) label. */}
       {colorName && (
         <MiniActiveFilter
-          filterName={t("color")}
+          filterName="color"
           deleteFilter={deleteFilter}
-          filterTitle={`${t("color")} : ${colorLabel}`}
+          filterTitle={`${t("color")}: ${colorLabel}`}
         />
       )}
       {min_price && (
         <MiniActiveFilter
-          filterName={t("minPrice")}
+          filterName="min_price"
           deleteFilter={deleteFilter}
-          filterTitle={`${t("minPrice")} : ${min_price} ${currency(
-            "currency"
-          )}`}
+          filterTitle={`${t("minPrice")}: ${formatAmount(min_price)} ${currency("currency")}`}
         />
       )}
       {max_price && (
         <MiniActiveFilter
-          filterName={t("maxPrice")}
+          filterName="max_price"
           deleteFilter={deleteFilter}
-          filterTitle={`${t("maxPrice")} : ${max_price} ${currency(
-            "currency"
-          )}`}
+          filterTitle={`${t("maxPrice")}: ${formatAmount(max_price)} ${currency("currency")}`}
         />
       )}
     </div>

@@ -1,20 +1,18 @@
 import PageTitle from "@/components/PageTitle";
 import React from "react";
 import OrderCardsContainer from "./OrderCardsContainer";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
+import PageContainer from "@/shared/ui/PageContainer";
 
-interface UserOrdersPageContainerProps {
-  // Define your props here
-}
-
-const UserOrdersPageContainer = ({}: UserOrdersPageContainerProps) => {
+const UserOrdersPageContainer = () => {
   const t = useTranslations("userOrders");
-  const locale = useLocale();
   return (
-    <div dir={locale === "en" ? "ltr" : "rtl"}>
+    <>
       <PageTitle title={t("title")} />
-      <OrderCardsContainer />
-    </div>
+      <PageContainer className="pt-6 pb-8">
+        <OrderCardsContainer />
+      </PageContainer>
+    </>
   );
 };
 

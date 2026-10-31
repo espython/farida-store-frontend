@@ -44,8 +44,8 @@ describe("CatalogProductCard", () => {
   it("shows title, sale price, struck regular price, discount badge and a slug link", () => {
     renderCard(product());
     expect(screen.getByText("Pots & Pans")).toBeInTheDocument();
-    expect(screen.getByText(/720\.00/)).toBeInTheDocument();
-    expect(screen.getByText(/800\.00/)).toBeInTheDocument();
+    expect(screen.getByText(/^720/)).toBeInTheDocument();
+    expect(screen.getByText(/^800$/)).toBeInTheDocument();
     expect(screen.getByText(/-10%/)).toBeInTheDocument();
     expect(screen.getAllByRole("link")[0]).toHaveAttribute("href", "/product/pots-pans");
   });
@@ -53,7 +53,7 @@ describe("CatalogProductCard", () => {
   it("shows only the price when not on sale, and no badge", () => {
     renderCard(product({ regularPrice: null }));
     expect(screen.queryByText(/%/)).not.toBeInTheDocument();
-    expect(screen.queryByText(/800\.00/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^800$/)).not.toBeInTheDocument();
   });
 
   it("flags out of stock and low stock", () => {

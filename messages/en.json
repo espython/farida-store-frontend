@@ -1,12 +1,113 @@
 {
+  "paymentFlow": {
+    "completePayment": "Complete Payment",
+    "enterYourCardDetails": "Enter your card details to complete the payment securely",
+    "goBack": "Go Back",
+    "ifYouEncounterAny": "If you encounter any issues, please contact customer support",
+    "loadingPaymentForm": "Loading payment form...",
+    "paymentError": "Payment Error",
+    "pleaseDoNotClose": "Please do not close this page",
+    "processingPayment": "Processing payment...",
+    "secureEncryptedConnectionYour": "Secure encrypted connection - Your card data is protected",
+    "tryAgain": "Try Again",
+    "acceptedPaymentMethods": "Accepted Payment Methods",
+    "allTransactionsAreSecured": "All transactions are secured and encrypted with SSL",
+    "cashOnDelivery": "Cash on Delivery",
+    "confirmOrder": "Confirm Order",
+    "creditdebitCard": "Credit/Debit Card",
+    "errorAfterPayment": "Error after payment",
+    "more": "& more",
+    "orderCreatedSuccessfully": "Order created successfully",
+    "orderCreationFailed": "Order creation failed",
+    "orderSummary": "Order Summary",
+    "payCashWhenYou": "Pay cash when you receive your order",
+    "paySecurelyWithYour": "Pay securely with your card",
+    "payWithCard": "Pay with Card",
+    "paymentErrorOccurred": "Payment error occurred",
+    "paymentMethods": "Payment Methods",
+    "paymentSuccessful": "Payment successful",
+    "pleaseCompleteShippingData": "Please complete shipping data first",
+    "pleaseLoginFirst": "Please login first",
+    "qty": "Qty",
+    "returnPolicyItemsCan": "Return Policy: Items can be returned within 14 days",
+    "shipping": "Shipping",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "total": "Total"
+  },
+  "checkoutSteps": {
+    "label": "Checkout steps",
+    "progress": "Step {current} of {total}"
+  },
+  "listing": {
+    "count": "{count, plural, one {# product} other {# products}}"
+  },
+  "goTop": {
+    "top": "Back to top"
+  },
+  "quantity": {
+    "label": "Quantity",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity"
+  },
+  "announcement": {
+    "dismiss": "Hide announcements"
+  },
+  "header": {
+    "closeMenu": "Close menu",
+    "searchLabel": "Search products",
+    "searchPlaceholder": "What are you cooking today?",
+    "account": "Account",
+    "wishlist": "Wishlist",
+    "cart": "Cart",
+    "menu": "Menu"
+  },
+  "bottomNav": {
+    "label": "Quick navigation",
+    "home": "Home",
+    "search": "Search",
+    "wishlist": "Saved",
+    "account": "Account"
+  },
+  "homeHero": {
+    "label": "Featured",
+    "kicker": "Kitchen essentials",
+    "title": "Good tools make good food",
+    "shop": "Shop",
+    "saleTitle": "On sale now",
+    "saleCta": "Shop the deals",
+    "browse": "Browse"
+  },
+  "perks": {
+    "label": "Why shop with us",
+    "shipping": {
+      "title": "Shipping all over Egypt",
+      "text": "Delivered to your door"
+    },
+    "cod": {
+      "title": "Cash on delivery",
+      "text": "Or pay securely by card"
+    },
+    "returns": {
+      "title": "14-day returns",
+      "text": "Exchange or return with ease"
+    },
+    "secure": {
+      "title": "Secure payments",
+      "text": "Your payments are fully protected"
+    }
+  },
   "currency": {
     "currency": "EGP"
   },
   "home": {
+    "browse": "Browse the kitchen",
+    "shopAll": "All products",
     "title": "products",
     "metaDescription": "Shop kitchen appliances online at Farida Store: blenders, mixers, kettles and more."
   },
   "navbar": {
+    "label": "Main",
     "home": "home",
     "products": "products",
     "order": "order",
@@ -22,12 +123,14 @@
     "home": "home"
   },
   "cartSidebar": {
+    "close": "Close cart",
     "cart": "shopping cart",
     "total": "total",
     "empty": "your cart is empty",
     "complete": "complete your order"
   },
   "cartDrop": {
+    "remove": "Remove",
     "cart": "shopping cart",
     "total": "total",
     "empty": "your cart is empty",
@@ -36,8 +139,8 @@
     "go": "go to cart"
   },
   "loginForm": {
-    "login": "login",
-    "register": "register now",
+    "login": "Log in",
+    "register": "Create an account",
     "labels": {
       "email": "Email",
       "password": "Password"
@@ -47,16 +150,15 @@
       "password": "Enter your password"
     },
     "errors": {
-      "email": "Not valid email"
+      "email": "Enter a valid email address"
     },
-
-    "submit": "submit",
-    "noAccount": " Don't have an account ?",
+    "submit": "Log in",
+    "noAccount": "Don't have an account?",
     "or": "or"
   },
   "registerForm": {
-    "login": "login",
-    "register": "register",
+    "login": "Log in",
+    "register": "Create an account",
     "labels": {
       "first": "First Name",
       "last": "Last Name",
@@ -66,20 +168,20 @@
       "confirm": "Confirm Password"
     },
     "placeholders": {
-      "first": "Enter first",
-      "last": "Enter last",
+      "first": "Enter your first name",
+      "last": "Enter your last name",
       "username": "Enter username",
       "email": "Enter your email",
       "password": "Enter your password",
       "confirm": "Confirm your password"
     },
     "errors": {
-      "email": "Not valid email",
-      "password": "Password must have  (1-6) letters includes at least one number and one uppercase letter  ",
-      "confirm": "Not the same password"
+      "email": "Enter a valid email address",
+      "password": "At least 6 characters, with one uppercase letter and one number",
+      "confirm": "Passwords don't match"
     },
-    "submit": "submit",
-    "haveAccount": "Already have an account ?",
+    "submit": "Create account",
+    "haveAccount": "Already have an account?",
     "or": "or"
   },
   "userLoggedIn": {
@@ -93,6 +195,13 @@
     "no": "no"
   },
   "filters": {
+    "filters": "Filters",
+    "close": "Close filters",
+    "showResults": "Show results",
+    "sort": "Sort by",
+    "pageSize": "Products per page",
+    "gridView": "Grid view",
+    "rowView": "List view",
     "filter": "filter",
     "sales": "sales only",
     "popularity": "sort by popularity",
@@ -121,6 +230,9 @@
     "again": " please try again"
   },
   "footer": {
+    "apps": "Get the app",
+    "payments": "Payment methods",
+    "cod": "Cash on delivery",
     "help": "We are always here to help you",
     "support": " Reach out to us through any of these support channels",
     "email": "email support",
@@ -128,9 +240,10 @@
     "copyrights": "  © 2024 farida store. All Rights Reserved"
   },
   "google": {
-    "continue": "continue with google"
+    "continue": "Continue with Google"
   },
   "search": {
+    "close": "Close search",
     "search": "search products",
     "common": "common search :",
     "type": "type to search...",
@@ -139,20 +252,20 @@
     "resultsFor": "search results"
   },
   "userPage": {
-    "account": "your account",
+    "account": "Your account",
     "title": {
-      "orders": " orders",
-      "profile": " profile",
-      "addresses": " addresses",
-      "cart": " cart",
-      "wishlist": " wishlist"
+      "orders": "Orders",
+      "profile": "Profile",
+      "addresses": "Addresses",
+      "cart": "Cart",
+      "wishlist": "Wishlist"
     },
     "description": {
-      "orders": "track , return , cancel an order , download invoice or buy again",
-      "profile": "edit your profile settings",
-      "addresses": "edit , remove or set default address",
-      "cart": "view all your cart items",
-      "wishlist": "view all your wishlist items"
+      "orders": "Track your orders and see their details",
+      "profile": "Edit your name and email",
+      "addresses": "Add or remove delivery addresses",
+      "cart": "View all your cart items",
+      "wishlist": "View all your wishlist items"
     }
   },
   "productPage": {
@@ -189,7 +302,6 @@
   },
   "cartPage": {
     "title": "cart",
-
     "tabs": {
       "step1": {
         "title": "shopping cart",
@@ -295,112 +407,149 @@
   },
   "confirmationPage": {
     "thanks": {
-      "thank": "thank you",
-      "message": " your order was recieved successfully"
+      "thank": "Thank you!",
+      "message": "Your order was received successfully. We'll let you know when it ships.",
+      "track": "Track your order",
+      "continue": "Continue shopping"
     },
     "orderInfo": {
       "date": {
-        "soon": "soon"
+        "soon": "Soon"
       },
       "information": {
-        "title": "order information",
-        "orderFor": "order for :",
-        "orderNumber": "order number :",
-        "orderOn": "ordered on  :",
-        "arrivedOn": "arrived on  :",
-        "totalPrice": "total price :",
-        "payment": "payment method :",
-        "cash": "cash",
-        "notes": "order notes :"
+        "title": "Order information",
+        "orderFor": "Order for",
+        "orderNumber": "Order number",
+        "orderOn": "Ordered on",
+        "arrivedOn": "Arrived on",
+        "totalPrice": "Total price",
+        "payment": "Payment method",
+        "cash": "Cash",
+        "notes": "Order notes"
       }
     },
     "orderAddress": {
-      "title": "order address",
-      "state": "state :",
-      "country": "country :",
-      "city": "city :",
-      "street": "street :",
-      "postal": "postal code :",
-      "phone1": "phone :",
-      "phone2": "second phone :"
+      "title": "Order address",
+      "state": "State",
+      "country": "Country",
+      "city": "City",
+      "street": "Street",
+      "postal": "Postal code",
+      "phone1": "Phone",
+      "phone2": "Second phone"
     },
     "orderItems": {
       "title": "order items",
-      "noOrder": "no order found"
+      "noOrder": "No order found",
+      "noOrderText": "We couldn't find this order in your account.",
+      "myOrders": "View my orders"
+    },
+    "payment": {
+      "title": "Payment details",
+      "subtitle": "Payment and transaction information",
+      "method": "Payment method",
+      "status": "Payment status",
+      "amountPaid": "Amount paid",
+      "orderTotal": "Order total",
+      "online": "Online payment",
+      "cod": "Cash on delivery",
+      "statuses": {
+        "completed": "Completed",
+        "pending": "Pending",
+        "failed": "Failed",
+        "unknown": "Unknown"
+      },
+      "transactionId": "Transaction ID",
+      "paymobOrderId": "Paymob order ID",
+      "codNote": "Payment is collected on delivery. Please have the exact amount ready.",
+      "secure": "All transactions are secure and protected"
+    },
+    "addressSelection": {
+      "title": "Choose a delivery address",
+      "address": "Address {index}",
+      "select": "Deliver here",
+      "selected": "Selected"
     }
   },
   "wishList": {
-    "title": "wish list",
+    "title": "Wishlist",
     "noSignIn": {
-      "descritpion": "sign in first to see your wish list",
-      "action": "sign in"
+      "descritpion": "Sign in to see your wishlist",
+      "action": "Sign in"
     },
     "content": {
       "items": "wish list items",
       "emptyWishlist": {
-        "empty": "your wish list is empty",
-        "action": "explore"
+        "empty": "Your wishlist is empty",
+        "text": "Tap the heart on any product to save it here.",
+        "action": "Browse products"
       },
       "item": {
-        "addToCart": "add to cart",
-        "addedToCart": "added to cart",
-        "delete": "delete"
+        "addToCart": "Add to cart",
+        "addedToCart": "In your cart",
+        "delete": "Remove",
+        "remove": "Remove {title} from wishlist"
       },
       "filters": {
-        "action": "add new item",
-        "filters": "Filters",
-        "filterBy": "Filter by ->",
         "rating": "Rating",
-        "pricesUp": "Prices Up",
-        "pricesDown": "Prices Down",
-        "AZ": "A-Z"
-      }
+        "pricesUp": "Price: low to high",
+        "pricesDown": "Price: high to low",
+        "AZ": "Name: A–Z",
+        "sortBy": "Sort by",
+        "choose": "Choose"
+      },
+      "count": "{count, plural, one {# saved item} other {# saved items}}"
     }
   },
   "userAdderesses": {
-    "title": "your addresses",
+    "title": "Your addresses",
     "address": {
-      "address": "address",
-      "notFound": "not found",
-      "phone1": "phone :",
-      "phone2": "second phone :",
-      "state": "state :",
-      "country": "country :",
-      "city": "city :",
-      "street": "street :",
-      "postal": "postal code :",
-      "delete": "delete"
+      "address": "Address",
+      "notFound": "Not found",
+      "phone1": "Phone",
+      "phone2": "Second phone",
+      "state": "State",
+      "country": "Country",
+      "city": "City",
+      "street": "Street",
+      "postal": "Postal code",
+      "delete": "Delete",
+      "title": "Address {index}",
+      "confirm": "Delete this address?",
+      "cancel": "Cancel"
     },
-    "new": "add new address",
+    "new": "Add a new address",
     "empty": {
-      "description": " you have no addresses"
+      "description": "You have no saved addresses",
+      "text": "Save an address to check out faster."
     },
     "form": {
-      "new": "new address",
+      "new": "New address",
       "labels": {
-        "phone1": "phone",
-        "phone2": "second phone ",
-        "state": "state",
-        "country": "country",
-        "city": "city",
-        "street": "street",
-        "postal": "postal code"
+        "phone1": "Phone",
+        "phone2": "Second phone",
+        "state": "State",
+        "country": "Country",
+        "city": "City",
+        "street": "Street",
+        "postal": "Postal code"
       },
       "placeholders": {
-        "phone1": "phone number",
-        "phone2": "another phone number",
-        "state": "pick your state",
-        "country": "your country",
-        "city": "your city",
-        "street": "your street",
-        "postal": "postal code of your address"
+        "phone1": "Phone number",
+        "phone2": "Another phone number",
+        "state": "Pick your state",
+        "country": "Your country",
+        "city": "Your city",
+        "street": "Your street",
+        "postal": "Postal code of your address"
       },
       "action": {
-        "submit": "submit"
-      }
+        "submit": "Save address"
+      },
+      "required": "This field is required",
+      "optional": "Optional"
     }
   },
-
   "notFound": {
     "title": "Page Not Found",
     "description": "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.",
@@ -418,61 +567,73 @@
     "label": "Loading"
   },
   "userOrders": {
-    "title": "your orders",
-    "empty": "you have no orders",
+    "title": "Your orders",
+    "empty": "You have no orders yet",
     "details": {
-      "orderNumber": "order number :",
-      "numberOfItems": "number of items :",
-      "orderedOn": "ordered on :",
-      "arrivedOn": "arrived on :",
-      "totalPrice": "total price :",
+      "orderNumber": "Order number",
+      "numberOfItems": "Items",
+      "orderedOn": "Ordered on",
+      "arrivedOn": "Arrives on",
+      "totalPrice": "Total",
       "items": "items",
       "actions": {
-        "seeDetails": "see details",
-        "trackOrder": "track order"
-      }
+        "seeDetails": "View details",
+        "trackOrder": "Track order"
+      },
+      "order": "Order #{number}",
+      "soon": "Soon"
     },
     "orderPage": {
       "title": "order",
       "orderItems": "order items"
     },
     "trackOrderPage": {
-      "title": "track order",
+      "title": "Track order",
       "empty": {
-        "description": "no order with this number",
-        "action": "make an order"
+        "description": "We couldn't find this order",
+        "text": "Check the order number, or find it in your orders.",
+        "action": "View my orders"
       },
       "recieved": {
-        "placed": "order placed",
-        "confirm": "congratiulations your order was received successfully",
-        "address": "your order will be shipped soon to"
+        "placed": "Order placed",
+        "confirm": "We received your order.",
+        "address": "It will be delivered to"
       },
       "shipped": {
-        "way": "order on the way",
+        "way": "On the way",
         "shipped": "your order was shipped successfully",
-        "deliveredDate": "it should be delivered at",
-        "progress": "progress of the order",
+        "deliveredDate": "Expected",
+        "progress": "Delivery progress",
         "soon": "soon",
         "done": "done",
-        "deliveredSuccess": "delivered successfully",
-        "fewHours": "few hours left",
+        "deliveredSuccess": "Delivered successfully",
+        "fewHours": "A few hours left",
         "days": "days",
-        "daysLeft": "days left"
+        "daysLeft": "{count, plural, one {# day left} other {# days left}}"
       },
       "paid": {
-        "arrived": "order arrived",
-        "receive": "you will pay for your items after you receive them"
+        "arrived": "Delivered",
+        "receive": "You'll pay in cash when the order arrives."
       },
       "status": {
-        "completed": "completed",
-        "progress": "in progress",
-        "hold": "on hold"
-      }
+        "done": "Done",
+        "current": "In progress",
+        "upcoming": "Next"
+      },
+      "orderNumber": "Order #{number}",
+      "details": "Order details"
+    },
+    "emptyText": "When you place an order, it will show up here.",
+    "startShopping": "Start shopping",
+    "statuses": {
+      "placed": "Placed",
+      "delivery": "On the way",
+      "arrived": "Delivered"
     }
   },
   "trackOrderPage": {
-    "title": "track order",
-    "description": "Please enter your order number in the box below and press the \u201cTrack Order\u201d button to view its status. You can find the order number in the mail sent to you containing the order confirmation Receipt.",
+    "title": "Track order",
+    "description": "Enter your order number and the email you ordered with. You'll find the number in your order confirmation.",
     "form": {
       "labels": {
         "orderNumber": "Order number",
@@ -482,24 +643,25 @@
         "orderNumber": "You will find it in your order confirmation message",
         "receiptEmail": "The email you used to complete the order"
       },
-      "action": "track order",
-      "invalidInfo": "invalid information"
+      "action": "Track order",
+      "invalidInfo": "We couldn't find an order with that number and email.",
+      "required": "This field is required",
+      "heading": "Find your order"
     }
   },
   "contactPage": {
-    "title": "contact us ",
+    "title": "Contact us",
     "branches": {
-      "title": "We welcome you to visit us at any time:-",
-      "branch": "branch",
-
-      "city_state": "cairo,egypt",
-
-      "times1": "sun-thurs:9:00-20:00",
-      "times2": "fri-sat:11:00-15:00"
+      "title": "Visit us",
+      "city_state": "Cairo, Egypt",
+      "times1": "Sun–Thu: 9:00–20:00",
+      "times2": "Fri–Sat: 11:00–15:00",
+      "map": "Map of our store",
+      "call": "Call"
     },
     "form": {
       "title": "Do you have a complaint or inquiry?",
-      "subTitle": "Please do not hesitate to call or write to us to help you",
+      "subTitle": "Write to us or give us a call and we'll help.",
       "labels": {
         "name": "Name",
         "email": "Email",
@@ -510,29 +672,32 @@
         "email": "Your email",
         "message": "Your message"
       },
-      "action": "send",
-      "sended": "your complaint was send",
-      "error": "Failed to send your message. Please try again."
+      "action": "Send message",
+      "sended": "Thanks, your message was sent.",
+      "error": "Failed to send your message. Please try again.",
+      "required": "This field is required",
+      "invalidEmail": "Enter a valid email address"
     }
   },
   "userProfilePage": {
-    "title": "user profile",
+    "title": "Your profile",
     "userDetails": {
-      "email": "email :",
-      "username": "username :",
-      "firstName": "first name :",
-      "lastName": "last name :"
+      "email": "Email",
+      "username": "Username",
+      "firstName": "First name",
+      "lastName": "Last name"
     },
     "actions": {
-      "main": "edit the profile",
-      "modal": "save"
+      "main": "Edit profile",
+      "modal": "Save"
     },
     "messages": {
-      "success": "updated successfully",
-      "failed": "failed to update"
+      "success": "Profile updated",
+      "failed": "Couldn't update your profile"
     }
   },
   "activeFilters": {
+    "remove": "Remove filter",
     "active": "active filters",
     "color": "color",
     "minPrice": "min price",
@@ -553,9 +718,34 @@
     }
   },
   "paymentCallback": {
-    "processing": "Processing Payment...",
-    "success": "Payment Successful!",
-    "failed": "Payment Failed",
-    "pending": "Payment Pending"
+    "processing": "Processing payment…",
+    "success": "Payment successful!",
+    "failed": "Payment failed",
+    "pending": "Payment pending",
+    "processingText": "Please wait while we verify your payment.",
+    "successText": "Your order is confirmed. Taking you to the confirmation page…",
+    "successCreating": "Payment successful. Finishing your order…",
+    "pendingText": "Your payment is being reviewed. We'll let you know once it's confirmed.",
+    "failedText": "We couldn't process your payment. Please try again.",
+    "tryAgain": "Try again",
+    "myOrders": "View my orders",
+    "home": "Back to home",
+    "transactionDetails": "Transaction details",
+    "transactionId": "Transaction ID",
+    "amount": "Amount",
+    "toastSuccess": "Payment successful",
+    "toastFailed": "Payment failed",
+    "toastError": "Error processing payment"
+  },
+  "auth": {
+    "panelTitle": "Welcome to Farida",
+    "panelText": "Kitchen appliances for every home, delivered across Egypt.",
+    "perks": {
+      "orders": "Track every order in one place",
+      "addresses": "Save addresses for faster checkout",
+      "wishlist": "Keep a wishlist of what you love"
+    },
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   }
 }

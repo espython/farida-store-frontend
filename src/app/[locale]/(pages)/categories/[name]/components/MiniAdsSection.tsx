@@ -31,7 +31,7 @@ const MiniAdsSection = () => {
   }, []);
 
   return (
-    <div className=" py-10 px-5 md:px-10 lg:px-20   flex justify-center items-center">
+    <div className="py-6 md:py-8 flex justify-center items-center">
       <Swiper
         modules={[
           Autoplay,

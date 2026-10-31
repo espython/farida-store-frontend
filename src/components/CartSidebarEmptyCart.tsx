@@ -5,11 +5,11 @@ import { FaBagShopping } from "react-icons/fa6";
 const CartSidebarEmptyCart = () => {
   const t = useTranslations("cartSidebar");
   return (
-    <div className="p-5 flex flex-col gap-3 justify-center items-center">
-      <FaBagShopping className="text-7xl md:text-9xl text-mainBlack/25" />
-      <h1 className="capitalize text-lg md:text-xl text-mainBlack/50">
-        {t("empty")}
-      </h1>
+    <div className="flex-1 p-8 flex flex-col gap-4 justify-center items-center text-center">
+      <div className="w-20 h-20 grid place-items-center rounded-full bg-sand">
+        <FaBagShopping className="text-3xl" aria-hidden="true" />
+      </div>
+      <p className="font-display text-xl capitalize">{t("empty")}</p>
     </div>
   );
 };

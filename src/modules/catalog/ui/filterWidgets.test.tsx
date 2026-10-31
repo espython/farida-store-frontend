@@ -96,8 +96,8 @@ describe("CategoryLinks", () => {
     state.categories.data = [cat("قدر", "قدور", 2), cat("pans", "Pans", 1)];
     state.route = { name: "%D9%82%D8%AF%D8%B1" };
     wrap(<CategoryLinks />, "ar");
-    expect(screen.getByRole("link", { name: /قدور/ }).className).toContain("text-mainPink");
-    expect(screen.getByRole("link", { name: /Pans/ }).className).not.toContain("text-mainPink");
+    expect(screen.getByRole("link", { name: /قدور/ })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: /Pans/ })).not.toHaveAttribute("aria-current");
   });
 
   it("calls onSelect when a link is clicked", () => {
@@ -124,7 +124,7 @@ describe("ColorOptions", () => {
 
   it("renders swatches with a fallback colour when there is no hex", () => {
     const { container } = wrap(<ColorOptions />);
-    const swatches = container.querySelectorAll("span.w-5");
+    const swatches = container.querySelectorAll('[data-testid="color-swatch"]');
     expect((swatches[0] as HTMLElement).style.backgroundColor).toBe("rgb(255, 0, 0)");
     expect((swatches[1] as HTMLElement).style.backgroundColor).toBe("rgb(209, 213, 219)");
   });

@@ -1,101 +1,106 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
-import { LiaNewspaper } from "react-icons/lia";
-import { FaRegEye } from "react-icons/fa";
-import SafeDivider from "./SafeDivider";
-import { StoreContext } from "@/contexts/StoreContext";
-import { Link } from "@/navigation";
-import { observer } from "mobx-react-lite";
-import { useParams } from "next/navigation";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
+import React, { useContext, useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
-import UserSidebarMenu from "./UserSidebarMenu";
-import { useAuth } from "@/hooks/useAuth";
+import { LiaNewspaper } from "react-icons/lia";
+import { observer } from "mobx-react-lite";
 import { useLocale, useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
+import { Link } from "@/navigation";
+import { StoreContext } from "@/contexts/StoreContext";
+import { useAuth } from "@/hooks/useAuth";
+import { CATALOG_SOURCE, CategoryLinks } from "@/modules/catalog";
+import BrandLogo from "@/shared/ui/BrandLogo";
+import UserSidebarMenu from "./UserSidebarMenu";
 
-const SidebarContent = () => {
-  const { sidebar, categories } = useContext(StoreContext);
-  const { isLoggedIn } = useAuth();
+const rowClass = "flex items-center gap-3 min-h-[44px] px-3 -mx-3 rounded-xl hover:bg-sand transition-colors";
 
-  const urlParams: Params = useParams();
-
-  const [editedParams, setEditedParam] = useState<string>("");
-
-  const t = useTranslations("sidebar");
+/** Strapi-mode category list (the MobX store); Woo mode uses the catalog module instead. */
+const StrapiCategoryLinks = observer(({ onSelect }: { onSelect: () => void }) => {
+  const { categories } = useContext(StoreContext);
   const locale = useLocale();
+  const params = useParams();
+  const active = typeof params?.name === "string" ? decodeURIComponent(params.name) : "";
 
   useEffect(() => {
     categories.getAllCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (urlParams.name) {
-      setEditedParam(urlParams.name.replaceAll("%20", " "));
-    }
-  }, [urlParams]);
+  return (
+    <ul className="flex flex-col">
+      {categories.categories?.map((cat) => (
+        <li key={cat.id}>
+          <Link
+            href={`/categories/${cat.attributes.name}`}
+            onClick={onSelect}
+            aria-current={active === cat.attributes.name ? "page" : undefined}
+            className={`${rowClass} capitalize ${active === cat.attributes.name ? "font-bold text-saffron-ink" : ""}`}
+          >
+            {locale === "en" ? cat.attributes.name : cat.attributes?.localizations?.data[0]?.attributes.name}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+});
+StrapiCategoryLinks.displayName = "StrapiCategoryLinks";
+
+/** The menu drawer: main links (hidden in the header below xl), categories, order tracking, account. */
+const SidebarContent = () => {
+  const { sidebar } = useContext(StoreContext);
+  const { isLoggedIn } = useAuth();
+  const t = useTranslations("sidebar");
+  const nav = useTranslations("navbar");
+  const header = useTranslations("header");
+  const close = sidebar.hideWholeSidebar;
+
+  const mainMenu = [
+    { label: nav("home"), href: "/" },
+    { label: nav("products"), href: "/" },
+    { label: nav("order"), href: "/order" },
+    { label: nav("contact"), href: "/contact" },
+  ];
 
   return (
-    <div className="relative hidden md:flex flex-col " suppressHydrationWarning={true}>
-      <div className="sticky top-0 flex  flex-col bg-mainWhite">
-        <div className=" flex justify-between items-center px-5 py-3">
-          <h1 className="text-3xl text-mainPink uppercase font-bold">logo</h1>
-          <div
-            className="flex items-start justify-center text-3xl"
-            onClick={sidebar.hideWholeSidebar}
-          >
-            <IoMdClose className=" cursor-pointer" />
-          </div>
-        </div>
-        <SafeDivider />
+    <div className="flex flex-col min-h-full" suppressHydrationWarning={true}>
+      <div className="sticky top-0 z-10 bg-cream flex items-center justify-between px-5 h-16 border-b border-line">
+        <BrandLogo />
+        <button
+          type="button"
+          onClick={close}
+          aria-label={header("closeMenu")}
+          className="w-11 h-11 grid place-items-center rounded-full hover:bg-sand"
+        >
+          <IoMdClose className="text-2xl" aria-hidden="true" />
+        </button>
       </div>
 
-      <div className="py-5 flex flex-col gap-3 capitalize px-5">
-        {locale === "en"
-          ? categories.categories?.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/categories/${cat.attributes.name}`}
-                className={`side-link ${
-                  editedParams === cat.attributes.name && `text-mainPink`
-                }`}
-                onClick={sidebar.hideWholeSidebar}
-              >
-                {cat.attributes.name}
+      <nav aria-label={t("menu")} className="px-5 py-4 xl:hidden">
+        <p className="text-xs font-bold uppercase tracking-wider text-garden-muted mb-1">{t("menu")}</p>
+        <ul className="flex flex-col capitalize font-semibold">
+          {mainMenu.map((item) => (
+            <li key={item.label}>
+              <Link href={item.href} onClick={close} className={rowClass}>
+                {item.label}
               </Link>
-            ))
-          : categories.categories?.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/categories/${cat.attributes.name}`}
-                className={`side-link ${
-                  editedParams === cat.attributes.name && `text-mainPink`
-                }`}
-                onClick={sidebar.hideWholeSidebar}
-              >
-                {cat.attributes?.localizations?.data[0].attributes.name}
-              </Link>
-            ))}
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav aria-label={t("sections")} className="px-5 py-4 border-t border-line xl:border-t-0">
+        <p className="text-xs font-bold uppercase tracking-wider text-garden-muted mb-1">{t("sections")}</p>
+        {CATALOG_SOURCE === "woo" ? <CategoryLinks onSelect={close} /> : <StrapiCategoryLinks onSelect={close} />}
+      </nav>
+
+      <div className="px-5 py-4 border-t border-line">
+        <Link href="/order" onClick={close} className={`${rowClass} capitalize`}>
+          <LiaNewspaper className="text-xl" aria-hidden="true" />
+          {t("order")}
+        </Link>
       </div>
-      <div className="flex flex-col " suppressHydrationWarning={true}>
-        <SafeDivider />
-        <div className="flex py-3 flex-col px-5 gap-2 capitalize">
-          <div className="flex items-center text-lg gap-2 text-mainBlack/50">
-            <LiaNewspaper />
-            <Link href={"/order"}>{t("order")}</Link>
-          </div>
-          <div className="flex items-center text-lg gap-2 text-mainBlack/50">
-            <FaRegEye />
-            <Link href={"#"}>{t("seen")}</Link>
-          </div>
-        </div>
-        {isLoggedIn && (
-          <>
-            <SafeDivider />
-            <UserSidebarMenu />
-          </>
-        )}
-      </div>
+
+      {isLoggedIn && <UserSidebarMenu />}
     </div>
   );
 };

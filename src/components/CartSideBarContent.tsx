@@ -30,7 +30,7 @@ const CartSideBarContent = () => {
   ]);
 
   return (
-    <div className="relative flex flex-col justify-between h-full">
+    <div className="relative flex flex-col h-full">
       {user.isMergingOrRemovingLoading && <LoadingOverlay />}
       <CartSidebarHeader close={cartSidebar.hideWholeCartSidebar} />
 

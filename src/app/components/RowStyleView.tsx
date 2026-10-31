@@ -33,7 +33,7 @@ const RowStyleView = () => {
         <div dir={locale === "en" ? "ltr" : "rtl"}>
           {products.products?.length > 0 ? (
             <div
-              className={` w-full h-auto grid grid-cols-1 xl:grid-cols-2 gap-5 lmob:gap-2 lg:gap-10 px-5 md:px-10 lg:px-20 py-0 
+              className={` w-full h-auto grid grid-cols-1 xl:grid-cols-2 gap-5 lmob:gap-2 lg:gap-10 py-0 
              
               
                 `}

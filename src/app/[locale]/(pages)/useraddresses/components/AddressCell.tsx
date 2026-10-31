@@ -5,11 +5,12 @@ interface addressCell {
   description: string;
 }
 
+/** One label/value pair inside a `<dl>`. */
 const AddressCell = ({ title, description }: addressCell) => {
   return (
-    <div className="grid grid-cols-1  capitalize ">
-      <h1 className="text-sm md:text-lg text-mainBlack/50">{title}</h1>
-      <h1 className="text-sm md:text-lg ">{description}</h1>
+    <div className="flex flex-col gap-0.5 min-w-0">
+      <dt className="text-sm text-garden-muted first-letter:uppercase">{title}</dt>
+      <dd className="font-semibold break-words"><bdi>{description}</bdi></dd>
     </div>
   );
 };

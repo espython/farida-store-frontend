@@ -18,6 +18,7 @@ const CatalogListing = ({ view, onFiltersChange }: Props) => {
   const locale = useLocale() as Locale;
   const t = useTranslations("errorPage");
   const loading = useTranslations("loading");
+  const listing = useTranslations("listing");
   const { isDesktop, isMobile } = useScreenSize({});
   const { filtersKey, page, setPage, data, isLoading, isFetching, isError, refetch } =
     useCatalogListing(locale);
@@ -57,16 +58,19 @@ const CatalogListing = ({ view, onFiltersChange }: Props) => {
 
   return (
     <div dir={locale === "en" ? "ltr" : "rtl"} className="flex flex-col gap-5">
+      {data.items.length > 0 && (
+        <p className="text-sm text-garden-muted" aria-live="polite">
+          {listing("count", { count: data.total })}
+        </p>
+      )}
       {data.items.length === 0 ? (
         <EmptyProducts />
       ) : (
         <div
-          className={`w-full grid gap-5 lmob:gap-2 lg:gap-10 px-5 md:px-10 lg:px-20 transition-opacity ${
-            isFetching ? "opacity-60" : ""
-          } ${
+          className={`w-full grid transition-opacity ${isFetching ? "opacity-60" : ""} ${
             view === "grid"
-              ? "grid-cols-1 lmob:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-              : "grid-cols-1 xl:grid-cols-2"
+              ? "grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-3 md:gap-x-6 md:gap-y-8 lg:grid-cols-4"
+              : "grid-cols-1 gap-6 xl:grid-cols-2"
           }`}
           aria-busy={isFetching}
         >
@@ -79,7 +83,7 @@ const CatalogListing = ({ view, onFiltersChange }: Props) => {
         <div className="flex justify-center items-center">
           <Pagination
             showControls
-            color="danger"
+            color="success"
             size={isMobile ? "sm" : isDesktop ? "md" : "lg"}
             total={data.totalPages}
             page={page}
@@ -88,7 +92,7 @@ const CatalogListing = ({ view, onFiltersChange }: Props) => {
               document.getElementById("filters")?.scrollIntoView({ behavior: "smooth" });
               setPage(next);
             }}
-            classNames={{ cursor: "bg-mainPink" }}
+            classNames={{ cursor: "bg-garden text-cream" }}
           />
         </div>
       )}

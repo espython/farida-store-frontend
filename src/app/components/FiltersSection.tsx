@@ -80,121 +80,62 @@ const FiltersSection = () => {
     router.replace(`${pathname}?${params.toString()}`);
   };
 
+  const viewButton = (active: boolean) =>
+    `w-11 h-11 grid place-items-center rounded-full transition-colors ${
+      active ? "bg-garden text-cream" : "bg-white text-garden hover:bg-sand"
+    }`;
+
   return (
-    <section
-      id="filters"
-      className="flex flex-col gap-5 px-5 md:px-10 lg:px-20 "
-      dir={locale === "en" ? "ltr" : "rtl"}
-    >
+    <section id="filters" className="flex flex-col gap-4 scroll-mt-32" dir={locale === "en" ? "ltr" : "rtl"}>
       {(searchParams.has("color") ||
         searchParams.has("min_price") ||
         searchParams.has("max_price")) && <ActiveFilters />}
 
-      <div className=" grid grid-rows-3 grid-cols-1 md:grid-rows-1 md:grid-cols-[repeat(3,minmax(0,auto))] items-center  relative pb-5  md:gap-5">
-        <div className="grid grid-cols-[1fr_6fr] items-center gap-3 order-3 md:order-1">
-          <FilterButton />
-          <div
-            className={`hidden md:flex items-center justify-start gap-2 text-lg md:text-2xl ${
-              locale === "en" ? "pl-1" : "pr-1"
-            } py-3 cursor-pointer bg-mainGray rounded-md`}
-          >
-            <Checkbox
-              isSelected={salesOnly === "true"}
-              color="secondary"
-              onChange={(e) => {
-                handleSalesOnlySearch(e.target.checked);
-              }}
-              className="pl-5 py-3 "
-            >
-              {t("sales")}
-            </Checkbox>
-          </div>
-          {/* this select input will display only on small screens */}
+      <div className="flex flex-wrap items-center gap-3">
+        <FilterButton />
+        <Checkbox
+          isSelected={salesOnly === "true"}
+          color="success"
+          onChange={(e) => {
+            handleSalesOnlySearch(e.target.checked);
+          }}
+          classNames={{
+            base: "m-0 h-11 px-4 bg-white rounded-full max-w-none",
+            label: "text-garden font-semibold",
+          }}
+        >
+          {t("sales")}
+        </Checkbox>
+
+        <div className="flex items-center gap-3 basis-full md:basis-auto md:ms-auto">
           <Select
-            radius="sm"
-            defaultSelectedKeys={[
-              searchParams.get("sort") ?? selections[0].value,
-            ]}
+            aria-label={t("sort")}
+            radius="full"
+            size="sm"
+            defaultSelectedKeys={[searchParams.get("sort") ?? selections[0].value]}
             onChange={(e) => {
               handleSortSearch(e.target.value);
             }}
-            className=" md:hidden "
-            classNames={{
-              value: "text-xs lmob:text-sm",
-            }}
-            dir={locale === "en" ? "ltr" : "rtl"}
+            className="flex-1 md:w-56"
+            classNames={{ trigger: "h-11 bg-white shadow-none", value: "text-garden font-semibold" }}
           >
             {selections.map((sel) => (
-              <SelectItem
-                key={sel.value}
-                value={sel.value}
-                className="text-[.2rem]"
-                classNames={{
-                  title: "text-xs lmob:text-sm",
-                }}
-              >
-                {sel.label}
-              </SelectItem>
-            ))}
-          </Select>
-        </div>
-
-        {/* <div className="grid md:grid-cols-[1fr_4fr] lg:grid-cols-[1fr_4fr_1.5fr]  items-center gap-5"> */}
-        <div className="flex gap-5 justify-end order-1 md:order-1">
-          <MdGridView
-            className="text-2xl cursor-pointer"
-            onClick={() => {
-              viewStyle.displayGridView();
-            }}
-          />
-          <MdOutlineViewAgenda
-            className="text-2xl cursor-pointer"
-            onClick={() => {
-              viewStyle.displayRowView();
-            }}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-5 items-center order-2 md:order-1">
-          <Select
-            radius="sm"
-            defaultSelectedKeys={[
-              searchParams.get("sort") ?? selections[0].value,
-            ]}
-            onChange={(e) => {
-              handleSortSearch(e.target.value);
-            }}
-            className="hidden md:block"
-            // dir={locale === "en" ? "ltr" : "rtl"}
-            classNames={{
-              // base: `${locale === "en" ? "text-left" : "text-right"}`,
-              value: `${locale === "en" ? "text-left" : "text-right "} `,
-              // trigger: `${locale === "en" ? "text-left" : "text-right"}`,
-              innerWrapper: `${locale === "en" ? "text-left" : "text-right"}`,
-            }}
-          >
-            {selections.map((sel) => (
-              <SelectItem
-                key={sel.value}
-                value={sel.value}
-                classNames={{
-                  base: `${locale === "en" ? "text-left" : "text-right"}`,
-                }}
-              >
+              <SelectItem key={sel.value} value={sel.value}>
                 {sel.label}
               </SelectItem>
             ))}
           </Select>
 
           <Select
-            radius="sm"
-            defaultSelectedKeys={[
-              searchParams.get("psize") ?? selections[0].value,
-            ]}
+            aria-label={t("pageSize")}
+            radius="full"
+            size="sm"
+            defaultSelectedKeys={[searchParams.get("psize") ?? pageSizeSelections[0].value]}
             onChange={(e) => {
               handlePageSizeSearch(e.target.value);
             }}
-            className="hidden lg:block"
+            className="hidden lg:block w-24"
+            classNames={{ trigger: "h-11 bg-white shadow-none", value: "text-garden font-semibold" }}
           >
             {pageSizeSelections.map((sel) => (
               <SelectItem key={sel.value} value={sel.value}>
@@ -203,22 +144,28 @@ const FiltersSection = () => {
             ))}
           </Select>
 
-          {/* this checkbox diplayed only on small screens */}
-          <div className="flex md:hidden items-center gap-2 text-lg md:text-2xl p-5 py-2 cursor-pointer bg-mainGray rounded-md">
-            <Checkbox
-              isSelected={salesOnly === "true"}
-              color="secondary"
-              onChange={(e) => {
-                handleSalesOnlySearch(e.target.checked);
-              }}
-              className="p-5 py-2"
+          <div className="hidden md:flex gap-2">
+            <button
+              type="button"
+              aria-label={t("gridView")}
+              aria-pressed={viewStyle.gridView}
+              className={viewButton(viewStyle.gridView)}
+              onClick={() => viewStyle.displayGridView()}
             >
-              {t("sales")}
-            </Checkbox>
+              <MdGridView className="text-xl" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              aria-label={t("rowView")}
+              aria-pressed={!viewStyle.gridView}
+              className={viewButton(!viewStyle.gridView)}
+              onClick={() => viewStyle.displayRowView()}
+            >
+              <MdOutlineViewAgenda className="text-xl" aria-hidden="true" />
+            </button>
           </div>
         </div>
       </div>
-      {/* </div> */}
     </section>
   );
 };

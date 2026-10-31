@@ -26,20 +26,21 @@ const ImagesSection = ({ allImages }: imagesProps) => {
   }, [allImages?.data]);
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-3">
       <ZoomedImage
         src={`${process.env.NEXT_PUBLIC_HOST}${selectedImage?.attributes.url}`}
       />
 
-      <div className="grid grid-cols-5 gap-2  ">
-        {allImages?.data?.map((img) => (
-          <div
+      <div className="no-scrollbar flex gap-2 overflow-x-auto p-1 -m-1">
+        {allImages?.data?.map((img, i) => (
+          <button
+            type="button"
             key={img.id}
-            className={`w-full aspect-square  transition-all bg-mainGray border-solid border-2 ${
-              img.id === selectedImage?.id
-                ? "border-mainBlack"
-                : "border-mainGray"
-            } hover:border-mainPink p-1 flex items-center justify-center rounded-md cursor-pointer`}
+            aria-label={`${i + 1} / ${allImages?.data?.length}`}
+            aria-pressed={img.id === selectedImage?.id}
+            className={`shrink-0 w-[4.5rem] h-[4.5rem] rounded-xl overflow-hidden bg-sand transition-shadow ${
+              img.id === selectedImage?.id ? "ring-2 ring-garden ring-offset-2 ring-offset-cream" : "hover:ring-2 hover:ring-line"
+            }`}
             onClick={() => {
               setSelectedImage(img);
             }}
@@ -47,10 +48,11 @@ const ImagesSection = ({ allImages }: imagesProps) => {
             <Image
               src={`${process.env.NEXT_PUBLIC_HOST}${img.attributes.url}`}
               radius="none"
+              removeWrapper
               alt=""
-              className="w-full h-auto aspect-square object-contain"
+              className="w-full h-full object-cover"
             />
-          </div>
+          </button>
         ))}
       </div>
     </div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { CgClose } from "react-icons/cg";
 import SearchBox from "./SearchBox";
 import { observer } from "mobx-react-lite";
@@ -13,6 +13,15 @@ const SearchMenu = () => {
 
   const t = useTranslations("search");
   const locale = useLocale();
+
+  useEffect(() => {
+    if (!searchBox.showSearchBox) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") searchBox.hideWholeSearchBox();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [searchBox, searchBox.showSearchBox]);
 
   return (
     <div dir={locale === "en" ? "ltr" : "rtl"}>
@@ -29,34 +38,37 @@ const SearchMenu = () => {
       </AnimatePresence>
       <motion.div
         ref={divRef}
-        initial={{ y: -1500 }}
-        animate={{
-          y: searchBox.showSearchBox
-            ? 0
-            : divRef.current
-            ? -divRef.current?.offsetHeight
-            : -1500,
-        }}
-        // exit={{ y: divRef.current ? -divRef.current?.offsetHeight : -1500 }}
+        initial={false}
+        animate={
+          searchBox.showSearchBox
+            ? { y: 0, visibility: "visible" }
+            : { y: "-110%", transitionEnd: { visibility: "hidden" } }
+        }
         transition={{
           type: "tween",
           duration: 0.5,
         }}
-        className="bg-mainWhite fixed top-0 left-0 w-full min-h-[50vh] h-full md:h-auto text-mainBlack p-5 z-[100] overflow-y-auto"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="search-dialog-title"
+        aria-hidden={!searchBox.showSearchBox}
+        className="bg-cream fixed top-0 inset-x-0 h-full md:h-auto md:max-h-[85vh] md:rounded-b-3xl shadow-xl text-garden z-[100] overflow-y-auto"
       >
-        <div className="cursor-pointer">
-          <CgClose
-            className="text-lg md:text-2xl border-mainBlack/25 rounded-full  border-1 md:border-0 border-solid"
-            onClick={searchBox.hideWholeSearchBox}
-          />
-        </div>
-        <div className="flex flex-col gap-14 justify-center items-center">
-          <h1 className="text-2xl md:text-6xl capitalize font-bold mt-5 md:mt-0">
-            {t("search")}
-          </h1>
-          <div className="w-full">
-            <SearchBox />
+        <div className="max-w-[860px] mx-auto px-4 md:px-8 py-4 md:py-8 flex flex-col gap-6">
+          <div className="flex items-center justify-between">
+            <p id="search-dialog-title" className="font-display text-2xl md:text-[2rem] capitalize">
+              {t("search")}
+            </p>
+            <button
+              type="button"
+              onClick={searchBox.hideWholeSearchBox}
+              aria-label={t("close")}
+              className="w-11 h-11 grid place-items-center rounded-full bg-white hover:bg-sand"
+            >
+              <CgClose className="text-xl" aria-hidden="true" />
+            </button>
           </div>
+          <SearchBox />
         </div>
       </motion.div>
     </div>

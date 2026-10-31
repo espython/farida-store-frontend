@@ -1,7 +1,6 @@
 "use client";
 import { Link } from "@/navigation";
 import React, { useContext } from "react";
-import classNames from "classnames";
 import { useSearchParams } from "next/navigation";
 import { useRouter, usePathname } from "@/navigation";
 import { StoreContext } from "@/contexts/StoreContext";
@@ -38,26 +37,20 @@ const ColorChoice = ({ value, name, hex }: colorProps) => {
   };
 
   return (
-    <div
-      className={`flex items-center justify-between cursor-pointer `}
+    <button
+      type="button"
+      aria-pressed={colorFilter === value}
       onClick={() => {
         handleColorSearch(value ?? "");
       }}
+      className={`inline-flex items-center gap-2 h-11 ps-2 pe-4 rounded-full bg-white border-2 font-semibold transition-colors ${
+        colorFilter === value ? "border-garden" : "border-transparent hover:border-line"
+      }`}
     >
-      <div className="flex items-center gap-2">
-        <div
-          className={classNames("w-5 h-5")}
-          style={{
-            backgroundColor: `${hex}`,
-          }}
-        />
-        <h1 className="text-sm md:text-xl">{name}</h1>
-      </div>
-
-      {colorFilter === value && (
-        <div className="w-2 h-2 rounded-full bg-emerald-500" />
-      )}
-    </div>
+      <span className="w-7 h-7 rounded-full border border-black/10" style={{ backgroundColor: `${hex}` }} />
+      {name}
+      {colorFilter === value && <span aria-hidden="true">✓</span>}
+    </button>
   );
 };
 

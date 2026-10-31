@@ -6,11 +6,12 @@ import { FaCartArrowDown } from "react-icons/fa6";
 import { observer } from "mobx-react-lite";
 import { AnimatePresence, motion } from "framer-motion";
 import Icon from "./Icon";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 const CartFloatingButton = () => {
   const { cartSidebar, cart, sidebar, searchBox } = useContext(StoreContext);
   const locale = useLocale();
+  const t = useTranslations("header");
 
   const movingValue = useMemo(() => {
     if (locale === "en") {
@@ -32,24 +33,19 @@ const CartFloatingButton = () => {
             transition={{
               duration: 1,
             }}
-            className={`fixed bottom-20 ${
-              locale === "en" ? "right-5" : "left-5"
-            } z-[100] w-max `}
+            className="hidden md:block fixed bottom-8 end-8 z-[100] w-max"
           >
-            <div
-              className="bg-mainBlack cursor-pointer w-12 h-12  md:w-16 md:h-16 relative rounded-full flex items-center justify-center transition-all hover:bg-mainBlack/75"
-              onClick={() => {
+            <Icon
+              icon={<FaCartArrowDown className="text-cream text-xl md:text-2xl" aria-hidden="true" />}
+              backColor="#1e3a2b"
+              className="w-14 h-14 md:w-16 md:h-16 shadow-lg hover:opacity-90"
+              showPop
+              count={cart.productsCount}
+              label={t("cart")}
+              whenClick={() => {
                 cartSidebar.displayWholeCartSidebar();
               }}
-            >
-              <Icon
-                icon={
-                  <FaCartArrowDown className="text-mainWhite text-lg md:text-2xl" />
-                }
-                showPop
-                count={cart.productsCount}
-              />
-            </div>
+            />
           </motion.div>
         )}
     </AnimatePresence>

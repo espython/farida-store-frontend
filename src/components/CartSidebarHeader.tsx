@@ -1,25 +1,25 @@
 "use client";
-import SafeDivider from "./SafeDivider";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { IoMdClose } from "react-icons/io";
 
 interface cartSidebarProps {
-  close: any;
+  close: () => void;
 }
 
 const CartSidebarHeader = ({ close }: cartSidebarProps) => {
   const t = useTranslations("cartSidebar");
   return (
-    <div>
-      <div className="p-5 flex justify-between items-center">
-        <h1 className="text-lg md:text-xl font-bold capitalize">{t("cart")}</h1>
-        <IoMdClose
-          className="text-xl md:text-2xl cursor-pointer font-bold "
-          onClick={close}
-        />
-      </div>
-      <SafeDivider />
+    <div className="flex justify-between items-center px-5 h-16 border-b border-line shrink-0">
+      <p className="font-display text-xl capitalize">{t("cart")}</p>
+      <button
+        type="button"
+        onClick={close}
+        aria-label={t("close")}
+        className="w-11 h-11 grid place-items-center rounded-full hover:bg-sand"
+      >
+        <IoMdClose className="text-2xl" aria-hidden="true" />
+      </button>
     </div>
   );
 };

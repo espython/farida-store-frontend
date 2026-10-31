@@ -5,7 +5,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { cartProductType } from "@/stores/specificTypes/cartProductType";
 import { strapiProductType } from "@/stores/specificTypes/strapiProductType";
 
-import { Button, Spinner } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
+import { buttonClass } from "@/shared/ui/Button";
 import { observer } from "mobx-react-lite";
 import React, { useContext, useMemo, useState } from "react";
 
@@ -13,19 +14,19 @@ import { FaCheck } from "react-icons/fa";
 import { FaCartPlus } from "react-icons/fa6";
 import { MdOutlineRemoveShoppingCart } from "react-icons/md";
 
-import { useScreenSize } from "react-screen-size-helper";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
 interface AddToCartButtonProps {
   product: strapiProductType;
+  /** "inline" in the desktop buy box, "bar" as the phone sticky bar. */
+  placement?: "inline" | "bar";
 }
 
-const AddToCartButton = ({ product }: AddToCartButtonProps) => {
+const AddToCartButton = ({ product, placement = "inline" }: AddToCartButtonProps) => {
   const { cart, user, products, cartSidebar, sidebar, searchBox } =
     useContext(StoreContext);
   const { isLoggedIn } = useAuth();
-  const { currentWidth } = useScreenSize({});
   const t = useTranslations("productPage");
 
   // const [foundInCart, setFoundInCart] = useState<cartProductType | undefined>();
@@ -114,67 +115,42 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart.totalPrice, product.id]);
 
+  const available = isProductAvailable();
+  const label = !available ? t("details.outStock") : foundInCart ? t("addedToCart") : t("addToCart");
+  const icon = addingToUserCartLoading ? (
+    <Spinner size="sm" color="current" />
+  ) : !available ? (
+    <MdOutlineRemoveShoppingCart aria-hidden="true" />
+  ) : foundInCart ? (
+    <FaCheck aria-hidden="true" />
+  ) : (
+    <FaCartPlus aria-hidden="true" />
+  );
+  const button = (
+    <button
+      type="button"
+      onClick={addProductToCart}
+      disabled={!!foundInCart || !available}
+      className={`${buttonClass({ size: "lg", full: true, variant: foundInCart ? "outline" : "primary" })} capitalize disabled:opacity-100 ${
+        !available ? "!bg-sand !text-garden-muted" : ""
+      }`}
+    >
+      {icon}
+      {label}
+    </button>
+  );
+
+  if (placement === "inline") return <div className="hidden md:block">{button}</div>;
+
+  // Phones: a sticky bar above the tab bar; slides away while a drawer or the search is open.
+  const hidden = cartSidebar.showCartSideBar || sidebar.showSideBar || searchBox.showSearchBox;
   return (
     <motion.div
-      initial={{ y: 0, x: 0 }}
-      animate={{
-        x:
-          (cartSidebar.showCartSideBar ||
-            sidebar.showSideBar ||
-            searchBox.showSearchBox) &&
-          currentWidth < 768
-            ? 500
-            : 0,
-      }}
-      transition={{
-        delay: 0.5,
-      }}
-      className="fixed bottom-36 right-5 md:bottom-0 md:left-0 z-50 w-auto md:w-full"
+      initial={false}
+      animate={{ y: hidden ? 160 : 0 }}
+      className="md:hidden fixed inset-x-3 bottom-[5.25rem] z-[84] p-2 rounded-full bg-white shadow-lg border border-line"
     >
-      <Button
-        className={` py-2 ${
-          !isProductAvailable()
-            ? `bg-gray-400 cursor-not-allowed`
-            : foundInCart
-            ? `bg-emerald-500`
-            : `bg-mainPink`
-        } text-mainWhite  w-full capitalize transition-all ${
-          !isProductAvailable() ? '' : 'hover:bg-mainPink/90'
-        } text-2xl md:text-xl`}
-        endContent={
-          addingToUserCartLoading ? (
-            <Spinner
-              size="sm"
-              classNames={{
-                circle1: "border-l-mainWhite border-b-mainWhite",
-                circle2: "border-mainWhite",
-              }}
-            />
-          ) : !isProductAvailable() ? (
-            <MdOutlineRemoveShoppingCart />
-          ) : foundInCart ? (
-            <FaCheck />
-          ) : (
-            <FaCartPlus />
-          )
-        }
-        size="lg"
-        // isLoading={addingToUserCartLoading}
-        isDisabled={!!foundInCart || !isProductAvailable()}
-        disableAnimation
-        disableRipple
-        onClick={addProductToCart}
-        radius={currentWidth < 768 ? "full" : "none"}
-        isIconOnly={currentWidth < 768 ? true : false}
-      >
-        {currentWidth < 768
-          ? ""
-          : !isProductAvailable()
-          ? t("details.outStock")
-          : foundInCart
-          ? t("addedToCart")
-          : t("addToCart")}
-      </Button>
+      {button}
     </motion.div>
   );
 };

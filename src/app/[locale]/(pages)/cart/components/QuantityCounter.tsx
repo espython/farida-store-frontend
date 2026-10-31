@@ -1,4 +1,5 @@
 "use client";
+import QuantityStepper from "@/shared/ui/QuantityStepper";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import { StoreContext } from "@/contexts/StoreContext";
 import { isUserLoggedIn } from "@/functions/credentials";
@@ -63,27 +64,7 @@ const QuantityCounter = ({ product, settingLoading }: quantityCounterProps) => {
     setCounter(product.quantity);
   }, [product.quantity]);
 
-  return (
-    <div className="relative " dir="ltr">
-      <div className="flex items-center justify-center">
-        <button
-          className="border-mainBlack/10 border-1 border-solid text-sm md:text-lg px-2 py-1 md:px-3 md:py-2 rounded-l-full transition-all hover:bg-mainBlack/5"
-          onClick={increase}
-        >
-          +
-        </button>
-        <h1 className="border-mainBlack/10 border-1 border-solid text-sm md:text-xl px-4 py-1 md:px-5 md:py-2">
-          {counter}
-        </h1>
-        <button
-          className="border-mainBlack/10 border-1 border-solid text-sm md:text-lg px-2 py-1 md:px-3 md:py-2 rounded-r-full transition-all hover:bg-mainBlack/5"
-          onClick={decrease}
-        >
-          -
-        </button>
-      </div>
-    </div>
-  );
+  return <QuantityStepper value={counter} onIncrement={increase} onDecrement={decrease} />;
 };
 
 export default observer(QuantityCounter);

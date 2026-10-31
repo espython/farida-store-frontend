@@ -2,7 +2,8 @@
 
 // Last-resort boundary: replaces the whole document when the root/locale
 // layout itself throws. It sits outside the next-intl provider and the
-// stylesheet, so it shows both languages and uses inline styles.
+// stylesheet, so it shows both languages and uses inline styles (palette
+// values copied from tailwind.config.js: cream, garden).
 export default function GlobalError({
   error,
   reset,
@@ -20,12 +21,13 @@ export default function GlobalError({
           alignItems: "center",
           justifyContent: "center",
           fontFamily: "system-ui, sans-serif",
-          color: "#161616",
+          background: "#f6f5ef",
+          color: "#1e3a2b",
           textAlign: "center",
           padding: 20,
         }}
       >
-        <div role="alert" style={{ maxWidth: 480 }}>
+        <div role="alert" style={{ maxWidth: 480, background: "#fff", borderRadius: 24, padding: "40px 24px" }}>
           <h1 style={{ fontSize: 24, margin: "0 0 8px" }}>Something went wrong</h1>
           <p style={{ margin: "0 0 24px", opacity: 0.6 }}>
             An unexpected error occurred. Please try again.
@@ -42,11 +44,13 @@ export default function GlobalError({
           <button
             onClick={() => reset()}
             style={{
-              background: "#161616",
-              color: "#fff",
+              background: "#1e3a2b",
+              color: "#f6f5ef",
               border: 0,
-              borderRadius: 4,
+              borderRadius: 999,
+              minHeight: 44,
               padding: "12px 32px",
+              fontWeight: 700,
               fontSize: 16,
               cursor: "pointer",
             }}

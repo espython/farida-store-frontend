@@ -1,61 +1,60 @@
 "use client";
-import { Button, Divider } from "@nextui-org/react";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useId } from "react";
 import WishListItem from "./WishListItem";
 import { StoreContext } from "@/contexts/StoreContext";
 import { observer } from "mobx-react-lite";
 import WishListIsEmpty from "./WishListIsEmpty";
-import { isUserLoggedIn } from "@/functions/credentials";
-import WishListFliters from "./WishListFliters";
-import { GiSettingsKnobs } from "react-icons/gi";
-import { BsPlus } from "react-icons/bs";
-import { useRouter } from "@/navigation";
-import FiltersDropMenu from "./FiltersDropMenu";
 import { useTranslations } from "next-intl";
-const WishlistContent = () => {
-  const { wishlist, userWishlist, filtersDrop } = useContext(StoreContext);
-  const router = useRouter();
-  const t = useTranslations("wishList");
 
-  const goToHomePage = () => {
-    router.push("/");
-  };
+const SORTS = [
+  { value: "Rating", key: "rating" },
+  { value: "Prices Up", key: "pricesUp" },
+  { value: "Prices Down", key: "pricesDown" },
+  { value: "A-Z", key: "AZ" },
+] as const;
+
+const WishlistContent = () => {
+  const { userWishlist } = useContext(StoreContext);
+  const t = useTranslations("wishList");
+  const sortId = useId();
+
+  if (userWishlist.userWishlistProductsCount === 0) return <WishListIsEmpty />;
 
   return (
-    <div className="flex flex-col ">
-      <div className="relative w-full bg-mainPink text-white p-3 md:p-5 flex items-center justify-between xl:justify-center gap-2 text-sm md:text-xl font-bold capitalize rounded-md ">
-        <Button
-          size="sm"
-          isIconOnly
-          startContent={<BsPlus className="text-lg " />}
-          className="text-mainBlack bg-mainWhite xl:hidden"
-          onClick={goToHomePage}
-        />
-        <h1> {t("content.items")}</h1>
-
-        <Button
-          size="sm"
-          isIconOnly
-          startContent={<GiSettingsKnobs className="text-lg" />}
-          className="text-mainBlack bg-mainWhite xl:hidden"
-          onClick={filtersDrop.toggleDropMenu}
-        />
-
-        <FiltersDropMenu />
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-garden-muted">
+          {t("content.count", { count: userWishlist.userWishlistProducts.length })}
+        </p>
+        <div className="flex items-center gap-2">
+          <label htmlFor={sortId} className="text-sm font-semibold">
+            {t("content.filters.sortBy")}
+          </label>
+          <select
+            id={sortId}
+            defaultValue=""
+            onChange={(e) => e.target.value && userWishlist.sortUserWishlistItems(e.target.value)}
+            className="h-11 rounded-full bg-white border border-line px-4 pe-8 text-garden focus:border-garden focus:outline-none focus:ring-2 focus:ring-garden/20"
+          >
+            <option value="" disabled>
+              {t("content.filters.choose")}
+            </option>
+            {SORTS.map((s) => (
+              <option key={s.value} value={s.value}>
+                {t(`content.filters.${s.key}`)}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      {userWishlist.userWishlistProductsCount === 0 ? (
-        <WishListIsEmpty />
-      ) : (
-        <div className="flex flex-col gap-3 mt-3">
-          {userWishlist.userWishlistProducts.map((item, index, arr) => (
-            <div key={item.id}>
-              <WishListItem product={item} />
-              {/* {index < arr.length - 1 && <Divider />} */}
-            </div>
-          ))}
-        </div>
-      )}
+      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-x-6">
+        {userWishlist.userWishlistProducts.map((item) => (
+          <li key={item.id}>
+            <WishListItem product={item} />
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

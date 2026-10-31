@@ -106,48 +106,15 @@ const LanguageIcon = () => {
         {" "}
       </Switch> */}
 
-      <div className="w-10 h-10  border-2 transition-all border-mainGray hover:border-mainBlack/75 rounded-full p-1 border-solid overflow-hidden  gap-2">
-        {locale === "en" ? (
-          <>
-            {/* <img
-              src="https://flagcdn.com/eg.svg"
-              alt=""
-              className="w-full h-full object-cover rounded-full"
-              onClick={() => {
-                changeLocale("ar");
-              }}
-            /> */}
-            <h1
-              className="text-center text-black cursor-pointer text-lg transition-all hover:scale-110 select-none"
-              onClick={() => {
-                changeLocale("ar");
-              }}
-            >
-              ع
-            </h1>
-          </>
-        ) : (
-          <>
-            {/* <img
-              src="https://flagcdn.com/us.svg"
-              alt=""
-              className="w-full h-full object-cover rounded-full"
-              onClick={() => {
-                changeLocale("en");
-              }}
-            /> */}
-            <h1
-              className="text-center text-black cursor-pointer text-lg transition-all hover:scale-110 select-none"
-              onClick={() => {
-                changeLocale("en");
-              }}
-            >
-              EN
-            </h1>
-          </>
-        )}
-        {/* <h1 className="text-xl font-black">EN</h1> */}
-      </div>
+      <button
+        type="button"
+        lang={locale === "en" ? "ar" : "en"}
+        aria-label={locale === "en" ? "العربية" : "English"}
+        onClick={() => changeLocale(locale === "en" ? "ar" : "en")}
+        className="w-11 h-11 grid place-items-center rounded-full bg-white hover:bg-sand transition-colors text-garden font-bold text-base select-none"
+      >
+        {locale === "en" ? "ع" : "EN"}
+      </button>
     </div>
   );
 };

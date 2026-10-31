@@ -6,11 +6,6 @@ interface RootLayoutProps {
   params: { locale: string };
 }
 
-export const metadata = {
-  title: "farida store",
-  description: "store for farida",
-};
-
 export default function RootLayout({
   children,
   params: { locale },

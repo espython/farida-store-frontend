@@ -1,22 +1,29 @@
 import React from "react";
+import type { Metadata } from "next";
 
 import RegisterForm from "./components/RegisterForm";
-import PageTitle from "@/components/PageTitle";
-import { unstable_setRequestLocale } from "next-intl/server";
+import AuthShell from "../AuthShell";
+import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
 
 interface RegisterPageProps {
   params: { locale: string };
 }
 
+// Account pages stay out of search results.
+export async function generateMetadata({ params: { locale } }: RegisterPageProps): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: "registerForm" });
+  return { title: t("register"), robots: { index: false } };
+}
+
 const RegisterPage = ({ params: { locale } }: RegisterPageProps) => {
   unstable_setRequestLocale(locale);
   const t = useTranslations("registerForm");
+
   return (
-    <div className="w-full h-auto">
-      <PageTitle title={t("register")} />
+    <AuthShell title={t("register")}>
       <RegisterForm />
-    </div>
+    </AuthShell>
   );
 };
 

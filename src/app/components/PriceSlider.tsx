@@ -1,4 +1,6 @@
 "use client";
+import { buttonClass } from "@/shared/ui/Button";
+import { formatAmount } from "@/shared/lib/price";
 import { StoreContext } from "@/contexts/StoreContext";
 import { Button, Slider, SliderValue } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
@@ -18,6 +20,7 @@ const PriceSlider = () => {
   ]);
   const { filter } = useContext(StoreContext);
   const t = useTranslations("filters");
+  const currency = useTranslations("currency");
 
   const params = new URLSearchParams(searchParams.toString());
 
@@ -43,30 +46,26 @@ const PriceSlider = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2 w-full h-full max-w-md items-start justify-center">
+    <div className="flex flex-col gap-4 w-full">
       <Slider
         label={t("selectPrice")}
-        size="sm"
-        color="foreground"
+        size="md"
+        color="primary"
         step={10}
         maxValue={50000}
         minValue={0}
         value={value}
         onChange={setValue}
-        className="max-w-md"
+        classNames={{ label: "text-sm font-semibold text-garden", value: "text-sm text-garden-muted" }}
+        getValue={() => ""}
       />
-      <div className="flex items-center w-full justify-between">
-        <p className="text-default-500 font-medium text-small" suppressHydrationWarning>
-          {t("price")}:{" "}
-          {Array.isArray(value) && value.map((b) => `EGP ${b}`).join("–")}
+      <div className="flex items-center w-full justify-between gap-3">
+        <p className="font-semibold" suppressHydrationWarning dir="ltr">
+          {Array.isArray(value) && value.map((b) => formatAmount(b)).join(" – ")} {currency("currency")}
         </p>
-        <Button
-          radius="sm"
-          className="bg-mainBlack p-2 capitalize text-mainWhite"
-          onClick={filterByPriceRange}
-        >
+        <button type="button" className={`${buttonClass({ variant: "outline" })} capitalize`} onClick={filterByPriceRange}>
           {t("select")}
-        </Button>
+        </button>
       </div>
     </div>
   );

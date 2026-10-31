@@ -9,15 +9,12 @@ interface loadingOverlayProps {
 
 const LoadingOverlay = ({ activateLoading = true }: loadingOverlayProps) => {
   return (
-    <div className="absolute z-50 w-full h-full bg-mainWhite/50 flex justify-center items-center">
+    <div className="absolute inset-0 z-50 bg-cream/60 flex justify-center items-center" aria-busy="true">
       {activateLoading && (
         <CircularProgress
-          color="secondary"
+          aria-label="Loading"
           size="lg"
-          classNames={{
-            indicator: "stroke-mainPink",
-            track: "stroke-mainPink/10",
-          }}
+          classNames={{ indicator: "stroke-garden", track: "stroke-garden/10" }}
         />
       )}
     </div>

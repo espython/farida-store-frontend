@@ -1,15 +1,12 @@
 "use client";
 import React, { useContext, useEffect } from "react";
 
-import CompletedOrderedItem from "./CompletedOrderedItem";
 import { observer } from "mobx-react-lite";
 import { StoreContext } from "@/contexts/StoreContext";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/navigation";
 import OrderItem from "../../../order/[id]/components/OrderItem";
 import { useLocale, useTranslations } from "next-intl";
-
-// import OrderItem from "@/app/(pages)/order/[id]/components/OrderItem";
 
 const ItemsContainer = () => {
   const { userOrders } = useContext(StoreContext);
@@ -30,43 +27,32 @@ const ItemsContainer = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-3">
-      <h1 className="text-xl font-semibold capitalize text-center">
+    <section aria-labelledby="confirmation-items" className="bg-white rounded-3xl p-5 md:p-6 flex flex-col gap-2">
+      <h2 id="confirmation-items" className="font-display text-xl md:text-2xl first-letter:uppercase">
         {t("orderItems.title")}
-      </h1>
-      {userOrders?.orderItems?.data?.map((orderItem) => (
-        // <CompletedOrderedItem
-        //   key={orderItem.id}
-        //   title={orderItem.attributes.product.data.attributes.title}
-        //   description={orderItem.attributes.product.data.attributes.description}
-        //   imgSrc={`${process.env.NEXT_PUBLIC_HOST}${orderItem.attributes.product.data.attributes?.thumbnail?.data.attributes.url}`}
-        //   price={orderItem.attributes.product.data.attributes.price}
-        //   quantity={orderItem.attributes.quantity}
-        // />
-        <OrderItem
-          key={orderItem.id}
-          id={orderItem.attributes.product.data?.id}
-          title={
-            locale === "en"
-              ? orderItem.attributes.product.data?.attributes?.title
-              : orderItem.attributes.product.data.attributes.localizations
-                  .data[0].attributes.title
-          }
-          description={
-            locale === "en"
-              ? orderItem.attributes.product.data?.attributes?.description
-              : orderItem.attributes.product.data.attributes.localizations
-                  .data[0].attributes.description
-          }
-          imgsrc={
-            orderItem.attributes.product.data?.attributes?.thumbnail?.data
-              ?.attributes?.url
-          }
-          price={orderItem.attributes.product.data?.attributes?.price}
-          quantity={orderItem.attributes?.quantity}
-        />
-      ))}
-    </div>
+      </h2>
+      <ul className="divide-y divide-line">
+        {userOrders?.orderItems?.data?.map((orderItem) => (
+          <li key={orderItem.id} className="py-3">
+            <OrderItem
+              id={orderItem.attributes.product.data?.id}
+              title={
+                locale === "en"
+                  ? orderItem.attributes.product.data?.attributes?.title
+                  : orderItem.attributes.product.data?.attributes?.localizations
+                      ?.data[0]?.attributes?.title
+              }
+              imgsrc={
+                orderItem.attributes.product.data?.attributes?.thumbnail?.data
+                  ?.attributes?.url
+              }
+              price={orderItem.attributes.product.data?.attributes?.price}
+              quantity={orderItem.attributes?.quantity}
+            />
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 };
 

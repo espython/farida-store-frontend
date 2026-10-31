@@ -18,10 +18,10 @@ const TrackOrderPageWithId = ({
   const t = useTranslations("userOrders");
 
   return (
-    <div dir={locale === "en" ? "ltr" : "rtl"}>
+    <>
       <PageTitle title={t("trackOrderPage.title")} />
       <TrackOrderContainer orderId={id} />
-    </div>
+    </>
   );
 };
 

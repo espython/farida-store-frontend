@@ -11,37 +11,32 @@ const OrderItemsContainer = () => {
   const locale = useLocale();
 
   return (
-    <div className="flex flex-col gap-5">
-      <h1 className="text-lg md:text-2xl capitalize font-semibold text-center">
+    <section aria-labelledby="order-items" className="bg-white rounded-3xl p-5 md:p-6 flex flex-col gap-2">
+      <h2 id="order-items" className="font-display text-xl md:text-2xl first-letter:uppercase">
         {t("orderPage.orderItems")}
-      </h1>
-      <div className="grid grid-cols-1 gap-2">
+      </h2>
+      <ul className="divide-y divide-line">
         {userOrders?.orderItems?.data?.map((item) => (
-          <OrderItem
-            key={item.id}
-            id={item.attributes.product.data?.id}
-            title={
-              locale === "en"
-                ? item.attributes.product.data?.attributes?.title
-                : item.attributes.product.data?.attributes?.localizations
-                    ?.data[0]?.attributes?.title
-            }
-            description={
-              locale === "en"
-                ? item.attributes.product.data?.attributes?.description
-                : item.attributes.product.data?.attributes?.localizations
-                    ?.data[0]?.attributes?.description
-            }
-            imgsrc={
-              item.attributes.product.data?.attributes?.thumbnail?.data
-                ?.attributes?.url
-            }
-            price={item.attributes.product.data?.attributes?.price}
-            quantity={item.attributes?.quantity}
-          />
+          <li key={item.id} className="py-3">
+            <OrderItem
+              id={item.attributes.product.data?.id}
+              title={
+                locale === "en"
+                  ? item.attributes.product.data?.attributes?.title
+                  : item.attributes.product.data?.attributes?.localizations
+                      ?.data[0]?.attributes?.title
+              }
+              imgsrc={
+                item.attributes.product.data?.attributes?.thumbnail?.data
+                  ?.attributes?.url
+              }
+              price={item.attributes.product.data?.attributes?.price}
+              quantity={item.attributes?.quantity}
+            />
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </section>
   );
 };
 

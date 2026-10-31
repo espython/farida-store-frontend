@@ -1,4 +1,5 @@
 "use client";
+import { formatAmount } from "@/shared/lib/price";
 import { StoreContext } from "@/contexts/StoreContext";
 import { strapiProductType } from "@/stores/specificTypes/strapiProductType";
 import { Image } from "@nextui-org/react";
@@ -32,44 +33,37 @@ const MiniSearchProduct = ({ product }: miniSearchProductProps) => {
 
   return (
     <div
-      className="grid grid-cols-[1fr_3fr] gap-5 items-center"
+      className="grid grid-cols-[4.5rem_1fr] gap-4 items-center p-2 rounded-2xl bg-white hover:bg-sand transition-colors cursor-pointer"
       onClick={handleAllSearchingBoxProcesses}
     >
-      <div className="w-full h-auto aspect-square cursor-pointer">
+      <div className="w-[4.5rem] aspect-square rounded-xl overflow-hidden bg-sand">
         <Image
           src={`${process.env.NEXT_PUBLIC_HOST}${product.attributes?.thumbnail?.data.attributes.url}`}
           alt=""
-          className="w-full h-full object-contain"
+          radius="none"
+          removeWrapper
+          className="w-full h-full object-cover"
         />
       </div>
-      <div className="grid grid-rows-2">
+      <div className="flex flex-col gap-1 min-w-0">
         <div
           className="cursor-pointer"
           onClick={handleAllSearchingBoxProcesses}
         >
-          <h1 className="text-xs md:text-xl font-semibold line-clamp-1">
+          <p className="font-semibold line-clamp-1">
             {locale === "en"
               ? product.attributes.title
               : product.attributes?.localizations?.data[0].attributes.title}
-          </h1>
+          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-5">
+        <div className="flex flex-wrap items-baseline gap-x-2">
+          <span className="font-bold">
+            {formatAmount(getPriceAfterDiscount() || product.attributes?.price)} <span className="text-sm">EGP</span>
+          </span>
           {getPriceAfterDiscount() && (
-            <div className="relative ">
-              <div className="absolute top-1/2 -translate-y-1/2 w-full h-[2px] bg-black/50 -rotate-3" />
-              <h2 className="text-sm md:text-2xl text-mainBlack/30 font-bold  text-center">
-                {product.attributes?.price}
-                <span className="text-sm ml-1">EGP</span>
-              </h2>
-            </div>
+            <span className="text-sm text-garden-muted line-through">{formatAmount(product.attributes?.price)}</span>
           )}
-          <h2 className="text-sm md:text-2xl text-mainBlack/70 font-bold">
-            {getPriceAfterDiscount()
-              ? getPriceAfterDiscount()
-              : product.attributes?.price}
-            <span className="text-sm ml-1">EGP</span>
-          </h2>
         </div>
       </div>
     </div>

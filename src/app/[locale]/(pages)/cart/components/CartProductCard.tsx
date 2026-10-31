@@ -10,7 +10,8 @@ interface CartProductProps {
   id: number;
   imageUrl?: string;
   title?: string;
-  description?: string;
+  /** Unit price, already formatted with currency. */
+  unitPrice?: string;
   isLoading?: boolean;
 }
 
@@ -18,29 +19,20 @@ const CartProductCard = ({
   id,
   title,
   imageUrl,
-  description,
+  unitPrice,
   isLoading,
 }: CartProductProps) => {
   return (
-    <div className="relative">
+    <div className="relative grid grid-cols-[5rem_1fr] md:grid-cols-[6rem_1fr] gap-4 items-center min-w-0">
       {isLoading && <LoadingOverlay />}
-      <div className="grid grid-cols-[1fr_3fr] gap-3  items-center ">
-        <Link href={`/product/${id}`} className="w-20 lmob:w-32 h-auto">
-          <Image
-            src={imageUrl}
-            alt=""
-            className="w-full h-full aspect-square object-contain"
-          />
+      <Link href={`/product/${id}`} className="aspect-square rounded-2xl overflow-hidden bg-sand" tabIndex={-1} aria-hidden="true">
+        <Image src={imageUrl} alt="" radius="none" removeWrapper className="w-full h-full object-cover" />
+      </Link>
+      <div className="flex flex-col gap-1 min-w-0">
+        <Link href={`/product/${id}`} className="font-semibold leading-snug line-clamp-2 hover:text-saffron-ink">
+          {title}
         </Link>
-
-        <Link href={`/product/${id}`}>
-          <h1 className="text-sm md:text-xl font-bold capitalize line-clamp-2 ">
-            {title}
-          </h1>
-          <h1 className="text-xs md:text-lg text-mainBlack/50 line-clamp-2">
-            {description}
-          </h1>
-        </Link>
+        {unitPrice && <p className="text-sm text-garden-muted">{unitPrice}</p>}
       </div>
     </div>
   );

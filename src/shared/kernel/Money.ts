@@ -56,6 +56,16 @@ export const Money = {
     return `${money.amount < 0 ? "-" : ""}${whole}.${fraction}`;
   },
 
+  /**
+   * Shop display amount: thousands separators, Western digits in every locale, and
+   * piastres only when there are any ("3,490", "349.50").
+   */
+  toDisplay(money: Money): string {
+    const [whole, fraction] = Money.toDecimal(money).split(".");
+    const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return fraction === "00" ? grouped : `${grouped}.${fraction}`;
+  },
+
   add(a: Money, b: Money): Money {
     assertSameCurrency(a, b);
     return Money.of(a.amount + b.amount, a.currency);

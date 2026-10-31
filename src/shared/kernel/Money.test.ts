@@ -51,4 +51,12 @@ describe("Money", () => {
     expect(Money.percentOff(price, -5).amount).toBe(80000);
     expect(Money.percentOff(Money.of(1999), 15).amount).toBe(1699);
   });
+
+  it("formats display amounts with grouping and drops zero piastres", () => {
+    expect(Money.toDisplay(Money.of(349000))).toBe("3,490");
+    expect(Money.toDisplay(Money.of(1590000))).toBe("15,900");
+    expect(Money.toDisplay(Money.of(34950))).toBe("349.50");
+    expect(Money.toDisplay(Money.of(99))).toBe("0.99");
+    expect(Money.toDisplay(Money.of(-120000))).toBe("-1,200");
+  });
 });

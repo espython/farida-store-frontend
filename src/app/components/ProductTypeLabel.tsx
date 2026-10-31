@@ -13,11 +13,11 @@ interface productTypeLabelProps {
 const ProductTypeLabel = ({ title, classNames }: productTypeLabelProps) => {
   return (
     <div
-      className={` px-3  rounded-md capitalize z-20  text-white flex justify-center items-center ${classNames?.container}`}
+      className={`px-3 py-0.5 rounded-full capitalize z-20 text-[0.8125rem] font-bold flex justify-center items-center ${
+        classNames?.container ?? "bg-saffron text-garden"
+      }`}
     >
-      <h1 className="text-center text-[.8rem] md:text-[.9rem] lg:text-[1rem]">
-        {title}
-      </h1>
+      <span className={`text-center ${classNames?.title ?? ""}`}>{title}</span>
     </div>
   );
 };

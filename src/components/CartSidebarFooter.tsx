@@ -1,7 +1,8 @@
 "use client";
 import { StoreContext } from "@/contexts/StoreContext";
-import { Button, Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
+import { buttonClass } from "@/shared/ui/Button";
+import { formatAmount } from "@/shared/lib/price";
 import { useRouter } from "@/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import ConfirmMergeCart from "./ConfirmMergeCart";
@@ -36,29 +37,22 @@ const CartSidebarFooter = () => {
   ]);
 
   return (
-    <div>
-      <Divider />
+    <div className="shrink-0 border-t border-line bg-white">
       {isLoggedIn &&
         cartSidebar.isLocalCartHasItems &&
         !user.isMergingOrRemovingLoading && <ConfirmMergeCart />}
-      <div className="p-5 flex flex-col gap-5">
-        <div className="flex justify-between items-center capitalize ">
-          <h1 className="text-lg lmob:text-xl">{t("total")} :</h1>
-          <h1 className="text-green-500 font-bold text-lg lmob:text-xl">
-            {cart.totalPrice.toFixed(2)}{" "}
-            <span className="text-sm ltr:ml-1 rtl:mr-1">
-              {currency("currency")}
-            </span>
-          </h1>
+      <div className="p-5 flex flex-col gap-4">
+        <div className="flex justify-between items-baseline capitalize">
+          <p className="text-lg">{t("total")}</p>
+          <p className="font-bold text-xl">
+            {formatAmount(cart.totalPrice)} <span className="text-sm">{currency("currency")}</span>
+          </p>
         </div>
-
-        <Button
-          radius="none"
-          className="bg-mainBlack text-mainWhite capitalize"
-          onClick={goToCartShippingPage}
-        >
-          {t("complete")}
-        </Button>
+        {cart.productsCount > 0 && (
+          <button type="button" className={`${buttonClass({ size: "lg", full: true })} capitalize`} onClick={goToCartShippingPage}>
+            {t("complete")}
+          </button>
+        )}
       </div>
     </div>
   );

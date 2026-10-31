@@ -13,8 +13,8 @@ import type { Category } from "../domain/Category";
 const DRAG_THRESHOLD = 5;
 const SKELETON_COUNT = 4;
 
-const cardClass =
-  "bg-white min-w-[10rem] sm:min-w-[30rem] grid grid-rows-[3fr_1fr] sm:grid-cols-[1fr_3fr] sm:grid-rows-1 place-items-center p-1 sm:p-5 sm:gap-5";
+/** 96 px tiles on phones, 136 px from md up (Kitchen Garden). */
+const tileClass = "shrink-0 w-24 md:w-[8.5rem] flex flex-col gap-2";
 
 /** Home page strip of categories on the Woo catalog; scrolls by touch, wheel or mouse drag. */
 const CategorySlider = () => {
@@ -71,7 +71,7 @@ const CategorySlider = () => {
       dir={locale === "ar" ? "rtl" : "ltr"}
       aria-busy={isLoading || undefined}
       data-testid="category-slider"
-      className={`w-auto h-auto overflow-auto flex gap-3 md:gap-10 pb-5 select-none ${
+      className={`no-scrollbar overflow-x-auto flex gap-3 md:gap-4 pb-2 -mx-4 px-4 md:mx-0 md:px-0 select-none ${
         dragging ? "cursor-grabbing" : "cursor-grab"
       }`}
       onMouseDown={onMouseDown}
@@ -82,7 +82,10 @@ const CategorySlider = () => {
     >
       {isLoading
         ? Array.from({ length: SKELETON_COUNT }, (_, i) => (
-            <Skeleton key={i} className={`${cardClass} aspect-[3/1] rounded-none`} />
+            <div key={i} className={tileClass}>
+              <Skeleton className="w-full aspect-square rounded-[20px]" />
+              <Skeleton className="h-4 w-3/4 rounded-full" />
+            </div>
           ))
         : categories.map((cat) => <CategoryCard key={cat.id} category={cat} />)}
     </div>
@@ -90,21 +93,22 @@ const CategorySlider = () => {
 };
 
 const CategoryCard = ({ category }: { category: Category }) => (
-  <Link href={`/categories/${category.slug}`} className={cardClass} draggable={false}>
-    <div className="w-full aspect-square grid place-items-center">
+  <Link href={`/categories/${category.slug}`} className={`${tileClass} group`} draggable={false}>
+    <div className="w-full aspect-square rounded-[18px] md:rounded-[20px] overflow-hidden bg-sand">
       {category.image ? (
         <Image
           src={category.image.src}
-          alt={category.image.alt || category.title}
+          alt=""
           draggable={false}
           radius="none"
-          className="w-full h-full object-contain p-2 sm:p-0"
+          removeWrapper
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
       ) : (
-        <div className="w-full h-full bg-mainGray" data-testid="category-image-empty" />
+        <div className="w-full h-full" data-testid="category-image-empty" />
       )}
     </div>
-    <h2 className="text-lg sm:text-3xl capitalize text-center sm:text-start">{category.title}</h2>
+    <span className="text-sm md:text-[0.9375rem] font-semibold leading-tight line-clamp-2">{category.title}</span>
   </Link>
 );
 

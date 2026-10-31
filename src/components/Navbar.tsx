@@ -1,55 +1,31 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import NavIcons from "./NavIcons";
 import NavLinks from "./NavLinks";
 import NavMenuIcon from "./NavMenuIcon";
 import SearchMenu from "./SearchMenu";
-import { motion } from "framer-motion";
-import { useLocale } from "next-intl";
+import BrandLogo from "@/shared/ui/BrandLogo";
+import HeaderSearch from "@/shared/ui/HeaderSearch";
 
-const NavBar2 = () => {
-  const [isNavbarFixed, setNavbarFixed] = useState(false);
-  const locale = useLocale();
-
-  useEffect(() => {
-    const scrolling = (e: Event) => {
-      window.scrollY > 500 ? setNavbarFixed(true) : setNavbarFixed(false);
-    };
-
-    window.addEventListener("scroll", scrolling);
-
-    return () => {
-      window.removeEventListener("scroll", scrolling);
-    };
-  }, []);
-
+/** Kitchen Garden header: 56 px on phones (search on its own row), 72 px from md up. */
+const NavBar = () => {
   return (
     <>
       <SearchMenu />
-      <motion.div
-        initial={{
-          y: 0,
-        }}
-        animate={{
-          y: isNavbarFixed ? 160 : 0,
-        }}
-        transition={{
-          duration: 0,
-        }}
-        className={`${
-          isNavbarFixed ? `fixed -top-40 left-0 z-[80]` : `relative`
-        } bg-mainWhite  transition-all p-2 px-5 md:p-5 md:px-10 w-full min-h-[3.75rem] max-h-[5rem] border-b-[1px] border-b-mainDarkBlue border-solid`}
-        dir={locale === "en" ? "ltr" : "rtl"}
-      >
-        <div className=" grid grid-cols-2 md:grid-cols-[minmax(0,1fr)_2fr_1fr]   items-center gap-3">
+      <header className="sticky top-0 z-[80] bg-cream/95 backdrop-blur border-b border-line">
+        <div className="max-w-[1280px] mx-auto h-14 md:h-[72px] px-2 md:px-8 flex items-center gap-3 md:gap-8">
           <NavMenuIcon />
-
+          <BrandLogo className="shrink-0" />
           <NavLinks />
+          <HeaderSearch id="header-search" className="hidden md:flex flex-1" />
           <NavIcons />
         </div>
-      </motion.div>
+        <div className="md:hidden px-4 pb-3">
+          <HeaderSearch id="header-search-mobile" />
+        </div>
+      </header>
     </>
   );
 };
 
-export default NavBar2;
+export default NavBar;

@@ -1,4 +1,5 @@
 "use client";
+import { formatAmount } from "@/shared/lib/price";
 import { Image } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useTranslations } from "next-intl";
@@ -15,41 +16,19 @@ const OrderedItem = ({ title, price, imgSrc, quantity }: orderedItemProps) => {
   const currency = useTranslations("currency");
 
   return (
-    <div className="grid grid-cols-[1fr_3fr] lmob:grid-cols-[1fr_2fr_1fr] gap-3  lmob:gap-10 items-center my-2">
-      <div className="w-14 medmob:w-20 aspect-square flex justify-center items-center">
-        <Image
-          radius="none"
-          src={imgSrc}
-          alt=""
-          classNames={{
-            img: "w-full h-full object-contain",
-          }}
-        />
+    <div className="grid grid-cols-[4rem_1fr_auto] gap-3 items-center">
+      <div className="w-16 aspect-square rounded-xl overflow-hidden bg-sand">
+        <Image radius="none" removeWrapper src={imgSrc} alt="" className="w-full h-full object-cover" />
       </div>
-
-      <h1 className=" ltr:text-left rtl:text-right text-sm md:text-lg line-clamp-2 ">
-        {title}
-      </h1>
-
-      <div className="flex flex-wrap col-span-2 smob:col-span-1  lmob:flex-col gap-x-3  gap-y-1 items-end smob:col-start-2 lmob:col-start-auto">
-        <h1 className="text-sm md:text-lg text-red-500/50">
-          {price.toFixed(2)}
-          <span className="text-sm ltr:ml-1 rtl:mr-1">
-            {currency("currency")}
-          </span>
-        </h1>
-        <div className="flex items-center gap-1 text-mainBlack/50 capitalize font-semibold">
-          <h1 className="uppercase text-xs md:text-sm">X</h1>
-          <p className="text-sm md:text-xl">{quantity}</p>
-          <h1 className="uppercase text-xs lmob:hidden">=</h1>
-        </div>
-        <h1 className="text-sm md:text-lg text-emerald-500">
-          {(price * quantity).toFixed(2)}
-          <span className="text-sm ltr:ml-1 rtl:mr-1">
-            {currency("currency")}
-          </span>
-        </h1>
+      <div className="min-w-0">
+        <p className="font-semibold leading-snug line-clamp-2">{title}</p>
+        <p className="text-sm text-garden-muted" dir="ltr">
+          {formatAmount(price)} × {quantity}
+        </p>
       </div>
+      <p className="font-bold">
+        {formatAmount(price * quantity)} <span className="text-sm">{currency("currency")}</span>
+      </p>
     </div>
   );
 };

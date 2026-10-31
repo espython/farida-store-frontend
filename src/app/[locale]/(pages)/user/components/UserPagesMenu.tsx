@@ -1,21 +1,16 @@
 "use client";
 import React, { useContext, useEffect } from "react";
 import PageCard from "./PageCard";
-import { FaRegAddressCard } from "react-icons/fa";
-import { BsBox2 } from "react-icons/bs";
-import { BsCart3 } from "react-icons/bs";
-import { TbHearts } from "react-icons/tb";
-import { RiUserSettingsLine } from "react-icons/ri";
+import { LuHeart, LuMapPin, LuPackage, LuShoppingCart, LuUserCog } from "react-icons/lu";
 import { StoreContext } from "@/contexts/StoreContext";
 import { useRouter } from "@/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/hooks/useAuth";
 
 const UserPagesMenu = () => {
   const { user } = useContext(StoreContext);
   const { isLoggedIn } = useAuth();
   const t = useTranslations("userPage");
-  const locale = useLocale();
 
   const router = useRouter();
 
@@ -24,21 +19,21 @@ const UserPagesMenu = () => {
       id: 1,
       title: t("title.orders"),
       description: t("description.orders"),
-      icon: <BsBox2 />,
+      icon: <LuPackage />,
       pageLink: `/userorders`,
     },
     {
       id: 2,
       title: t("title.profile"),
       description: t("description.profile"),
-      icon: <RiUserSettingsLine />,
+      icon: <LuUserCog />,
       pageLink: `/userprofile`,
     },
     {
       id: 3,
       title: t("title.addresses"),
       description: t("description.addresses"),
-      icon: <FaRegAddressCard />,
+      icon: <LuMapPin />,
       pageLink: `/useraddresses`,
     },
     // {
@@ -53,14 +48,14 @@ const UserPagesMenu = () => {
       id: 5,
       title: t("title.cart"),
       description: t("description.cart"),
-      icon: <BsCart3 />,
+      icon: <LuShoppingCart />,
       pageLink: `/cart`,
     },
     {
       id: 6,
       title: t("title.wishlist"),
       description: t("description.wishlist"),
-      icon: <TbHearts />,
+      icon: <LuHeart />,
       pageLink: `/wishlist`,
     },
   ];
@@ -74,21 +69,18 @@ const UserPagesMenu = () => {
   }, [isLoggedIn, user.isLoading]);
 
   return (
-    <div
-      className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-10 px-5  md:px-36 py-10"
-      dir={locale === "en" ? "ltr" : "rtl"}
-    >
+    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
       {pagesCards.map((card) => (
-        <PageCard
-          key={card.id}
-          title={card.title}
-          description={card.description}
-          icon={card.icon}
-          pageLink={card.pageLink}
-          locale={locale}
-        />
+        <li key={card.id}>
+          <PageCard
+            title={card.title}
+            description={card.description}
+            icon={card.icon}
+            pageLink={card.pageLink}
+          />
+        </li>
       ))}
-    </div>
+    </ul>
   );
 };
 

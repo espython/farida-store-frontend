@@ -22,7 +22,6 @@ import { UserAddressesStore } from "./userAddressesStore";
 import { AddressModalStore } from "./addressModalStore";
 import { EditProfileModalStore } from "./editProfileModalStore";
 import { FastAdsStore } from "./fastAdsStore";
-import { FiltersDropMenuStore } from "./filtersDropMenu";
 import PaymentStore from "./paymentStore";
 
 // cart store instance
@@ -115,7 +114,6 @@ const fastAdsInstance = new FastAdsStore();
 
 // fast ads store
 
-const filtersDropMenuInstance = new FiltersDropMenuStore();
 
 // payment store
 
@@ -147,7 +145,6 @@ export const store = {
   selectionAddressModal: selectionAddressModalInstance,
   profileModal: editProfileModalInstance,
   fastAds: fastAdsInstance,
-  filtersDrop: filtersDropMenuInstance,
   payment: paymentInstance,
 };
 

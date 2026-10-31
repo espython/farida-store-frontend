@@ -1,86 +1,91 @@
 "use client";
 import type { ReactNode } from "react";
-import { Chip, Divider } from "@nextui-org/react";
 import { useLocale, useTranslations } from "next-intl";
-import { useScreenSize } from "react-screen-size-helper";
 import { Link } from "@/navigation";
 import Rating from "@/components/Rating";
-import { Money } from "@/shared/kernel/Money";
 import { htmlToText } from "@/shared/lib/htmlText";
+import Badge from "@/shared/ui/Badge";
 import type { Product } from "../domain/Product";
 import { discountPercent } from "../domain/pricing";
+import Price from "./Price";
 
 interface Props {
   product: Product;
   /** Add-to-cart and wishlist controls are injected by the cart module; none until it exists. */
   actions?: ReactNode;
+  /** The page shows the long description in its own section below the fold. */
+  showDescription?: boolean;
+  /** Trust points (shipping, returns...) under the actions. */
+  footer?: ReactNode;
 }
 
-const ProductDetails = ({ product, actions }: Props) => {
-  const { currentWidth } = useScreenSize({});
+/** Kitchen Garden buy box: categories, title, rating, price, stock, options, actions. */
+const ProductDetails = ({ product, actions, showDescription = true, footer }: Props) => {
   const locale = useLocale();
   const t = useTranslations("productPage");
   const card = useTranslations("product");
-  const currency = useTranslations("currency");
   const pct = discountPercent(product);
   const description = htmlToText(product.description || product.shortDescription);
+  const summary = htmlToText(product.shortDescription);
   const { status, quantity } = product.stock;
 
   return (
     <div className="flex flex-col gap-5" data-testid="product-details">
-      <div className="flex flex-col gap-3">
-        <h1 className="text-lg md:text-2xl">{product.title}</h1>
-        <div className="flex items-center gap-2">
-          <Rating rating={product.rating.average} size={currentWidth > 768 ? "1.5rem" : "1rem"} />
-          <span className="text-mainBlack/50 text-sm md:text-xl">({product.rating.count})</span>
-        </div>
-      </div>
-
-      {description && (
-        <div className="flex flex-col gap-3">
-          <h2 className="capitalize text-sm md:text-xl font-semibold">{t("details.description")}</h2>
-          <p className="text-sm md:text-xl whitespace-pre-line">{description}</p>
-        </div>
+      {product.categories.length > 0 && (
+        <nav aria-label={t("details.categories")} className="flex flex-wrap gap-x-3 gap-y-1">
+          {product.categories.map((cat) => (
+            <Link
+              key={cat.id}
+              href={`/categories/${cat.slug}`}
+              className="text-sm font-bold uppercase tracking-wider text-saffron-ink hover:underline"
+            >
+              {cat.title}
+            </Link>
+          ))}
+        </nav>
       )}
 
-      <p className="text-sm md:text-xl font-semibold capitalize">
-        {t("details.status")}:{" "}
+      <div className="flex flex-col gap-3">
+        <h1 className="font-display text-[1.75rem] md:text-[2.5rem] leading-[1.1] font-medium">{product.title}</h1>
+        {product.rating.count > 0 && (
+          <div className="flex items-center gap-2">
+            <Rating rating={product.rating.average} />
+            <span className="text-sm text-garden-muted">({product.rating.count})</span>
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <Price price={product.price} regularPrice={product.regularPrice} size="lg" />
+        {pct > 0 && (
+          <Badge tone="sale">
+            <span dir="ltr">-{pct}%</span>
+          </Badge>
+        )}
+      </div>
+
+      <p className="flex flex-wrap items-center gap-2 font-semibold capitalize">
+        <span
+          aria-hidden="true"
+          className={`w-2.5 h-2.5 rounded-full ${status === "out_of_stock" ? "bg-[#b42318]" : status === "low" ? "bg-saffron" : "bg-garden-600"}`}
+        />
+        <span className="sr-only">{t("details.status")}: </span>
         {status === "out_of_stock" ? (
-          <span className="text-red-700">{t("details.outStock")}</span>
+          <span className="text-[#b42318]">{t("details.outStock")}</span>
         ) : (
-          <span className="text-green-700">{t("details.inStock")}</span>
+          <span>{t("details.inStock")}</span>
         )}
         {status === "low" && quantity !== null && (
-          <span className="text-amber-700 font-normal ltr:ml-2 rtl:mr-2">
+          <span className="text-saffron-ink font-bold">
             ({card("onlyLeft")}: {quantity})
           </span>
         )}
       </p>
 
-      <div className="flex flex-col gap-2">
-        {pct > 0 && (
-          <div className="bg-green-500 p-1 pe-3 md:p-2 md:pe-5 w-max ltr:rounded-r-full rtl:rounded-l-full">
-            <span className="capitalize text-white font-semibold text-lg md:text-2xl">
-              {t("details.discount")} {pct}%
-            </span>
-          </div>
-        )}
-        <div className="flex items-center gap-5">
-          {product.regularPrice && (
-            <span className="text-xl md:text-3xl text-mainBlack/30 font-bold line-through">
-              {Money.toDecimal(product.regularPrice)}
-              <span className="text-sm ltr:ml-1 rtl:mr-1">{currency("currency")}</span>
-            </span>
-          )}
-          <span className="text-xl md:text-3xl text-mainBlack/70 font-bold">
-            {Money.toDecimal(product.price)}
-            <span className="text-sm ltr:ml-1 rtl:mr-1">{currency("currency")}</span>
-          </span>
-        </div>
-      </div>
+      {!showDescription && summary && <p className="text-garden-muted">{summary}</p>}
 
       {product.attributes.length > 0 && (
-        <dl className="flex flex-col gap-1 text-sm md:text-lg">
+        <dl className="flex flex-col gap-1">
           {product.attributes.map((attr) => (
             <div key={attr.slug} className="flex gap-2">
               <dt className="font-semibold capitalize">{attr.name}:</dt>
@@ -92,24 +97,12 @@ const ProductDetails = ({ product, actions }: Props) => {
 
       {actions}
 
-      {product.categories.length > 0 && (
-        <div className="flex flex-col gap-2">
-          <Divider />
-          <h2 className="text-sm md:text-xl capitalize font-semibold">{t("details.categories")}</h2>
-          <div className="flex items-center gap-5 flex-wrap mt-3">
-            {product.categories.map((cat) => (
-              <Link key={cat.id} href={`/categories/${cat.slug}`}>
-                <Chip
-                  variant="bordered"
-                  classNames={{
-                    base: "text-xs md:text-lg capitalize hover:text-mainBlack hover:border-mainBlack transition-all",
-                  }}
-                >
-                  {cat.title}
-                </Chip>
-              </Link>
-            ))}
-          </div>
+      {footer}
+
+      {showDescription && description && (
+        <div className="flex flex-col gap-2 pt-5 border-t border-line">
+          <h2 className="font-display text-xl capitalize">{t("details.description")}</h2>
+          <p className="whitespace-pre-line text-garden/90">{description}</p>
         </div>
       )}
     </div>

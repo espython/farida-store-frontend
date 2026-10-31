@@ -1,4 +1,5 @@
 "use client";
+import { buttonClass } from "@/shared/ui/Button";
 import { StoreContext } from "@/contexts/StoreContext";
 import {
   Accordion,
@@ -12,16 +13,13 @@ import { useRouter } from "@/navigation";
 import React, { useContext, useEffect } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { MdOutlineDiscount } from "react-icons/md";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import AddressSelectionModal from "../../confirmation/components/AddressSelectionModal";
 import CustomizedInput from "../components/CustomizedInput";
-import { useScreenSize } from "react-screen-size-helper";
 import { useTranslations } from "next-intl";
 
 const ShippingForm = () => {
   const { handleSubmit, register, reset, setValue } = useForm();
-  const { currentWidth } = useScreenSize({});
   const { user, cart, userOrders, selectionAddressModal, userAddresses } =
     useContext(StoreContext);
   const router = useRouter();
@@ -95,40 +93,30 @@ const ShippingForm = () => {
   }, [userAddresses.selectedUserAddress.id]);
 
   return (
-    <div className="flex flex-col ">
-      <h1 className="text-lg md:text-2xl font-bold capitalize">
-        {t("details.title")}
-      </h1>
+    <div className="flex flex-col gap-6 bg-white rounded-3xl p-5 md:p-8">
+      <h2 className="font-display text-2xl md:text-[2rem] font-medium capitalize">{t("details.title")}</h2>
 
-      <Accordion variant="bordered" className="mt-10">
+      <Accordion variant="bordered" className="px-0" itemClasses={{ base: "px-4", title: "font-semibold text-garden" }}>
         <AccordionItem
           title={t("details.code.title")}
           subtitle={t("details.code.description")}
           indicator={<MdOutlineDiscount className="text-sm md:text-lg" />}
           classNames={{
-            subtitle: "text-mainPink",
-            indicator: "text-sm md:text-2xl text-mainPink",
+            subtitle: "text-saffron-ink",
+            indicator: "text-xl text-saffron-ink",
           }}
         >
-          <h1 className="text-sm md:text-2xl capitalize pb-5">
-            {t("details.code.question")}{" "}
-          </h1>
+          <p className="capitalize pb-4">{t("details.code.question")}</p>
           <div className="flex flex-wrap items-center gap-5">
             <Input
-              labelPlacement="outside"
+              aria-label={t("details.code.title")}
               inputMode="text"
-              radius="sm"
-              size={currentWidth > 768 ? "md" : "sm"}
-              isRequired
-              classNames={{
-                label: "text-xs md:text-xl capitalize font-bold ",
-              }}
+              radius="full"
+              className="flex-1 min-w-[12rem]"
+              classNames={{ inputWrapper: "h-11 bg-cream border border-line shadow-none" }}
             />
 
-            <Button
-              size={currentWidth > 768 ? "md" : "sm"}
-              className="bg-mainBlack text-mainWhite px-5 py-2"
-            >
+            <Button className={buttonClass({ variant: "outline" })}>
               {t("details.code.action")}
             </Button>
           </div>
@@ -136,11 +124,7 @@ const ShippingForm = () => {
       </Accordion>
 
       {userAddresses.userAddresses.length > 0 && (
-        <Button
-          radius="none"
-          className="bg-mainBlack text-mainWhite text-sm md:text-xl mt-10 capitalize"
-          onPress={selectionAddressModal.onOpen}
-        >
+        <Button className={`${buttonClass({ variant: "outline" })} self-start capitalize`} onPress={selectionAddressModal.onOpen}>
           {t("details.addresses.select")}
         </Button>
       )}
@@ -151,9 +135,9 @@ const ShippingForm = () => {
         onSubmit={handleSubmit((data) => {
           submitForm(data);
         })}
-        className="mt-10   flex flex-col gap-5 "
+        className="flex flex-col gap-5"
       >
-        <div className="grid grid-rows-2 grid-cols-1 md:grid-rows-1 md:grid-cols-2 items-center gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <CustomizedInput
             formHookRegister={register("phone")}
             label={t("details.form.labels.phone1")}
@@ -226,36 +210,28 @@ const ShippingForm = () => {
           required
         />
 
-        <div className="flex flex-col pt-10 gap-5">
+        <div className="flex flex-col pt-4 gap-3">
           <div>
-            <h1 className="text-lg md:text-2xl font-bold capitalize">
-              {t("details.form.notes.title")}
-            </h1>
-            <h1 className="text-sm md:text-xl text-mainBlack/50 capitalize">
-              {t("details.form.notes.description")}
-            </h1>
+            <h3 className="font-display text-xl capitalize">{t("details.form.notes.title")}</h3>
+            <p className="text-sm text-garden-muted first-letter:uppercase">{t("details.form.notes.description")}</p>
           </div>
 
           <div>
             <Textarea
               {...register("notes")}
-              variant="bordered"
-              radius="none"
+              aria-label={t("details.form.notes.title")}
+              radius="lg"
               placeholder={t("details.form.notes.placeholder")}
-              minRows={currentWidth > 768 ? 20 : 10}
+              minRows={5}
+              classNames={{ inputWrapper: "bg-white border border-line shadow-none" }}
             />
           </div>
         </div>
 
-        <Button
-          size={currentWidth > 768 ? "md" : "sm"}
-          className="bg-mainBlack text-mainWhite capitalize "
-          type="submit"
-        >
+        <Button className={`${buttonClass({ size: "lg", full: true })} capitalize`} type="submit">
           {t("details.form.action.continue")}
         </Button>
       </form>
-      <ToastContainer />
     </div>
   );
 };

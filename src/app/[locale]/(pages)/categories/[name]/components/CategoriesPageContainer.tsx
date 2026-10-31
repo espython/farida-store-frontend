@@ -8,6 +8,7 @@ import { observer } from "mobx-react-lite";
 import { StoreContext } from "@/contexts/StoreContext";
 import { useLocale } from "next-intl";
 import { CATALOG_SOURCE, CategoryTitle } from "@/modules/catalog";
+import PageContainer from "@/shared/ui/PageContainer";
 
 interface CategoriesPageContainerProps {
   // Define your props here
@@ -36,14 +37,16 @@ StrapiCategoryTitle.displayName = "StrapiCategoryTitle";
 const CategoriesPageContainer = ({ name }: CategoriesPageContainerProps) => {
   return (
     <main>
-      {CATALOG_SOURCE === "woo" ? (
-        <CategoryTitle slug={name} />
-      ) : (
-        <StrapiCategoryTitle name={name} />
-      )}
-      <MiniAdsSection />
-      <FiltersSection />
-      <ProductsSection />
+      <PageContainer className="flex flex-col gap-5">
+        {CATALOG_SOURCE === "woo" ? (
+          <CategoryTitle slug={name} />
+        ) : (
+          <StrapiCategoryTitle name={name} />
+        )}
+        <MiniAdsSection />
+        <FiltersSection />
+        <ProductsSection />
+      </PageContainer>
     </main>
   );
 };

@@ -1,19 +1,21 @@
 "use client";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import { StoreContext } from "@/contexts/StoreContext";
-import { Button, Input } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { useLocale, useTranslations } from "next-intl";
-import React, { useContext, useState } from "react";
+import { useTranslations } from "next-intl";
+import React, { useContext } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { useScreenSize } from "react-screen-size-helper";
+import TextField from "@/shared/ui/TextField";
+import Button from "@/shared/ui/Button";
 
 const NewAddressForm = () => {
   const { userOrders, user, addressModal } = useContext(StoreContext);
-  const { currentWidth } = useScreenSize({});
   const t = useTranslations("userAdderesses");
-  const locale = useLocale();
-  const { handleSubmit, register } = useForm();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm();
 
   const submittingForm = (data: FieldValues) => {
     userOrders.setIsAddressLoading = true;
@@ -36,128 +38,78 @@ const NewAddressForm = () => {
     });
   };
 
+  // Required fields were only marked with NextUI's asterisk; nothing stopped
+  // an empty submit. react-hook-form now blocks it and names the field.
+  const required = { required: t("form.required") };
+  const errorOf = (name: string) => errors[name]?.message as string | undefined;
+
   return (
-    <div className="relative" dir={locale === "en" ? "ltr" : "rtl"}>
+    <div className="relative">
       {userOrders.isAddressLoading && <LoadingOverlay />}
-      <div className="flex flex-col gap-10">
-        <h1 className="text-lg md:text-xl capitalize font-bold">
-          {t("form.new")} :
-        </h1>
-        <form
-          onSubmit={handleSubmit((data) => {
-            submittingForm(data);
-          })}
-          className="flex flex-col gap-5"
-        >
-          <Input
-            {...register("state")}
-            label={t("form.labels.state")}
-            labelPlacement="outside"
-            variant="bordered"
-            radius="none"
-            placeholder={t("form.placeholders.state")}
-            isRequired
-            classNames={{
-              label: `text-sm md:text-lg font-semiBold capitalize ${
-                locale === "ar" && "right-3"
-              }`,
-            }}
-          />
-          <Input
-            {...register("country")}
-            label={t("form.labels.country")}
-            labelPlacement="outside"
-            variant="bordered"
-            radius="none"
-            placeholder={t("form.placeholders.country")}
-            isRequired
-            classNames={{
-              label: `text-sm md:text-lg font-semiBold capitalize ${
-                locale === "ar" && "right-3"
-              }`,
-            }}
-          />
-          <Input
-            {...register("city")}
+      <form
+        noValidate
+        onSubmit={handleSubmit((data) => {
+          submittingForm(data);
+        })}
+        className="flex flex-col gap-4"
+      >
+        <TextField
+          {...register("street", required)}
+          autoComplete="street-address"
+          label={t("form.labels.street")}
+          placeholder={t("form.placeholders.street")}
+          error={errorOf("street")}
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <TextField
+            {...register("city", required)}
+            autoComplete="address-level2"
             label={t("form.labels.city")}
-            labelPlacement="outside"
-            variant="bordered"
-            radius="none"
             placeholder={t("form.placeholders.city")}
-            isRequired
-            classNames={{
-              label: `text-sm md:text-lg font-semiBold capitalize ${
-                locale === "ar" && "right-3"
-              }`,
-            }}
+            error={errorOf("city")}
           />
-          <Input
-            {...register("street")}
-            label={t("form.labels.street")}
-            labelPlacement="outside"
-            variant="bordered"
-            radius="none"
-            placeholder={t("form.placeholders.street")}
-            isRequired
-            classNames={{
-              label: `text-sm md:text-lg font-semiBold capitalize ${
-                locale === "ar" && "right-3"
-              }`,
-            }}
+          <TextField
+            {...register("state", required)}
+            autoComplete="address-level1"
+            label={t("form.labels.state")}
+            placeholder={t("form.placeholders.state")}
+            error={errorOf("state")}
           />
-          <Input
-            {...register("postal_code")}
+          <TextField
+            {...register("country", required)}
+            autoComplete="country-name"
+            label={t("form.labels.country")}
+            placeholder={t("form.placeholders.country")}
+            error={errorOf("country")}
+          />
+          <TextField
+            {...register("postal_code", required)}
+            autoComplete="postal-code"
+            inputMode="numeric"
             label={t("form.labels.postal")}
-            labelPlacement="outside"
-            variant="bordered"
-            radius="none"
             placeholder={t("form.placeholders.postal")}
-            isRequired
-            classNames={{
-              label: `text-sm md:text-lg font-semiBold capitalize ${
-                locale === "ar" && "right-3"
-              }`,
-            }}
+            error={errorOf("postal_code")}
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <Input
-              {...register("phone")}
-              label={t("form.labels.phone1")}
-              labelPlacement="outside"
-              variant="bordered"
-              radius="none"
-              placeholder={t("form.placeholders.phone1")}
-              isRequired
-              classNames={{
-                label: `text-sm md:text-lg font-semiBold capitalize ${
-                  locale === "ar" && "right-3"
-                }`,
-              }}
-            />
-            <Input
-              {...register("second_phone")}
-              label={t("form.labels.phone2")}
-              labelPlacement="outside"
-              variant="bordered"
-              radius="none"
-              placeholder={t("form.placeholders.phone2")}
-              classNames={{
-                label: `text-sm md:text-lg font-semiBold capitalize ${
-                  locale === "ar" && "right-3"
-                }`,
-              }}
-            />
-          </div>
-          <Button
-            size={currentWidth > 768 ? "md" : "sm"}
-            type="submit"
-            radius="none"
-            className="bg-mainBlack text-mainWhite text-sm md:text-xl capitalize"
-          >
-            {t("form.action.submit")}
-          </Button>
-        </form>
-      </div>
+          <TextField
+            {...register("phone", required)}
+            type="tel"
+            autoComplete="tel"
+            label={t("form.labels.phone1")}
+            placeholder={t("form.placeholders.phone1")}
+            error={errorOf("phone")}
+          />
+          <TextField
+            {...register("second_phone")}
+            type="tel"
+            label={t("form.labels.phone2")}
+            placeholder={t("form.placeholders.phone2")}
+            hint={t("form.optional")}
+          />
+        </div>
+        <Button type="submit" size="lg" full className="mt-2" disabled={userOrders.isAddressLoading}>
+          <span className="first-letter:uppercase">{t("form.action.submit")}</span>
+        </Button>
+      </form>
     </div>
   );
 };

@@ -18,6 +18,8 @@ import { NextIntlClientProvider, useMessages } from "next-intl";
 import { unstable_setRequestLocale } from "next-intl/server";
 import Uiproviders from "@/providers/UiProviders";
 import ReduxStoreProvider from "@/store/StoreProvider";
+import { elMessiri, fraunces } from "@/shared/ui/fonts";
+import Toaster from "@/shared/ui/Toaster";
 
 export const metadata = {
   title: { default: "Farida Store", template: "%s | Farida Store" },
@@ -48,6 +50,8 @@ export default function RootLayout({
   return (
     <html
       lang={locale}
+      dir={locale === "ar" ? "rtl" : "ltr"}
+      className={`${fraunces.variable} ${elMessiri.variable}`}
       // className="text-[10px] sm:text-[12px] md:text-[14px] lg:text-[16px]"
       // style={{ direction: locale === "en" ? "ltr" : "rtl" }}
     >
@@ -61,13 +65,16 @@ export default function RootLayout({
                   <Sidebar />
                   <CartSideBar />
                   <TopPositionedAds />
-                  <NavBar />
                   <CartFloatingButton />
                   <GoTopFloatingButton />
                   <BottomNavigation />
+                  <Toaster />
                 </div>
+                {/* Outside the wrapper above so it stays sticky for the whole page. */}
+                <NavBar />
                 <div className="flex-1 block"> {children}</div>
-                <div className="">
+                {/* Room for the phone tab bar. */}
+                <div className="pb-24 md:pb-0">
                   {/* <Footer /> */}
 
                   <Footer />

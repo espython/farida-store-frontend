@@ -1,16 +1,15 @@
 "use client";
+import { buttonClass } from "@/shared/ui/Button";
 import { StoreContext } from "@/contexts/StoreContext";
 import { isUserLoggedIn } from "@/functions/credentials";
-import { Button, Input } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import React, { useContext } from "react";
 import { BiSend } from "react-icons/bi";
 import { MdDeleteForever } from "react-icons/md";
-import { useScreenSize } from "react-screen-size-helper";
 
 const CartFooter = () => {
   const { cart, user } = useContext(StoreContext);
-  const { currentWidth } = useScreenSize({});
   const t = useTranslations("cartPage");
 
   const deleteAllCartProducts = () => {
@@ -27,47 +26,25 @@ const CartFooter = () => {
   };
 
   return (
-    <div className="flex justify-between items-center flex-wrap  gap-3">
+    <div className="flex flex-wrap justify-between items-end gap-3">
+      {/* The coupon field has no behaviour yet: coupons come with the Woo checkout (C3). */}
       <Input
         type="text"
+        aria-label={t("cartHome.footer.code")}
         placeholder={t("cartHome.footer.code")}
-        radius="sm"
-        size={currentWidth > 768 ? "md" : "sm"}
-        variant="bordered"
-        className="w-full  md:w-1/3"
-        endContent={
-          <div className="text-lg md:text-2xl cursor-pointer">
-            <BiSend />
-          </div>
-        }
+        radius="full"
+        className="w-full sm:w-72"
+        classNames={{ inputWrapper: "h-11 bg-white border border-line shadow-none" }}
+        endContent={<BiSend className="text-lg" aria-hidden="true" />}
       />
-
-      <div className="flex items-center gap-5">
-        {/* <div
-          className="flex gap-2 items-center cursor-pointer capitalize"
-          onClick={deleteAllCartProducts}
-        >
-          <h1>remove all </h1>
-          <MdDeleteForever className="text-2xl" />
-        </div> */}
-
-        <Button
-          radius="sm"
-          size={currentWidth > 768 ? "md" : "sm"}
-          className="bg-red-500 text-mainWhite capitalize px-10 "
-          endContent={<MdDeleteForever className="text-lg md:text-2xl" />}
-          onClick={deleteAllCartProducts}
-        >
-          {t("cartHome.footer.removeAll")}
-        </Button>
-
-        {/* <Button
-          radius="sm"
-          className="bg-mainBlack text-mainWhite capitalize px-10 "
-        >
-          update
-        </Button> */}
-      </div>
+      <button
+        type="button"
+        onClick={deleteAllCartProducts}
+        className={`${buttonClass({ variant: "ghost" })} text-[#b42318] capitalize`}
+      >
+        <MdDeleteForever className="text-xl" aria-hidden="true" />
+        {t("cartHome.footer.removeAll")}
+      </button>
     </div>
   );
 };

@@ -7,8 +7,8 @@ const NavLinks2 = () => {
   const t = useTranslations("navbar");
 
   return (
-    <div className="capitalize justify-self-center hidden md:flex flex-1 shrink  text-sm lg:text-lg  ">
-      <div className=" flex flex-1 shrink  items-center justify-center gap-10">
+    <nav aria-label={t("label")} className="capitalize hidden xl:flex shrink-0 text-base font-semibold">
+      <div className="flex items-center gap-6">
         <Link href={"/"} className="nav-link">
           {t("home")}
         </Link>
@@ -22,7 +22,7 @@ const NavLinks2 = () => {
           {t("contact")}
         </Link>
       </div>
-    </div>
+    </nav>
   );
 };
 

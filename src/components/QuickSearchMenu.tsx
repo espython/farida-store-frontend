@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from "react";
 import MiniSearchProduct from "./MiniSearchProduct";
 import { StoreContext } from "@/contexts/StoreContext";
 import { observer } from "mobx-react-lite";
+import { buttonClass } from "@/shared/ui/Button";
 import { Button } from "@nextui-org/react";
 import { useRouter } from "@/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -31,8 +32,8 @@ const QuickSearchMenu = () => {
   }, [searchBox.searchInputValue]);
 
   return (
-    <div className="flex flex-col gap-5 items-center justify-center  xl:px-28 2xl:px-32">
-      <div className="grid grid-cols-1 grid-rows-4 md:grid-cols-2 w-full px-5 md:grid-rows-2 gap-5">
+    <div className="flex flex-col gap-5 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-3">
         {searchBox.quickProducts.map((product) => (
           <MiniSearchProduct key={product.id} product={product} />
         ))}
@@ -40,7 +41,7 @@ const QuickSearchMenu = () => {
 
       {searchBox.quickProducts.length > 0 && (
         <Button
-          className="bg-mainBlack text-mainWhite p-2 md:p-3 capitalize"
+          className={`${buttonClass({ variant: "outline" })} capitalize`}
           onClick={() => {
             searchForResult(searchBox.searchInputValue);
           }}

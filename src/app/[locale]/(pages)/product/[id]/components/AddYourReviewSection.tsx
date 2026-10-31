@@ -3,6 +3,7 @@ import LoadingOverlay from "@/components/LoadingOverlay";
 import { StoreContext } from "@/contexts/StoreContext";
 import { Button, Textarea } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
+import { buttonClass } from "@/shared/ui/Button";
 import { useTranslations } from "next-intl";
 import React, { useContext, useState } from "react";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
@@ -31,11 +32,9 @@ const AddYourReviewSection = ({ productId }: AddYourReviewSectionProps) => {
   };
 
   return (
-    <div className="relative mt-10 flex flex-col gap-3">
+    <div className="relative mt-8 p-5 md:p-6 bg-white rounded-3xl flex flex-col gap-4">
       {user.userReviewLoading && <LoadingOverlay />}
-      <h1 className="text-sm md:text-lg capitalize">
-        {t("details.addReview")}
-      </h1>
+      <h3 className="font-display text-xl capitalize">{t("details.addReview")}</h3>
 
       <form
         onSubmit={(e) => {
@@ -44,10 +43,7 @@ const AddYourReviewSection = ({ productId }: AddYourReviewSectionProps) => {
         className="flex flex-col items-start gap-5"
       >
         <div className="flex items-center gap-5">
-          <h1 className="text-xs md:text-sm capitalize">
-            {" "}
-            {t("details.rating")} :
-          </h1>
+          <span className="text-sm font-semibold capitalize">{t("details.rating")}</span>
           <ReactStars
             value={user.userReviewRating}
             count={5}
@@ -56,6 +52,8 @@ const AddYourReviewSection = ({ productId }: AddYourReviewSectionProps) => {
             emptyIcon={<FaRegStar />}
             isEdit
             isHalf
+            activeColor="#c9962b"
+            inactiveColor="#dcdacb"
             onChange={(value) => {
               user.setUserReviewRating = value;
             }}
@@ -64,19 +62,16 @@ const AddYourReviewSection = ({ productId }: AddYourReviewSectionProps) => {
         </div>
         <Textarea
           value={user.userReviewDescription}
+          aria-label={t("details.review")}
           placeholder={t("details.review")}
-          radius="none"
+          radius="lg"
+          classNames={{ inputWrapper: "bg-cream border border-line shadow-none" }}
           minRows={currentWidth > 768 ? 5 : 3}
           onChange={(e) => {
             user.setUserReviewDescription = e.target.value;
           }}
         />
-        <Button
-          radius="sm"
-          size={currentWidth > 768 ? "md" : "sm"}
-          className="bg-mainBlack text-mainWhite capitalize text-sm md:text-lg"
-          type="submit"
-        >
+        <Button className={`${buttonClass()} capitalize`} type="submit">
           {t("details.submit")}
         </Button>
       </form>

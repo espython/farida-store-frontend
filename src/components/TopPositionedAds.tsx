@@ -33,7 +33,7 @@ const TopPositionedAds = () => {
   return (
     <>
       {fastAds.fastAds.length > 0 && (
-        <motion.div ref={divRef} className="relative">
+        <motion.div ref={divRef} className="relative bg-garden">
           <ShowHideFastAdsButton />
           <motion.div
             initial={{ y: 0, display: "none" }}
@@ -74,9 +74,9 @@ const TopPositionedAds = () => {
               {fastAds.fastAds.map((ad) => (
                 <SwiperSlide
                   key={ad.id}
-                  className="bg-mainDarkBlue  text-mainWhite text-sm md:text-xl p-2"
+                  className="!h-9 bg-garden text-cream text-sm px-10 flex items-center justify-center"
                 >
-                  <h1 className="text-center">{ad.attributes.ad}</h1>
+                  <p className="text-center truncate">{ad.attributes.ad}</p>
                 </SwiperSlide>
               ))}
             </Swiper>

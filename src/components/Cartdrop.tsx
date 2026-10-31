@@ -28,16 +28,14 @@ const CartDrop2 = () => {
         scaleY: cart.isCartMenuDisplayed ? 1 : 0,
         opacity: cart.isCartMenuDisplayed ? 1 : 0,
       }}
-      className={`origin-top  bg-white min-w-[25rem]  w-[25rem] max-w-[25rem] h-auto p-5 hidden md:block  text-mainBlack absolute top-20 ${
-        locale === "en" ? "right-0" : "left-0"
-      } z-[100] border-1 border-solid border-mainBlack border-t-0`}
+      className="origin-top w-[25rem] p-5 hidden md:block text-garden absolute top-full end-0 z-[100] bg-white rounded-3xl shadow-xl border border-line"
       dir={locale === "en" ? "ltr" : "rtl"}
     >
       <div className="flex flex-col gap-5 relative">
         {user.isMergingOrRemovingLoading && <LoadingOverlay />}
-        <h1 className="text-xl capitalize">
-          {t("cart")}({cart.productsCount}){" "}
-        </h1>
+        <p className="font-display text-xl capitalize">
+          {t("cart")} <span className="text-garden-muted">({cart.productsCount})</span>
+        </p>
 
         {cart.productsCount === 0 ? (
           <EmptyCartDrop />
@@ -47,7 +45,7 @@ const CartDrop2 = () => {
 
         {cart.productsCount > 0 && (
           <>
-            <Divider />
+            <Divider className="bg-line" />
             {isLoggedIn &&
               cartSidebar.isLocalCartHasItems &&
               !user.isMergingOrRemovingLoading && <ConfirmMergeCart />}

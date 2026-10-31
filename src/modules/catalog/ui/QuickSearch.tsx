@@ -1,9 +1,10 @@
 "use client";
-import { Button, Chip, Image, Spinner } from "@nextui-org/react";
+import { Button, Image, Spinner } from "@nextui-org/react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/navigation";
+import { buttonClass } from "@/shared/ui/Button";
+import Price from "./Price";
 import type { Locale } from "@/shared/kernel/Locale";
-import { Money } from "@/shared/kernel/Money";
 import { useGetCategoriesQuery } from "../application/catalogApi";
 import { featuredCategories } from "../application/lookups";
 import { useQuickSearch } from "../application/useQuickSearch";
@@ -32,8 +33,8 @@ const QuickSearch = ({ term, onPick, onShowAll }: Props) => {
   if (search.isError) {
     return (
       <div className="flex flex-col items-center gap-3" role="alert">
-        <p className="text-mainBlack/70">{errors("title")}</p>
-        <Button className="bg-mainPink text-mainWhite" onClick={() => search.refetch()}>
+        <p className="text-garden-muted">{errors("title")}</p>
+        <Button className={buttonClass()} onClick={() => search.refetch()}>
           {errors("retry")}
         </Button>
       </div>
@@ -43,18 +44,18 @@ const QuickSearch = ({ term, onPick, onShowAll }: Props) => {
   if (search.pending) {
     return (
       <div className="flex justify-center py-5" aria-busy="true">
-        <Spinner color="default" />
+        <Spinner color="primary" />
       </div>
     );
   }
 
   if (search.items.length === 0) {
-    return <p className="text-center text-mainBlack/70 capitalize">{t("noResults")}</p>;
+    return <p className="text-center text-garden-muted capitalize py-6">{t("noResults")}</p>;
   }
 
   return (
-    <div className="flex flex-col gap-5 items-center justify-center xl:px-28 2xl:px-32">
-      <ul className="grid grid-cols-1 md:grid-cols-2 w-full px-5 gap-5" data-testid="quick-search-results">
+    <div className="flex flex-col gap-5 items-center">
+      <ul className="grid grid-cols-1 md:grid-cols-2 w-full gap-3" data-testid="quick-search-results">
         {search.items.map((product) => (
           <li key={product.id}>
             <QuickSearchItem product={product} onPick={onPick} />
@@ -62,7 +63,7 @@ const QuickSearch = ({ term, onPick, onShowAll }: Props) => {
         ))}
       </ul>
       <Button
-        className="bg-mainBlack text-mainWhite p-2 md:p-3 capitalize"
+        className={`${buttonClass({ variant: "outline" })} capitalize`}
         onClick={() => onShowAll(search.term)}
       >
         {t("results")}
@@ -72,37 +73,19 @@ const QuickSearch = ({ term, onPick, onShowAll }: Props) => {
 };
 
 const QuickSearchItem = ({ product, onPick }: { product: Product; onPick: () => void }) => {
-  const currency = useTranslations("currency");
   const image = product.images[0];
   return (
     <Link
       href={`/product/${product.slug}`}
       onClick={onPick}
-      className="grid grid-cols-[1fr_3fr] gap-5 items-center"
+      className="grid grid-cols-[4.5rem_1fr] gap-4 items-center p-2 rounded-2xl bg-white hover:bg-sand transition-colors"
     >
-      <div className="w-full h-auto aspect-square bg-mainGray">
-        {image && (
-          <Image
-            src={image.thumbnail || image.src}
-            alt={image.alt || product.title}
-            className="w-full h-full object-contain"
-          />
-        )}
+      <div className="w-[4.5rem] aspect-square rounded-xl overflow-hidden bg-sand">
+        {image && <Image src={image.thumbnail || image.src} alt="" radius="none" removeWrapper className="w-full h-full object-cover" />}
       </div>
-      <div className="flex flex-col gap-2">
-        <span className="text-xs md:text-xl font-semibold line-clamp-1">{product.title}</span>
-        <div className="flex flex-wrap items-center gap-5">
-          {product.regularPrice && (
-            <span className="text-sm md:text-2xl text-mainBlack/30 font-bold line-through">
-              {Money.toDecimal(product.regularPrice)}
-              <span className="text-sm ltr:ml-1 rtl:mr-1">{currency("currency")}</span>
-            </span>
-          )}
-          <span className="text-sm md:text-2xl text-mainBlack/70 font-bold">
-            {Money.toDecimal(product.price)}
-            <span className="text-sm ltr:ml-1 rtl:mr-1">{currency("currency")}</span>
-          </span>
-        </div>
+      <div className="flex flex-col gap-1 min-w-0">
+        <span className="font-semibold line-clamp-1">{product.title}</span>
+        <Price price={product.price} regularPrice={product.regularPrice} size="sm" />
       </div>
     </Link>
   );
@@ -117,17 +100,13 @@ const CommonSearches = ({ locale, onPick }: { locale: Locale; onPick: () => void
   if (top.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2 md:gap-5" data-testid="common-searches">
-      <span className="text-sm md:text-xl capitalize">{t("common")}</span>
+    <div className="flex flex-wrap items-center justify-center gap-2" data-testid="common-searches">
+      <span className="text-sm font-semibold capitalize text-garden-muted">{t("common")}</span>
       {top.map((cat) => (
         <Link key={cat.id} href={`/categories/${cat.slug}`} onClick={onPick}>
-          <Chip
-            variant="bordered"
-            className="cursor-pointer text-xs md:text-sm"
-            classNames={{ base: "hover:text-mainBlack hover:border-mainBlack transition-all" }}
-          >
+          <span className="inline-flex items-center h-10 px-4 rounded-full bg-white border border-line text-sm font-semibold hover:border-garden transition-colors">
             {cat.title}
-          </Chip>
+          </span>
         </Link>
       ))}
     </div>

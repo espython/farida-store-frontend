@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite";
 import { StoreContext } from "@/contexts/StoreContext";
 import { useLocale, useTranslations } from "next-intl";
 import { getOrderPaymentDisplay } from "@/functions/orderPaymentState";
+import { formatAmount } from "@/shared/lib/price";
 
 const Orderinfo = () => {
   const { userOrders } = useContext(StoreContext);
@@ -39,13 +40,6 @@ const Orderinfo = () => {
     userOrders.orderDetails.data?.attributes
   );
 
-  const getPaymentMethodText = () => {
-    if (paymentInfo.isCod) {
-      return locale === "ar" ? "الدفع عند الاستلام" : "Cash on Delivery";
-    }
-    return locale === "ar" ? "دفع إلكتروني" : "Online Payment";
-  };
-
   const information = [
     {
       title: t("orderInfo.information.orderFor"),
@@ -67,13 +61,13 @@ const Orderinfo = () => {
     },
     {
       title: t("orderInfo.information.totalPrice"),
-      description: `${
+      description: `${formatAmount(
         userOrders.orderDetails.data?.attributes?.total
-      } ${currency("currency")}`,
+      )} ${currency("currency")}`,
     },
     {
       title: t("orderInfo.information.payment"),
-      description: getPaymentMethodText(),
+      description: paymentInfo.isCod ? t("payment.cod") : t("payment.online"),
     },
     {
       title: t("orderInfo.information.notes"),
@@ -82,11 +76,11 @@ const Orderinfo = () => {
   ];
 
   return (
-    <div className="border-1 border-mainBlack/25 border-solid flex flex-col gap-2 px-10 py-3 capitalize">
-      <h1 className="text-lg md:text-xl capitalize text-center">
+    <section aria-labelledby="order-info" className="bg-white rounded-3xl p-5 md:p-6 flex flex-col gap-4">
+      <h2 id="order-info" className="font-display text-xl md:text-2xl first-letter:uppercase">
         {t("orderInfo.information.title")}
-      </h1>
-      <div className="grid grid-cols-1 lmob:grid-cols-2 gap-2">
+      </h2>
+      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {information?.map(
           (info) =>
             info.description && (
@@ -97,8 +91,8 @@ const Orderinfo = () => {
               />
             )
         )}
-      </div>
-    </div>
+      </dl>
+    </section>
   );
 };
 

@@ -5,9 +5,11 @@ import React from "react";
 const EmptyCartDrop = () => {
   const t = useTranslations("cartDrop");
   return (
-    <div>
-      <h2 className="text-mainBlack/50">{t("empty")} </h2>
-      <Link href={"/"}>{t("continue")} → </Link>
+    <div className="flex flex-col gap-2 py-4">
+      <p className="text-garden-muted">{t("empty")}</p>
+      <Link href={"/"} className="font-bold underline underline-offset-4 hover:text-saffron-ink">
+        {t("continue")} <span aria-hidden="true" className="inline-block rtl:rotate-180">→</span>
+      </Link>
     </div>
   );
 };

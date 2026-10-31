@@ -162,7 +162,7 @@ const ProductCard = ({ product }: productCardProps) => {
             <ProductTypeLabel
               title={t("sale")}
               classNames={{
-                container: "bg-red-700",
+                container: "bg-saffron text-garden",
               }}
             />
           )}
@@ -170,7 +170,7 @@ const ProductCard = ({ product }: productCardProps) => {
             <ProductTypeLabel
               title={t("top")}
               classNames={{
-                container: " bg-green-700",
+                container: "bg-garden text-cream",
               }}
             />
           )}
@@ -178,7 +178,7 @@ const ProductCard = ({ product }: productCardProps) => {
             <ProductTypeLabel
               title={t("best")}
               classNames={{
-                container: " bg-yellow-700",
+                container: "bg-sand text-garden",
               }}
             />
           )}

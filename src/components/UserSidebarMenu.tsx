@@ -1,7 +1,6 @@
 "use client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button, Chip, User } from "@nextui-org/react";
-import SafeDivider from "./SafeDivider";
 import React, { useContext } from "react";
 import { FaArrowRight, FaRegUserCircle } from "react-icons/fa";
 import UserLoggedInUi from "./UserLoggedInUi";
@@ -31,71 +30,39 @@ const UserSidebarMenu = () => {
     // router.push("/");
   };
 
+  const row = "flex items-center justify-between gap-2 min-h-[44px] px-3 -mx-3 rounded-xl hover:bg-sand transition-colors";
+
   return (
-    <div className="md:text-mainBlack/50">
-      <SafeDivider />
-
-      <div className="py-5 px-5 flex flex-col gap-3 text-lg">
-        <Link href={"/user"} className="md:hidden">
-          <User
-            name={user.strapiUserdata?.username}
-            description={user.strapiUserdata?.email}
-            // avatarProps={{
-            //   src: `${process.env.NEXT_PUBLIC_HOST}${user.strapiUserdata.avatar?.url}`,
-            // }}
-            className=" lowercase"
-          />
-        </Link>
-
-        <Link
-          href={"/userorders"}
-          className="flex items-center justify-between gap-2 "
-          onClick={sidebar.hideWholeSidebar}
-        >
-          <div className="flex gap-2 items-center ">
-            <IoBagOutline />
-            <h1>{t("orders")}</h1>
-          </div>
-          <div className="flex items-center gap-5">
-            <Chip
-              classNames={{
-                base: "bg-mainBlack md:bg-mainBlack/50 text-mainWhite",
-              }}
-            >
-              {user.strapiUserdata.order_details?.length}
-            </Chip>
-            {/* <FaArrowRight className="text-sm" /> */}
-          </div>
-        </Link>
-        <Link
-          href={"/userprofile"}
-          className="flex items-center justify-between gap-2 "
-          onClick={sidebar.hideWholeSidebar}
-        >
-          <div className="flex gap-2 items-center">
-            <RiUserSettingsLine />
-            <h1> {t("profile")}</h1>
-          </div>
-          <div className="flex items-center gap-5">
-            {/* <FaArrowRight className="text-sm" /> */}
-          </div>
-        </Link>
-        <div
-          className="flex flex-col  gap-2  cursor-pointer select-none"
-          onClick={logout}
-        >
-          <SafeDivider />
-          <div className="flex gap-2 items-center text-red-500">
-            <IoIosLogOut />
-            <h1> {t("logout")}</h1>
-          </div>
-        </div>
-        {/* {isUserLoggedIn() && (
-          <Button className="text-mainWhite bg-red-500 capitalize">
-            logout
-          </Button>
-        )} */}
-      </div>
+    <div className="px-5 py-4 border-t border-line flex flex-col">
+      <Link href={"/user"} onClick={sidebar.hideWholeSidebar} className={`${row} py-2`}>
+        <User
+          name={user.strapiUserdata?.username}
+          description={user.strapiUserdata?.email}
+          className="lowercase justify-start"
+          classNames={{ name: "font-bold text-garden", description: "text-garden-muted" }}
+        />
+      </Link>
+      <Link href={"/userorders"} className={row} onClick={sidebar.hideWholeSidebar}>
+        <span className="flex gap-3 items-center">
+          <IoBagOutline aria-hidden="true" />
+          {t("orders")}
+        </span>
+        <Chip size="sm" classNames={{ base: "bg-saffron text-garden font-bold" }}>
+          {user.strapiUserdata.order_details?.length ?? 0}
+        </Chip>
+      </Link>
+      <Link href={"/userprofile"} className={row} onClick={sidebar.hideWholeSidebar}>
+        <span className="flex gap-3 items-center">
+          <RiUserSettingsLine aria-hidden="true" />
+          {t("profile")}
+        </span>
+      </Link>
+      <button type="button" onClick={logout} className={`${row} text-[#b42318] font-semibold`}>
+        <span className="flex gap-3 items-center">
+          <IoIosLogOut aria-hidden="true" />
+          {t("logout")}
+        </span>
+      </button>
     </div>
   );
 };

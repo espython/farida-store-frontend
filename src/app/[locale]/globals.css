@@ -4,12 +4,34 @@
 
 
 :root {
-  --swiper-theme-color: #e5087e !important;
+  --swiper-theme-color: #2d5a40 !important;
+  --font-display: var(--font-fraunces);
+  /* react-toastify in the Kitchen Garden palette */
+  --toastify-font-family: inherit;
+  --toastify-color-light: #ffffff;
+  --toastify-text-color-light: #1e3a2b;
+  --toastify-color-success: #2d5a40;
+  --toastify-color-info: #1e3a2b;
+  --toastify-color-warning: #8a5a00;
+  --toastify-color-error: #b42318;
+  --toastify-color-progress-light: #e9c46a;
+}
+
+/* Swiper pagination: small cream dots, the active one a saffron pill. */
+.swiper-pagination-bullet {
+  @apply w-2 h-2 bg-line opacity-100 transition-all;
+}
+.swiper-pagination-bullet-active {
+  @apply w-6 rounded-full bg-saffron;
+}
+
+:lang(ar) {
+  --font-display: var(--font-el-messiri);
 }
 
 
 body {
-  @apply bg-mainWhite scroll-smooth;
+  @apply bg-cream text-garden scroll-smooth;
 }
 
 @layer components {
@@ -21,7 +43,7 @@ body {
     @apply hover:text-yellow-600;
   }
   .nav-link {
-    @apply transition-all hover:text-mainPink;
+    @apply transition-colors hover:text-saffron-ink;
   }
   .input-label {
     @apply text-mainBlack/50;
@@ -44,6 +66,14 @@ body {
   .product-table td,
   .product-table th {
     @apply border-2 border-mainBlack border-dashed;
+  }
+
+  /* Swipe rows (category strip) scroll without a visible bar. */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 
   .filter-link {
@@ -92,10 +122,10 @@ body {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  @apply bg-mainPink;
+  @apply bg-line rounded-full;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-mainPink/50;
+  @apply bg-garden-muted;
 }

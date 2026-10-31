@@ -13,10 +13,10 @@ const OrderNumberPage = ({ params: { id, locale } }: OrderNumberPageProps) => {
   unstable_setRequestLocale(locale);
 
   return (
-    <div>
-      <PageTitle title={`${t("orderPage.title")} ${id}`} />
+    <>
+      <PageTitle title={t("details.order", { number: id })} />
       <PageContainer orderId={id} />
-    </div>
+    </>
   );
 };
 

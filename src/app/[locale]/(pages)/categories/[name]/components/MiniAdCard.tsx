@@ -4,12 +4,11 @@ interface MiniAdProps {
   content: string;
 }
 
+/** Promo band on category pages (Strapi mini ads until B5). */
 const MiniAdCard = ({ content }: MiniAdProps) => {
   return (
-    <div className="bg-mainDarkBlue text-mainWhite text-xl md:text-3xl p-3 ">
-      <div className="flex justify-center items-center p-10 border-mainWhite border-1 border-dashed">
-        <h1 className="text-center">{content}</h1>
-      </div>
+    <div className="bg-saffron text-garden rounded-3xl px-6 py-8 md:py-10">
+      <p className="text-center font-display text-xl md:text-[1.75rem] leading-snug">{content}</p>
     </div>
   );
 };

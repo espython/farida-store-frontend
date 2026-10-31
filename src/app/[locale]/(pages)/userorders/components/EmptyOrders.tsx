@@ -1,14 +1,23 @@
+import { Link } from "@/navigation";
+import { buttonClass } from "@/shared/ui/Button";
+import EmptyState from "@/shared/ui/EmptyState";
 import { useTranslations } from "next-intl";
 import React from "react";
-import { FaBoxOpen } from "react-icons/fa";
+import { LuPackageOpen } from "react-icons/lu";
 
 const EmptyOrders = () => {
   const t = useTranslations("userOrders");
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center my-20">
-      <FaBoxOpen className="text-9xl md:text-[12rem] text-mainBlack/10" />
-      <h1 className="text-xl md:text-3xl capitalize">{t("empty")}</h1>
-    </div>
+    <EmptyState
+      icon={<LuPackageOpen />}
+      title={t("empty")}
+      text={t("emptyText")}
+      action={
+        <Link href="/" className={buttonClass()}>
+          {t("startShopping")}
+        </Link>
+      }
+    />
   );
 };
 
