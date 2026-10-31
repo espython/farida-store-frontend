@@ -650,17 +650,18 @@
     }
   },
   "contactPage": {
-    "title": "contact us ",
+    "title": "Contact us",
     "branches": {
-      "title": "We welcome you to visit us at any time:-",
-      "branch": "branch",
-      "city_state": "cairo,egypt",
-      "times1": "sun-thurs:9:00-20:00",
-      "times2": "fri-sat:11:00-15:00"
+      "title": "Visit us",
+      "city_state": "Cairo, Egypt",
+      "times1": "Sun–Thu: 9:00–20:00",
+      "times2": "Fri–Sat: 11:00–15:00",
+      "map": "Map of our store",
+      "call": "Call"
     },
     "form": {
       "title": "Do you have a complaint or inquiry?",
-      "subTitle": "Please do not hesitate to call or write to us to help you",
+      "subTitle": "Write to us or give us a call and we'll help.",
       "labels": {
         "name": "Name",
         "email": "Email",
@@ -671,9 +672,11 @@
         "email": "Your email",
         "message": "Your message"
       },
-      "action": "send",
-      "sended": "your complaint was send",
-      "error": "Failed to send your message. Please try again."
+      "action": "Send message",
+      "sended": "Thanks, your message was sent.",
+      "error": "Failed to send your message. Please try again.",
+      "required": "This field is required",
+      "invalidEmail": "Enter a valid email address"
     }
   },
   "userProfilePage": {

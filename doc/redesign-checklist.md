@@ -137,7 +137,7 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [x] `WishlistContent`, `WishListContainer`, `WishListSections`, `WishListItem` (reuse the product card look), `WishListIsEmpty`, `LoginWarning`, `loading.tsx` — product-card grid (4/3/2) with a labelled remove button and add to cart; the two sort widgets (`WishListFliters` Autocomplete on desktop, `FiltersDropMenu` with hard-coded English on mobile, plus its MobX store) replaced by one labelled `<select>`; review count came from whichever product page was opened last, now this product's
 
 ### Contact `/contact`
-- [ ] `Welcoming`, `ComplaintForm`, `Branch`, `Map`
+- [x] `Welcoming`, `ComplaintForm`, `Branch`, `Map` — 7/5 grid: form card (required + email checks; empty forms were posted) beside a visit card (tap-to-call) and a rounded, titled map. Owner content needed: the same placeholder branch was listed three times (now shown once), and the map pins the Cairo book fair grounds, not the store
 
 ### System pages
 - [ ] `[locale]/loading.tsx`, `[locale]/error.tsx`, `[locale]/not-found.tsx`, `app/global-error.tsx`

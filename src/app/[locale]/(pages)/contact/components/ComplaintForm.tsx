@@ -1,19 +1,26 @@
 "use client";
-import { Button, Input, Textarea } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useScreenSize } from "react-screen-size-helper";
 import { toast } from "react-toastify";
+import { Spinner } from "@nextui-org/react";
+import TextField from "@/shared/ui/TextField";
+import Button from "@/shared/ui/Button";
+
+type ContactForm = { name: string; email: string; message: string };
 
 const ComplaintForm = () => {
-  const { currentWidth } = useScreenSize({});
-  const { register, handleSubmit, reset } = useForm<{ name: string; email: string; message: string }>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ContactForm>();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const t = useTranslations("contactPage");
 
-  const submitcomplaint = async (data: { name: string; email: string; message: string }) => {
+  const submitcomplaint = async (data: ContactForm) => {
     setIsSubmitting(true);
     try {
       const res = await fetch("/api/contact", {
@@ -31,80 +38,59 @@ const ComplaintForm = () => {
     }
   };
 
+  // The asterisks were decorative: an empty form was posted to /api/contact.
+  const required = { required: t("form.required") };
+
   return (
-    <div className="w-full px-5 medmob:px-10 lmob:px-20  md:px-28 flex flex-col gap-10">
-      <div className="flex flex-col gap-3">
-        <h1 className="text-2xl md:text-4xl font-bold capitalize">
+    <section aria-labelledby="contact-form" className="bg-white rounded-3xl p-5 md:p-8 flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <h2 id="contact-form" className="font-display text-2xl md:text-[2rem] leading-tight">
           {t("form.title")}
-        </h1>
-        <h1 className="text-sm md:text-xl text-mainBlack/50 capitalize">
-          {t("form.subTitle")}
-        </h1>
+        </h2>
+        <p className="text-garden-muted">{t("form.subTitle")}</p>
       </div>
 
       <form
+        noValidate
         onSubmit={handleSubmit((data) => {
           submitcomplaint(data);
         })}
-        className="w-full flex flex-col gap-5"
+        className="flex flex-col gap-4"
       >
-        <Input
-          {...register("name")}
-          isRequired
-          label={t("form.labels.name")}
-          placeholder={t("form.placeholders.name")}
-          labelPlacement="outside"
-          variant="bordered"
-          radius="none"
-          type="text"
-          inputMode="text"
-          size={currentWidth > 768 ? "lg" : "md"}
-          className="w-full "
-          classNames={{
-            label: "rtl:right-0",
-          }}
-        />
-        <Input
-          {...register("email")}
-          isRequired
-          label={t("form.labels.email")}
-          placeholder={t("form.placeholders.email")}
-          labelPlacement="outside"
-          variant="bordered"
-          radius="none"
-          type="email"
-          inputMode="email"
-          size={currentWidth > 768 ? "lg" : "md"}
-          className="w-full "
-          classNames={{
-            label: "rtl:right-0",
-          }}
-        />
-        <Textarea
-          {...register("message")}
-          isRequired
-          minRows={20}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <TextField
+            {...register("name", required)}
+            autoComplete="name"
+            label={t("form.labels.name")}
+            placeholder={t("form.placeholders.name")}
+            error={errors.name?.message}
+          />
+          <TextField
+            {...register("email", {
+              ...required,
+              pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: t("form.invalidEmail") },
+            })}
+            type="email"
+            autoComplete="email"
+            label={t("form.labels.email")}
+            placeholder={t("form.placeholders.email")}
+            error={errors.email?.message}
+          />
+        </div>
+        <TextField
+          {...register("message", required)}
+          multiline
+          rows={6}
           label={t("form.labels.message")}
           placeholder={t("form.placeholders.message")}
-          labelPlacement="outside"
-          variant="bordered"
-          radius="none"
-          type="text"
-          inputMode="text"
-          size={currentWidth > 768 ? "lg" : "md"}
-          className="w-full "
+          error={errors.message?.message}
         />
-        <Button
-          radius="none"
-          type="submit"
-          size={currentWidth > 768 ? "lg" : "md"}
-          className="bg-mainBlack text-mainWhite text-sm md:text-xl"
-          isLoading={isSubmitting}
-        >
+        <Button type="submit" size="lg" className="self-start" disabled={isSubmitting} aria-busy={isSubmitting}>
+          {isSubmitting && <Spinner size="sm" color="current" />}
           {t("form.action")}
         </Button>
       </form>
-    </div>
+    </section>
   );
 };
 

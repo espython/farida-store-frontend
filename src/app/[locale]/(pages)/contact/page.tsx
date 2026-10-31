@@ -5,6 +5,7 @@ import Welcoming from "./components/Welcoming";
 import ComplaintForm from "./components/ComplaintForm";
 import { unstable_setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
+import PageContainer from "@/shared/ui/PageContainer";
 
 interface ContactPageProps {
   params: { locale: string };
@@ -16,19 +17,20 @@ const ContactPage = ({ params: { locale } }: ContactPageProps) => {
   const t = useTranslations("contactPage");
 
   return (
-    <div
-      className="w-full flex flex-col gap-20 justify-center items-center "
-      dir={locale === "en" ? "ltr" : "rtl"}
-    >
-      <div className="flex flex-col gap-10 w-full">
-        <PageTitle title={t("title")} />
-        <Map />
-      </div>
-      <div className="flex flex-col gap-10 w-full">
-        <Welcoming />
-        <ComplaintForm />
-      </div>
-    </div>
+    <>
+      <PageTitle title={t("title")} />
+      <PageContainer className="pt-6 pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+          <div className="lg:col-span-7">
+            <ComplaintForm />
+          </div>
+          <div className="lg:col-span-5 flex flex-col gap-6">
+            <Welcoming />
+            <Map />
+          </div>
+        </div>
+      </PageContainer>
+    </>
   );
 };
 
