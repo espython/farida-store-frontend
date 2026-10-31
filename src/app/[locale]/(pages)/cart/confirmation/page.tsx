@@ -8,11 +8,7 @@ interface ConfirmationPageProps {
 
 const ConfirmationPage = ({ params: { locale } }: ConfirmationPageProps) => {
   unstable_setRequestLocale(locale);
-  return (
-    <div>
-      <ConfirmationPageContainer />
-    </div>
-  );
+  return <ConfirmationPageContainer />;
 };
 
 export default ConfirmationPage;

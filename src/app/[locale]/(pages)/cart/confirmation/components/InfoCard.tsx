@@ -5,13 +5,12 @@ interface infoProps {
   description: string;
 }
 
+/** One label/value pair inside a `<dl>`. */
 const InfoCard = ({ description, title }: infoProps) => {
   return (
-    <div className="flex flex-col gap-1">
-      <h1 className="text-mainBlack/50  text-sm md:text-xl">{title}</h1>
-      <h1 className="font-bold text-xs md:text-lg line-clamp-2">
-        {description}
-      </h1>
+    <div className="flex flex-col gap-0.5 min-w-0">
+      <dt className="text-sm text-garden-muted">{title}</dt>
+      <dd className="font-semibold break-words">{description}</dd>
     </div>
   );
 };

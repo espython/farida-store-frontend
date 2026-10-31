@@ -1,9 +1,8 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import InfoCard from "./InfoCard";
 import { observer } from "mobx-react-lite";
 import { StoreContext } from "@/contexts/StoreContext";
-import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 const OrderAddress = () => {
@@ -42,12 +41,11 @@ const OrderAddress = () => {
   ];
 
   return (
-    <div className="border-1 border-mainBlack/25 border-solid px-10 py-3 capitalize">
-      <h1 className="text-lg md:text-xl  text-center mb-2">
-        {" "}
+    <section aria-labelledby="order-address" className="bg-white rounded-3xl p-5 md:p-6 flex flex-col gap-4">
+      <h2 id="order-address" className="font-display text-xl md:text-2xl first-letter:uppercase">
         {t("orderAddress.title")}
-      </h1>
-      <div className=" grid  grid-cols-1 lmob:grid-cols-2 gap-2 ">
+      </h2>
+      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {information?.map(
           (info) =>
             info.description && (
@@ -58,8 +56,8 @@ const OrderAddress = () => {
               />
             )
         )}
-      </div>
-    </div>
+      </dl>
+    </section>
   );
 };
 

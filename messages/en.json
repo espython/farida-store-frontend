@@ -152,7 +152,6 @@
     "errors": {
       "email": "Not valid email"
     },
-
     "submit": "submit",
     "noAccount": " Don't have an account ?",
     "or": "or"
@@ -303,7 +302,6 @@
   },
   "cartPage": {
     "title": "cart",
-
     "tabs": {
       "step1": {
         "title": "shopping cart",
@@ -409,38 +407,68 @@
   },
   "confirmationPage": {
     "thanks": {
-      "thank": "thank you",
-      "message": " your order was recieved successfully"
+      "thank": "Thank you!",
+      "message": "Your order was received successfully. We'll let you know when it ships.",
+      "track": "Track your order",
+      "continue": "Continue shopping"
     },
     "orderInfo": {
       "date": {
-        "soon": "soon"
+        "soon": "Soon"
       },
       "information": {
-        "title": "order information",
-        "orderFor": "order for :",
-        "orderNumber": "order number :",
-        "orderOn": "ordered on  :",
-        "arrivedOn": "arrived on  :",
-        "totalPrice": "total price :",
-        "payment": "payment method :",
-        "cash": "cash",
-        "notes": "order notes :"
+        "title": "Order information",
+        "orderFor": "Order for",
+        "orderNumber": "Order number",
+        "orderOn": "Ordered on",
+        "arrivedOn": "Arrived on",
+        "totalPrice": "Total price",
+        "payment": "Payment method",
+        "cash": "Cash",
+        "notes": "Order notes"
       }
     },
     "orderAddress": {
-      "title": "order address",
-      "state": "state :",
-      "country": "country :",
-      "city": "city :",
-      "street": "street :",
-      "postal": "postal code :",
-      "phone1": "phone :",
-      "phone2": "second phone :"
+      "title": "Order address",
+      "state": "State",
+      "country": "Country",
+      "city": "City",
+      "street": "Street",
+      "postal": "Postal code",
+      "phone1": "Phone",
+      "phone2": "Second phone"
     },
     "orderItems": {
       "title": "order items",
-      "noOrder": "no order found"
+      "noOrder": "No order found",
+      "noOrderText": "We couldn't find this order in your account.",
+      "myOrders": "View my orders"
+    },
+    "payment": {
+      "title": "Payment details",
+      "subtitle": "Payment and transaction information",
+      "method": "Payment method",
+      "status": "Payment status",
+      "amountPaid": "Amount paid",
+      "orderTotal": "Order total",
+      "online": "Online payment",
+      "cod": "Cash on delivery",
+      "statuses": {
+        "completed": "Completed",
+        "pending": "Pending",
+        "failed": "Failed",
+        "unknown": "Unknown"
+      },
+      "transactionId": "Transaction ID",
+      "paymobOrderId": "Paymob order ID",
+      "codNote": "Payment is collected on delivery. Please have the exact amount ready.",
+      "secure": "All transactions are secure and protected"
+    },
+    "addressSelection": {
+      "title": "Choose a delivery address",
+      "address": "Address {index}",
+      "select": "Deliver here",
+      "selected": "Selected"
     }
   },
   "wishList": {
@@ -514,7 +542,6 @@
       }
     }
   },
-
   "notFound": {
     "title": "Page Not Found",
     "description": "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.",
@@ -586,7 +613,7 @@
   },
   "trackOrderPage": {
     "title": "track order",
-    "description": "Please enter your order number in the box below and press the \u201cTrack Order\u201d button to view its status. You can find the order number in the mail sent to you containing the order confirmation Receipt.",
+    "description": "Please enter your order number in the box below and press the “Track Order” button to view its status. You can find the order number in the mail sent to you containing the order confirmation Receipt.",
     "form": {
       "labels": {
         "orderNumber": "Order number",
@@ -605,9 +632,7 @@
     "branches": {
       "title": "We welcome you to visit us at any time:-",
       "branch": "branch",
-
       "city_state": "cairo,egypt",
-
       "times1": "sun-thurs:9:00-20:00",
       "times2": "fri-sat:11:00-15:00"
     },

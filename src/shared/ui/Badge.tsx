@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-type Tone = "sale" | "dark" | "muted" | "success" | "warning";
+type Tone = "sale" | "dark" | "muted" | "success" | "warning" | "danger";
 
 const TONES: Record<Tone, string> = {
   sale: "bg-saffron text-garden",
@@ -8,6 +8,7 @@ const TONES: Record<Tone, string> = {
   muted: "bg-sand text-garden",
   success: "bg-[#dcebe0] text-garden",
   warning: "bg-[#fbe9c4] text-saffron-ink",
+  danger: "bg-[#fde8e6] text-[#b42318]",
 };
 
 /** Small rounded label: discount, stock, order status. */

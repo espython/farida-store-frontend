@@ -104,8 +104,8 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [~] `PaymentSummary`, `PaymentIframe` (frame container) — restyled (radio cards, summary card), 37 inline en/ar strings moved to `paymentFlow`; NOT browser-checked (needs login). Totals disagree between steps: shipping step adds 100 EGP, payment adds 50 EGP + 14% tax (C3, business logic, left as is)
 
 ### Confirmation `/cart/confirmation`
-- [ ] `ConfirmationPageContainer`, `Thanks`, `Orderinfo`, `InfoCard`, `PaymentDetails`, `OrderAddress`, `ItemsContainer`, `CompletedOrderedItem`, `NoOrder`
-- [ ] `AddressesSelections`, `UserAddressSelection`, `AddressSelectionModal`
+- [~] `ConfirmationPageContainer`, `Thanks`, `Orderinfo`, `InfoCard`, `PaymentDetails`, `OrderAddress`, `ItemsContainer`, `NoOrder` — restyled (success card with track/continue links, 7/5 grid of white cards, `<dl>` fields, skeleton while the ownership check runs instead of a flash of "no order"), payment strings moved to messages, unused `CompletedOrderedItem` deleted; NOT browser-checked (needs a logged-in Strapi user and an order)
+- [~] `AddressesSelections`, `UserAddressSelection`, `AddressSelectionModal` — Swiper replaced by a scrollable list of address cards, selected one marked, labels translated (were hard-coded English); NOT browser-checked (needs login)
 
 ### Payment callback `/payment-callback`
 - [ ] Success / failure / pending states
@@ -128,7 +128,7 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 
 ### Order lookup `/order`, Order detail `/order/[id]`
 - [ ] `OrderForm`
-- [ ] `PageContainer` (order), `OrderItemsContainer`, `OrderItem`
+- [ ] `PageContainer` (order), `OrderItemsContainer`, `OrderItem` (`OrderItem`/`OrderItemsContainer` restyled with the confirmation step; page shell still old)
 
 ### Track order `/trackorder`, `/trackorder/[id]`
 - [ ] `TrackOrderContainer`, `OrderReceived`, `OrderPaid`, `OrderShipped` (status timeline), `EmptyOrderTrack`
