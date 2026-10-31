@@ -45,6 +45,20 @@ Versions: WordPress 7.1.3, WooCommerce 11.2.1, Polylang 3.8.11, JWT Auth 1.5.0, 
 | `wp/v2/users` anonymous | **200: lists users. Must be locked down before launch** (security basics) |
 | Polylang languages en + ar | Created. Free Polylang has no WP-CLI; `lang` param on the Store API is not yet verified with translated products. Needs Polylang for WooCommerce (paid) or an alternative: decision pending |
 
+### Customer cart checks (`spike-cart.mjs`, 2026-10-31, C2 #248)
+
+Run: `node --env-file=.env.local spike-cart.mjs`. Creates its own customer.
+
+| Check | Result |
+|---|---|
+| Store API cart with the customer's JWT (`Authorization: Bearer`) | Pass; the response carries a `Cart-Token` |
+| Mutations with Bearer + `Cart-Token`, no `Nonce` | Pass. Without a `Cart-Token`: 401 `woocommerce_rest_missing_nonce` |
+| Same customer from another "device" (Bearer, no token) | Pass: the saved cart comes back (cross-device), under a different token |
+| `Cart-Token` alone, no JWT | **Reads that cart**: the token is a capability. Keep it httpOnly |
+| Guest token + customer JWT together | **Shows the guest cart, not the customer's**: a token wins over the JWT. Bind the token cookie to the customer id and drop it at sign-in/out |
+| Item shape | `key`, `id`, `quantity`, `prices` (minor units), `quantity_limits` {minimum, maximum, multiple_of, editable}; totals with `currency_minor_unit` 2 |
+| Update / remove by item `key`; over-stock add | Pass; over-stock is 400 `woocommerce_rest_product_partially_out_of_stock` |
+
 ### Customer auth checks (`spike-auth.mjs`, 2026-10-31, A1 #242)
 
 Run: `node --env-file=.env.local spike-auth.mjs` (same keys as below; `setup.sh` sets `JWT_AUTH_SECRET_KEY`). Creates its own customers with generated passwords.

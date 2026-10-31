@@ -1,3 +1,4 @@
+"use client";
 import { isAnyOf, type ListenerMiddlewareInstance } from "@reduxjs/toolkit";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";

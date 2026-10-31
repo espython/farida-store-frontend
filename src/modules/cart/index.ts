@@ -11,7 +11,8 @@ export type { Coupon, CouponPreview, PaymentMethod } from "./domain/coupon";
 
 // Application: use cases, selectors, store wiring.
 export { useCart } from "./application/useCart";
-export type { UseCart } from "./application/useCart";
+export type { CartChange, UseCart } from "./application/useCart";
+export { cartApi } from "./application/cartApi";
 export { toProductRef } from "./application/productRef";
 export {
   selectCart,
@@ -30,3 +31,4 @@ export { startCartPersistence, useCartPersistence } from "./application/cartPers
 export { default as AddToCartButton } from "./ui/AddToCartButton";
 export { default as CartLineItem } from "./ui/CartLineItem";
 export { default as CartSummary } from "./ui/CartSummary";
+export { default as CartSync } from "./ui/CartSync";

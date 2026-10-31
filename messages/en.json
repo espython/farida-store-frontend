@@ -768,7 +768,12 @@
     "emptyText": "Browse the kitchen and add what you like.",
     "browse": "Start shopping",
     "count": "{count, plural, =0 {Cart, empty} one {Cart, # item} other {Cart, # items}}",
-    "clear": "Remove all"
+    "clear": "Remove all",
+    "merged": "{count, plural, one {We added # item from before you signed in to your cart} other {We added # items from before you signed in to your cart}}",
+    "mergeSkipped": "{count, plural, one {# item is no longer available and was left out} other {# items are no longer available and were left out}}",
+    "mergeFailed": "We couldn't move your cart to your account. We'll try again.",
+    "outOfStock": "Not enough stock for that quantity",
+    "changeFailed": "We couldn't update your cart. Please try again."
   },
   "authErrors": {
     "email_invalid": "Enter a valid email address",

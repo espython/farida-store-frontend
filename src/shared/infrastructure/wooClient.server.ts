@@ -84,7 +84,10 @@ export async function wooFetch<T = unknown>(req: WooRequest): Promise<WooRespons
       headers,
       body: req.body === undefined ? undefined : JSON.stringify(req.body),
       signal: controller.signal,
-      ...(auth === "keys" ? { cache: "no-store" as const } : { next: req.next }),
+      // Never cache anything sent with credentials: keys, or a customer's own
+      // Authorization (their cart, their account). Only anonymous reads may
+      // use Next's fetch cache.
+      ...(auth === "keys" || headers.Authorization ? { cache: "no-store" as const } : { next: req.next }),
     });
   } catch (err) {
     const timedOut = err instanceof Error && err.name === "AbortError";
