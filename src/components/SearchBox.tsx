@@ -1,24 +1,21 @@
 "use client";
 import { StoreContext } from "@/contexts/StoreContext";
-import { Chip, Input, Spinner } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
 import { SearchIcon } from "lucide-react";
 import { Link } from "@/navigation";
 import { useSearchParams } from "next/navigation";
 import { useRouter, usePathname } from "@/navigation";
 import React, { useContext, useEffect, useRef } from "react";
-import QuickSearchMenu from "./QuickSearchMenu";
 import { observer } from "mobx-react-lite";
-import SearchBoxCommonSearches from "./SearchBoxCommonSearches";
-import { useLocale, useTranslations } from "next-intl";
-import { CATALOG_SOURCE, QuickSearch } from "@/modules/catalog";
+import { useTranslations } from "next-intl";
+import { QuickSearch } from "@/modules/catalog";
 
 const SearchBox = () => {
-  const { searchBox, categories } = useContext(StoreContext);
+  const { searchBox } = useContext(StoreContext);
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
-  const locale = useLocale();
   const t = useTranslations("search");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -37,14 +34,6 @@ const SearchBox = () => {
     router.push(`/search?q=${encodeURIComponent(query.trim())}`);
     closeSearch();
   };
-
-  useEffect(() => {
-    // Woo common searches come from the catalog module.
-    if (CATALOG_SOURCE === "woo") return;
-    categories.getSomeCategories(4, locale);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     const clickingEnter = (e: KeyboardEvent) => {
@@ -81,8 +70,7 @@ const SearchBox = () => {
           input: "text-base text-garden placeholder:text-garden-muted",
         }}
         endContent={
-          !searchBox.quickProductsLoading ? (
-            <button
+          <button
               type="button"
               aria-label={t("search")}
               className="w-11 h-11 -me-2 grid place-items-center rounded-full bg-garden text-cream"
@@ -94,9 +82,6 @@ const SearchBox = () => {
             >
               <SearchIcon className="text-cream" aria-hidden="true" />
             </button>
-          ) : (
-            <Spinner color="primary" size="sm" />
-          )
         }
         className="w-full"
         onChange={(e) => {
@@ -104,23 +89,9 @@ const SearchBox = () => {
         }}
       />
 
-      {CATALOG_SOURCE === "woo" ? (
-        <div className="w-full">
-          <QuickSearch
-            term={searchBox.searchInputValue}
-            onPick={closeSearch}
-            onShowAll={searchForResult}
-          />
-        </div>
-      ) : (
-        <>
-          {searchBox.quickProducts.length === 0 && (
-            <SearchBoxCommonSearches searchForResult={searchForResult} />
-          )}
-
-          <QuickSearchMenu />
-        </>
-      )}
+      <div className="w-full">
+        <QuickSearch term={searchBox.searchInputValue} onPick={closeSearch} onShowAll={searchForResult} />
+      </div>
     </div>
   );
 };

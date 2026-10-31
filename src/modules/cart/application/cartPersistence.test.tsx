@@ -8,7 +8,7 @@ import { makeStore } from "@/store";
 import { CART_STORAGE_KEY } from "../infrastructure/cartStorage";
 import { toStoredCart } from "../infrastructure/storedCartMapper";
 import { addLine, emptyCart, type ProductRef } from "../domain/cart";
-import { CART_KEY } from "./cartSlice";
+import { CART_KEY, cartActions } from "./cartSlice";
 import { useCartPersistence } from "./cartPersistence";
 import { useCart } from "./useCart";
 
@@ -82,5 +82,29 @@ describe("cart persistence", () => {
     });
     expect(store.getState()[CART_KEY].cart.lines.map((l) => [l.product.id, l.quantity])).toEqual([["2", 4]]);
     expect(localStorage.getItem(CART_STORAGE_KEY)).toBe(other);
+  });
+
+  it("renders the empty cart first even when the store was loaded before this component hydrates", () => {
+    const store = makeStore();
+    store.dispatch(cartActions.cartHydrated(addLine(emptyCart(), ref("1"), 2)));
+    const Count = () => {
+      const { totals, hydrated } = useCart();
+      return <span>{`${hydrated}:${totals.itemCount}`}</span>;
+    };
+    // What the server (and a late-hydrating boundary's first render) produces.
+    expect(
+      renderToString(
+        <Provider store={store}>
+          <Count />
+        </Provider>
+      )
+    ).toContain("false:0");
+    // After mount it shows the real cart.
+    const { container } = render(
+      <Provider store={store}>
+        <Count />
+      </Provider>
+    );
+    expect(container.textContent).toBe("true:2");
   });
 });

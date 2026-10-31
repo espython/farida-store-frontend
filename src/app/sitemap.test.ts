@@ -2,18 +2,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Category, Product } from "@/modules/catalog";
 
 const state = vi.hoisted(() => ({
-  source: "woo" as "woo" | "strapi",
   categories: [] as Partial<Category>[],
   pages: [] as Partial<Product>[][],
   fail: false,
 }));
 
-vi.mock("@/modules/catalog", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/modules/catalog")>()),
-  get CATALOG_SOURCE() {
-    return state.source;
-  },
-}));
 vi.mock("@/modules/catalog/index.server", () => ({
   listCategories: async () => {
     if (state.fail) throw new Error("down");
@@ -33,7 +26,6 @@ import sitemap from "./sitemap";
 const urls = async () => (await sitemap()).map((e) => e.url);
 
 beforeEach(() => {
-  state.source = "woo";
   state.fail = false;
   state.categories = [
     { slug: "kettles", productCount: 3 },
@@ -65,10 +57,5 @@ describe("sitemap", () => {
       "https://site.test/ar",
       "https://site.test/ar/contact",
     ]);
-  });
-
-  it("skips the catalog on the Strapi source", async () => {
-    state.source = "strapi";
-    expect(await urls()).toHaveLength(4);
   });
 });

@@ -1,9 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { Provider } from "react-redux";
+import { makeStore } from "@/store";
 import { NextIntlClientProvider } from "next-intl";
 import en from "../../../../../../../messages/en.json";
 import { Money } from "@/shared/kernel/Money";
 import type { Product } from "@/modules/catalog";
+import { cartActions } from "@/modules/cart";
 
 const state = vi.hoisted(() => ({ query: {} as Record<string, unknown> }));
 
@@ -39,14 +42,18 @@ const product = (title: string): Product => ({
   locale: "en",
 });
 
+let store = makeStore();
 const renderPage = (initialProduct?: Product) =>
   render(
-    <NextIntlClientProvider locale="en" messages={en}>
-      <WooProductPage slug="kettle" initialProduct={initialProduct} />
-    </NextIntlClientProvider>
+    <Provider store={store}>
+      <NextIntlClientProvider locale="en" messages={en}>
+        <WooProductPage slug="kettle" initialProduct={initialProduct} />
+      </NextIntlClientProvider>
+    </Provider>
   );
 
 beforeEach(() => {
+  store = makeStore();
   state.query = { data: undefined, isLoading: true, isError: false };
 });
 
@@ -79,5 +86,17 @@ describe("WooProductPage", () => {
     state.query = { data: undefined, isLoading: false, isError: true, error: { status: 404 } };
     vi.spyOn(console, "error").mockImplementation(() => {});
     expect(() => renderPage(product("Kettle"))).toThrow("NEXT_NOT_FOUND");
+  });
+
+  it("adds the chosen quantity to the cart from the buy box", () => {
+    renderPage(product("Kettle"));
+    // The button waits for the stored cart; mark it loaded as the app does after mount.
+    act(() => {
+      store.dispatch(cartActions.cartHydrated({ lines: [] }));
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Increase quantity" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add to cart" }));
+    expect(store.getState().cart.cart.lines).toMatchObject([{ product: { id: "1", slug: "kettle" }, quantity: 2 }]);
+    expect(screen.getByText("2 in your cart")).toBeInTheDocument();
   });
 });

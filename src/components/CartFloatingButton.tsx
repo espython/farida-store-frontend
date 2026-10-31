@@ -7,11 +7,13 @@ import { observer } from "mobx-react-lite";
 import { AnimatePresence, motion } from "framer-motion";
 import Icon from "./Icon";
 import { useLocale, useTranslations } from "next-intl";
+import { useCart } from "@/modules/cart";
 
 const CartFloatingButton = () => {
   const { cartSidebar, cart, sidebar, searchBox } = useContext(StoreContext);
   const locale = useLocale();
   const t = useTranslations("header");
+  const { totals, hydrated } = useCart();
 
   const movingValue = useMemo(() => {
     if (locale === "en") {
@@ -40,7 +42,7 @@ const CartFloatingButton = () => {
               backColor="#1e3a2b"
               className="w-14 h-14 md:w-16 md:h-16 shadow-lg hover:opacity-90"
               showPop
-              count={cart.productsCount}
+              count={hydrated ? totals.itemCount : 0}
               label={t("cart")}
               whenClick={() => {
                 cartSidebar.displayWholeCartSidebar();

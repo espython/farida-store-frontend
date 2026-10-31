@@ -45,7 +45,7 @@ Next.js 13 (App Router), React 18, TypeScript, Tailwind + NextUI, framer-motion,
 
 ## Environment variables
 
-`NEXT_PUBLIC_STRAPI_API_ENDPOINT`, `STRAPI_API_TOKEN`, `NEXT_PUBLIC_HOST` (media host, also used for `images.remotePatterns`), `CONTACT_SHARED_SECRET`, `WC_BASE_URL`, `WC_CONSUMER_KEY`, `WC_CONSUMER_SECRET` (server-only, WooCommerce BFF), `WC_WEBHOOK_SECRET` (server-only; secret of the Woo product webhooks that call `/api/revalidate`), `NEXT_PUBLIC_CATALOG_SOURCE` (`strapi` default, `woo` renders the catalog from the Woo BFF; flipped at cutover), `NEXT_PUBLIC_SITE_URL` (public origin for canonical URLs, Open Graph and JSON-LD; defaults to `http://localhost:3000`), `NEXT_PUBLIC_PAYMOB_API_TOKEN`, `NEXT_PUBLIC_PAYMOB_IFRAME_ID`, `NEXT_PUBLIC_PAYMOB_INTEGRATION_ID`. No `.env` is committed.
+`NEXT_PUBLIC_STRAPI_API_ENDPOINT`, `STRAPI_API_TOKEN`, `NEXT_PUBLIC_HOST` (media host, also used for `images.remotePatterns`), `CONTACT_SHARED_SECRET`, `WC_BASE_URL`, `WC_CONSUMER_KEY`, `WC_CONSUMER_SECRET` (server-only, WooCommerce BFF), `WC_WEBHOOK_SECRET` (server-only; secret of the Woo product webhooks that call `/api/revalidate`), `NEXT_PUBLIC_SITE_URL` (public origin for canonical URLs, Open Graph and JSON-LD; defaults to `http://localhost:3000`), `NEXT_PUBLIC_PAYMOB_API_TOKEN`, `NEXT_PUBLIC_PAYMOB_IFRAME_ID`, `NEXT_PUBLIC_PAYMOB_INTEGRATION_ID`. No `.env` is committed.
 
 ## Workflow
 

@@ -1,46 +1,50 @@
 "use client";
 import { StoreContext } from "@/contexts/StoreContext";
-import { Button, Divider } from "@nextui-org/react";
-import React, { useContext, useEffect } from "react";
-
+import React, { useContext } from "react";
+import { observer } from "mobx-react-lite";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/navigation";
+import { CartLineItem, CartSummary, useCart } from "@/modules/cart";
+import { buttonClass } from "@/shared/ui/Button";
 import CartSidebarEmptyCart from "./CartSidebarEmptyCart";
 import CartSidebarHeader from "./CartSidebarHeader";
-import CartSidebarFooter from "./CartSidebarFooter";
-import CartSidebarProductsMenu from "./CartSidebarProductsMenu";
-import { observer } from "mobx-react-lite";
-import Cookies from "js-cookie";
-import { isUserLoggedIn } from "@/functions/credentials";
-import ConfirmMergeCart from "./ConfirmMergeCart";
-import LoadingOverlay from "./LoadingOverlay";
 
+/** Cart drawer: lines, total and the way to checkout. */
 const CartSideBarContent = () => {
-  const { cartSidebar, cart, user, loginForm, registerForm, userOrders } =
-    useContext(StoreContext);
+  const { cartSidebar } = useContext(StoreContext);
+  const { lines, totals } = useCart();
+  const router = useRouter();
+  const t = useTranslations("cartSidebar");
 
-  useEffect(() => {
-    cart.getAllCartItems();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    user.isLoading,
-    loginForm.isLoading,
-    registerForm.isLoading,
-    cart.productsCount,
-    user.isMergingOrRemovingLoading,
-    userOrders.isCreatingOrderLoading,
-  ]);
+  const goToCheckout = () => {
+    router.push("/cart/shipping");
+    cartSidebar.hideWholeCartSidebar();
+  };
 
   return (
     <div className="relative flex flex-col h-full">
-      {user.isMergingOrRemovingLoading && <LoadingOverlay />}
       <CartSidebarHeader close={cartSidebar.hideWholeCartSidebar} />
 
-      {cart.productsCount === 0 ? (
+      {lines.length === 0 ? (
         <CartSidebarEmptyCart />
       ) : (
-        <CartSidebarProductsMenu />
+        <ul className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-5 flex flex-col divide-y divide-line">
+          {lines.map((line) => (
+            <li key={line.product.id} className="py-3 first:pt-0">
+              <CartLineItem line={line} variant="compact" onNavigate={cartSidebar.hideWholeCartSidebar} />
+            </li>
+          ))}
+        </ul>
       )}
 
-      <CartSidebarFooter />
+      <div className="shrink-0 border-t border-line bg-white p-5 flex flex-col gap-4">
+        <CartSummary totals={totals} compact />
+        {lines.length > 0 && (
+          <button type="button" className={`${buttonClass({ size: "lg", full: true })} capitalize`} onClick={goToCheckout}>
+            {t("complete")}
+          </button>
+        )}
+      </div>
     </div>
   );
 };

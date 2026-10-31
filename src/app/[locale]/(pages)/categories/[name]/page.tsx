@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CATALOG_SOURCE, findCategory } from "@/modules/catalog";
+import { findCategory } from "@/modules/catalog";
 import { listCategories } from "@/modules/catalog/index.server";
 import { isLocale, LOCALES } from "@/shared/kernel/Locale";
 import type { Locale } from "@/shared/kernel/Locale";
@@ -13,7 +13,7 @@ interface categoriesPageProps {
 const categoryPath = (locale: Locale, slug: string) => `/${locale}/categories/${slug}`;
 
 export async function generateMetadata({ params }: categoriesPageProps): Promise<Metadata> {
-  if (CATALOG_SOURCE !== "woo" || !isLocale(params.locale)) return {};
+  if (!isLocale(params.locale)) return {};
   const locale = params.locale;
   // The category list is a cached Woo fetch shared with the BFF; an outage keeps the defaults.
   const category = await listCategories(locale)

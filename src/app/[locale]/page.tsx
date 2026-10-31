@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import AdsSlider from "@/app/components/AdsSlider";
 import FiltersSection from "@/app/components/FiltersSection";
-import MiniProducts from "@/app/components/MiniProducts";
 import ProductsSection from "@/app/components/ProductsSection";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
-import { CATALOG_SOURCE, CategorySlider, HomeHero, serializeJsonLd } from "@/modules/catalog";
+import { CategorySlider, HomeHero, serializeJsonLd } from "@/modules/catalog";
 import PageContainer from "@/shared/ui/PageContainer";
 import { isLocale, LOCALES } from "@/shared/kernel/Locale";
 import { absoluteUrl, ogLocale, SITE_URL } from "@/shared/lib/siteUrl";
@@ -16,8 +14,7 @@ interface HomePageProps {
 const SITE_NAME = "Farida Store";
 
 export async function generateMetadata({ params: { locale } }: HomePageProps): Promise<Metadata> {
-  // Same gate as product and category pages: the Woo storefront is the one with SITE_URL set.
-  if (CATALOG_SOURCE !== "woo" || !isLocale(locale)) return {};
+  if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale, namespace: "home" });
   const description = t("metaDescription");
   return {
@@ -59,35 +56,22 @@ const HomePage = async ({ params: { locale } }: HomePageProps) => {
 
   return (
     <main>
-      {CATALOG_SOURCE === "woo" ? (
-        <>
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: serializeJsonLd(websiteJsonLd(locale)) }}
-          />
-          <PageContainer className="pt-2 md:pt-6 flex flex-col gap-12 md:gap-16">
-            <HomeHero />
-            <section className="flex flex-col gap-4 md:gap-6">
-              <h2 className="font-display text-2xl md:text-[2rem] font-medium">{t("browse")}</h2>
-              <CategorySlider />
-            </section>
-            <section className="flex flex-col gap-4 md:gap-6">
-              <h2 className="font-display text-2xl md:text-[2rem] font-medium">{t("shopAll")}</h2>
-              <FiltersSection />
-              <ProductsSection />
-            </section>
-          </PageContainer>
-        </>
-      ) : (
-        <>
-          <MiniProducts />
-          <AdsSlider />
-          <PageContainer className="flex flex-col gap-5">
-            <FiltersSection />
-            <ProductsSection />
-          </PageContainer>
-        </>
-      )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(websiteJsonLd(locale)) }}
+      />
+      <PageContainer className="pt-2 md:pt-6 flex flex-col gap-12 md:gap-16">
+        <HomeHero />
+        <section className="flex flex-col gap-4 md:gap-6">
+          <h2 className="font-display text-2xl md:text-[2rem] font-medium">{t("browse")}</h2>
+          <CategorySlider />
+        </section>
+        <section className="flex flex-col gap-4 md:gap-6">
+          <h2 className="font-display text-2xl md:text-[2rem] font-medium">{t("shopAll")}</h2>
+          <FiltersSection />
+          <ProductsSection />
+        </section>
+      </PageContainer>
     </main>
   );
 };

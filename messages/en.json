@@ -747,5 +747,26 @@
     },
     "showPassword": "Show password",
     "hidePassword": "Hide password"
+  },
+  "cart": {
+    "add": "Add to cart",
+    "addNamed": "Add {title} to cart",
+    "added": "{title} added to your cart",
+    "inCartCount": "{count, plural, one {# in your cart} other {# in your cart}}",
+    "viewCart": "View cart",
+    "soldOut": "Out of stock",
+    "limitReached": "Limit reached",
+    "maxReached": "Maximum {count} per order",
+    "subtotal": "{count, plural, one {Subtotal (# item)} other {Subtotal (# items)}}",
+    "savings": "You save",
+    "shipping": "Shipping",
+    "shippingAtCheckout": "Calculated at checkout",
+    "total": "Total",
+    "checkout": "Proceed to checkout",
+    "empty": "Your cart is empty",
+    "emptyText": "Browse the kitchen and add what you like.",
+    "browse": "Start shopping",
+    "count": "{count, plural, =0 {Cart, empty} one {Cart, # item} other {Cart, # items}}",
+    "clear": "Remove all"
   }
 }

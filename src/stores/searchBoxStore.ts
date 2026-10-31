@@ -1,22 +1,13 @@
-import { makeAutoObservable, runInAction } from "mobx";
-import { strapiProductType } from "./specificTypes/strapiProductType";
-import { STRAPI_ENDPOINT } from "@/api/config";
+import { makeAutoObservable } from "mobx";
+
+// Search overlay UI state. Results come from the catalog module (QuickSearch).
 
 export class SearchBoxStore {
   showBackdrop: boolean = false;
 
   showSearchBox: boolean = false;
 
-  quickProducts: strapiProductType[] = [];
-  quickProductsLoading: boolean = false;
   searchInputValue: string = "";
-
-  private getMethodOptions = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
 
   constructor() {
     makeAutoObservable(this);
@@ -54,31 +45,8 @@ export class SearchBoxStore {
     }, 500);
   };
 
-  quickSearch = async (searchQuery: string) => {
-    runInAction(() => {
-      this.quickProductsLoading = true;
-    });
-
-    await fetch(
-      `${STRAPI_ENDPOINT}/products/?populate=*&pagination[page]=1&pagination[pageSize]=4&filters[$or][0][title][$contains]=${searchQuery}&filters[$or][1][description][$contains]=${searchQuery}&filters[$or][2][category][name][$contains]=${searchQuery}&filters[$or][3][colors][name][$contains]=${searchQuery}&filters[$or][4][localizations][title][$contains]=${searchQuery}&filters[$or][5][localizations][description][$contains]=${searchQuery}`,
-      this.getMethodOptions
-    )
-      .then((res) => res.json())
-      .then((data) => {
-
-        runInAction(() => {
-          this.quickProducts = data.data;
-          this.quickProductsLoading = false;
-        });
-      })
-      .catch((err) => {});
-  };
-
   setSearchInputValue(val: string) {
     this.searchInputValue = val;
   }
 
-  setQuickProducts(val: strapiProductType[]) {
-    this.quickProducts = val;
-  }
 }
