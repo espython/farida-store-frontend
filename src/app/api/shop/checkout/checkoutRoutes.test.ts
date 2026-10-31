@@ -21,6 +21,9 @@ const storeCart = {
   payment_methods: ["cod"],
   totals: { total_items: "100", total_shipping: "0", total_discount: "0", total_price: "100", currency_code: "EGP", currency_minor_unit: 2 },
 };
+// WordPress resolves the token to this user (verifiedCaller).
+const me = (id = 9) => respond({ id, name: "Mona", email: "m@x.io", first_name: "Mona", last_name: "Ali" });
+const isMe = (url: unknown) => String(url).includes("/wp/v2/users/me");
 const post = (path: string, body: unknown, headers: Record<string, string> = {}, method = "POST") =>
   new NextRequest(new URL(path, "http://localhost"), { method, headers: { cookie, ...headers }, body: JSON.stringify(body) });
 
@@ -41,7 +44,7 @@ describe("checkout routes", () => {
     vi.unstubAllGlobals();
   });
 
-  it("requires an idempotency key and refuses card until C3b", async () => {
+  it("requires an idempotency key and refuses card (#326) before calling WordPress", async () => {
     expect((await orderRoute.POST(post("/api/shop/checkout/order", { paymentMethod: "cod" }), {})).status).toBe(400);
     const card = await orderRoute.POST(post("/api/shop/checkout/order", { paymentMethod: "card" }, { "Idempotency-Key": "9_abcdef12" }), {});
     expect((await card.json()).error.code).toBe("payment_unavailable");
@@ -50,7 +53,7 @@ describe("checkout routes", () => {
 
   it("places one order for a double submit with the same key", async () => {
     fetchMock.mockImplementation(async (url: string) =>
-      url.endsWith("/checkout") ? respond({ order_id: 300, status: "processing", order_key: "k", payment_method: "cod" }) : respond(storeCart)
+      isMe(url) ? me() : url.endsWith("/checkout") ? respond({ order_id: 300, status: "processing", order_key: "k", payment_method: "cod" }) : respond(storeCart)
     );
     const send = () => orderRoute.POST(post("/api/shop/checkout/order", { paymentMethod: "cod", note: "hi" }, { "Idempotency-Key": "9_abcdef12" }), {});
     const [a, b] = await Promise.all([send(), send()]);
@@ -76,9 +79,34 @@ describe("checkout routes", () => {
 
   it("serves only the customer's own order", async () => {
     const order = { id: 300, status: "processing", customer_id: 10, date_created: "2026-10-31", payment_method: "cod", customer_note: "", total: "1.00", shipping_total: "0", discount_total: "0", currency: "EGP", shipping: addr, billing: addr, line_items: [] };
-    fetchMock.mockResolvedValue(respond(order));
+    fetchMock.mockImplementation(async (url: string) => (isMe(url) ? me() : respond(order)));
     const get = (id: string) => ordersRoute.GET(new NextRequest(new URL(`/api/shop/orders/${id}`, "http://localhost"), { headers: { cookie } }), { params: { id } });
     expect((await get("300")).status).toBe(404);
     expect((await get("abc")).status).toBe(404);
+  });
+
+  // The cookie's claims are only decoded: a hand-made token naming customer 10
+  // must not read customer 10's order with the server keys, nor place orders.
+  it("refuses a forged session before any read with the server keys", async () => {
+    const forged = `credentials=${jwt(10)}`;
+    const order = { id: 300, status: "processing", customer_id: 10, date_created: "2026-10-31", payment_method: "cod", customer_note: "", total: "1.00", shipping_total: "0", discount_total: "0", currency: "EGP", shipping: addr, billing: addr, line_items: [] };
+    fetchMock.mockImplementation(async (url: string) =>
+      isMe(url) ? respond({ code: "jwt_auth_invalid_token", message: "Signature verification failed" }, 403) : respond(order)
+    );
+    const read = await ordersRoute.GET(new NextRequest(new URL("/api/shop/orders/300", "http://localhost"), { headers: { cookie: forged } }), { params: { id: "300" } });
+    expect(read.status).toBe(401);
+    const place = await orderRoute.POST(
+      new NextRequest(new URL("/api/shop/checkout/order", "http://localhost"), { method: "POST", headers: { cookie: forged, "Idempotency-Key": "10_abcdef12" }, body: JSON.stringify({ paymentMethod: "cod" }) }),
+      {}
+    );
+    expect(place.status).toBe(401);
+    expect(fetchMock.mock.calls.every(([u]) => isMe(u))).toBe(true);
+  });
+
+  it("refuses a valid token whose claims name someone else", async () => {
+    fetchMock.mockImplementation(async (url: string) => (isMe(url) ? me(9) : respond({})));
+    const res = await ordersRoute.GET(new NextRequest(new URL("/api/shop/orders/300", "http://localhost"), { headers: { cookie: `credentials=${jwt(10)}` } }), { params: { id: "300" } });
+    expect(res.status).toBe(401);
+    expect(fetchMock.mock.calls.every(([u]) => isMe(u))).toBe(true);
   });
 });
