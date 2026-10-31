@@ -84,7 +84,7 @@ export async function getSession(token: string): Promise<Session | null> {
   try {
     ({ data: user } = await wooFetch<WpUserMe>({
       path: "/wp/v2/users/me",
-      query: { context: "edit", _fields: "id,name,email" },
+      query: { context: "edit", _fields: "id,name,email,first_name,last_name" },
       headers: { Authorization: `Bearer ${token}` },
       mapError: (status) =>
         status === 401 || status === 403 ? authError("unauthenticated", "Session expired") : undefined,

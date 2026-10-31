@@ -21,8 +21,7 @@ const FullWishlistIcon = ({
   hasBorderHover = true,
   showPop = true,
 }: fullWishlistIconProps) => {
-  const { wishlist, userWishlist, loginForm, registerForm } =
-    useContext(StoreContext);
+  const { userWishlist } = useContext(StoreContext);
   const { isLoggedIn } = useAuth();
   const t = useTranslations("header");
 
@@ -36,8 +35,6 @@ const FullWishlistIcon = ({
   }, [
     isLoggedIn,
     userWishlist.userWishlistProductsCount,
-    loginForm.isLoading,
-    registerForm.isLoading,
   ]);
 
   return (

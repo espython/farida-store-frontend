@@ -186,6 +186,32 @@
           }
         ]
       }
+    },
+    {
+      "files": [
+        "src/app/api/**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "@/modules/catalog",
+                "message": "Route handlers import modules only through @/modules/<name>/index.server: the client index may export React hooks, which Next refuses in the server graph. Add new modules here."
+              },
+              {
+                "name": "@/modules/cart",
+                "message": "Route handlers import modules only through @/modules/<name>/index.server: the client index may export React hooks, which Next refuses in the server graph. Add new modules here."
+              },
+              {
+                "name": "@/modules/customer",
+                "message": "Route handlers import modules only through @/modules/<name>/index.server: the client index may export React hooks, which Next refuses in the server graph. Add new modules here."
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }

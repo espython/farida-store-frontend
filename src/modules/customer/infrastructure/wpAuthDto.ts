@@ -20,8 +20,11 @@ export interface WpJwtPayload {
 /** GET /wp/v2/users/me?context=edit with the customer's own token. */
 export interface WpUserMe {
   id: number;
+  /** WordPress display name; defaults to the (random, internal) username. */
   name: string;
   email: string;
+  first_name?: string;
+  last_name?: string;
 }
 
 /** POST /wc/v3/customers request (registration). */

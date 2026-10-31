@@ -187,7 +187,8 @@
   "userLoggedIn": {
     "orders": "your orders",
     "profile": "profile settings",
-    "logout": "logout"
+    "logout": "logout",
+    "account": "Account"
   },
   "mergeCart": {
     "merge": "merge your carts ?",
@@ -768,5 +769,20 @@
     "browse": "Start shopping",
     "count": "{count, plural, =0 {Cart, empty} one {Cart, # item} other {Cart, # items}}",
     "clear": "Remove all"
+  },
+  "authErrors": {
+    "email_invalid": "Enter a valid email address",
+    "password_required": "Enter your password",
+    "password_too_short": "Use at least 6 characters",
+    "password_too_long": "That password is too long",
+    "password_needs_uppercase": "Add an uppercase letter",
+    "password_needs_number": "Add a number",
+    "name_required": "This field is required",
+    "name_too_long": "Use 60 characters or fewer",
+    "invalid_credentials": "Wrong email or password",
+    "email_taken": "An account with this email already exists. Sign in instead.",
+    "invalid_input": "Check the highlighted fields",
+    "unauthenticated": "Your session has ended. Please sign in again.",
+    "unavailable": "We couldn't reach the shop. Please try again."
   }
 }

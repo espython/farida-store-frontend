@@ -11,8 +11,6 @@ import { ProductsView } from "./productsViewStore";
 import { SearchBoxStore } from "./searchBoxStore";
 import { WishListStore } from "./wishListStore";
 import { AdsSliderStore } from "./adsStore";
-import { LoginFormStore } from "./loginFormStore";
-import { RegisterFormStore } from "./registerFormStore";
 import { userWishListStore } from "./userWishlist";
 import { OrdersStore } from "./ordersStore";
 import { UserAddressesStore } from "./userAddressesStore";
@@ -60,14 +58,6 @@ const wishlistProducts = new WishListStore();
 // slider ads  store
 
 const adsInstance = new AdsSliderStore();
-
-// register form store
-
-const registerFormInstance = new RegisterFormStore();
-
-// login form store
-
-const loginFormInstance = new LoginFormStore();
 
 // user wishlist store
 
@@ -118,8 +108,6 @@ export const store = {
   searchBox: searchBoxInstance,
   wishlist: wishlistProducts,
   ads: adsInstance,
-  registerForm: registerFormInstance,
-  loginForm: loginFormInstance,
   userWishlist: userWishlistInstance,
   userOrders: userOrdersInstance,
   userAddresses: userAddressesInstance,

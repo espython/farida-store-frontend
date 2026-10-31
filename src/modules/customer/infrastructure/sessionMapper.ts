@@ -31,6 +31,8 @@ export const toSession = (res: Pick<WpTokenResponse, "user_email" | "user_displa
 export const toSessionFromUser = (user: WpUserMe, payload: WpJwtPayload): Session => ({
   customerId: String(user.id),
   email: user.email,
-  displayName: user.name || user.email,
+  // The username is random (registration keeps emails out of author URLs),
+  // so prefer the customer's real name.
+  displayName: [user.first_name, user.last_name].filter(Boolean).join(" ").trim() || user.name || user.email,
   expiresAt: payload.exp,
 });

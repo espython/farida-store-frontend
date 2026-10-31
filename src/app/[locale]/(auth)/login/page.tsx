@@ -1,8 +1,8 @@
 import React from "react";
 import type { Metadata } from "next";
 
-import LoginForm from "./components/LoginForm";
 import AuthShell from "../AuthShell";
+import SignInPanel from "./SignInPanel";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
 
@@ -22,7 +22,7 @@ const LoginPage = ({ params: { locale } }: LoginPageProps) => {
 
   return (
     <AuthShell title={t("login")}>
-      <LoginForm />
+      <SignInPanel />
     </AuthShell>
   );
 };
