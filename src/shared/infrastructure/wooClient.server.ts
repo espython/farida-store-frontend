@@ -22,6 +22,12 @@ export interface WooRequest {
   /** Next fetch cache hints; ignored when auth is "keys". */
   next?: { revalidate?: number | false; tags?: string[] };
   allowlist?: readonly AllowedWooRoute[];
+  /**
+   * Translate an expected failure before the generic mapping, which hides
+   * every 401/403 as an upstream error. Return undefined to fall through.
+   * Used by auth, where 403 means "wrong password", not "backend broken".
+   */
+  mapError?: (status: number, payload: unknown) => AppError | undefined;
 }
 
 export interface WooResponse<T> {
@@ -100,6 +106,6 @@ export async function wooFetch<T = unknown>(req: WooRequest): Promise<WooRespons
     payload = undefined;
   }
 
-  if (!res.ok) throw mapWooError(res.status, payload);
+  if (!res.ok) throw req.mapError?.(res.status, payload) ?? mapWooError(res.status, payload);
   return { data: payload as T, status: res.status, headers: res.headers };
 }

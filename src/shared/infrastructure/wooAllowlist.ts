@@ -14,6 +14,10 @@ export const WOO_ALLOWLIST: readonly AllowedWooRoute[] = [
   { method: "GET", pattern: /^\/wc\/store\/v1\/products\/categories$/ },
   { method: "GET", pattern: /^\/wc\/store\/v1\/products\/attributes$/ },
   { method: "GET", pattern: /^\/wc\/store\/v1\/products\/attributes\/\d+\/terms$/ },
+  // Customer auth (A1): JWT sign-in and verification, and registration.
+  { method: "POST", pattern: /^\/jwt-auth\/v1\/token$/ },
+  { method: "GET", pattern: /^\/wp\/v2\/users\/me$/ },
+  { method: "POST", pattern: /^\/wc\/v3\/customers$/ },
 ];
 
 export function isWooRouteAllowed(

@@ -84,6 +84,33 @@ describe("wooFetch", () => {
     });
   });
 
+  it("lets a request translate expected failures before the generic mapping", async () => {
+    const mapError = (status: number) => (status === 403 ? new AppError("invalid_credentials", "Nope", 401) : undefined);
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(ok({ code: "x" }, 403)));
+    await expect(wooFetch({ method: "POST", path: "/jwt-auth/v1/token", mapError })).rejects.toMatchObject({
+      code: "invalid_credentials",
+      status: 401,
+    });
+    // Anything the hook does not claim still gets the safe generic error.
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(ok({}, 500)));
+    await expect(wooFetch({ method: "POST", path: "/jwt-auth/v1/token", mapError })).rejects.toMatchObject({
+      code: "upstream_error",
+      status: 502,
+    });
+  });
+
+  it("allows only the auth routes A1 needs, not wider WordPress or Woo admin paths", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(ok({})));
+    for (const [method, path] of [
+      ["GET", "/wp/v2/users"],
+      ["GET", "/wc/v3/customers"],
+      ["GET", "/wc/v3/customers/4"],
+      ["POST", "/jwt-auth/v1/admin/settings"],
+    ] as const) {
+      await expect(wooFetch({ method, path })).rejects.toMatchObject({ status: 500 });
+    }
+  });
+
   it("maps aborts to 504 and network failures to 502", async () => {
     const abort = Object.assign(new Error("aborted"), { name: "AbortError" });
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(abort));
