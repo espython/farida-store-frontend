@@ -1,7 +1,7 @@
 import { forwardRef, useId } from "react";
 import type { InputHTMLAttributes, TextareaHTMLAttributes } from "react";
 
-type Common = { label: string; error?: string; hint?: string };
+type Common = { label: string; error?: string; hint?: string; end?: React.ReactNode };
 type InputProps = Common & InputHTMLAttributes<HTMLInputElement> & { multiline?: false };
 type AreaProps = Common & TextareaHTMLAttributes<HTMLTextAreaElement> & { multiline: true };
 
@@ -10,10 +10,10 @@ const fieldClass = (invalid: boolean) =>
     invalid ? "border-[#b42318]" : "border-line"
   }`;
 
-/** Labelled input (or textarea) with hint and error text; works with react-hook-form's register(). */
+/** Labelled input (or textarea) with hint and error text; works with react-hook-form's register(). `end` sits inside the input's end edge (e.g. a show-password button). */
 const TextField = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps | AreaProps>((props, ref) => {
   const autoId = useId();
-  const { label, error, hint, className = "", id = autoId, multiline, ...rest } = props;
+  const { label, error, hint, end, className = "", id = autoId, multiline, ...rest } = props;
   const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined;
 
   return (
@@ -31,14 +31,17 @@ const TextField = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps 
           {...(rest as TextareaHTMLAttributes<HTMLTextAreaElement>)}
         />
       ) : (
-        <input
-          ref={ref as React.Ref<HTMLInputElement>}
-          id={id}
-          aria-invalid={!!error}
-          aria-describedby={describedBy}
-          className={`${fieldClass(!!error)} h-12`}
-          {...(rest as InputHTMLAttributes<HTMLInputElement>)}
-        />
+        <div className="relative">
+          <input
+            ref={ref as React.Ref<HTMLInputElement>}
+            id={id}
+            aria-invalid={!!error}
+            aria-describedby={describedBy}
+            className={`${fieldClass(!!error)} h-12 ${end ? "pe-12" : ""}`}
+            {...(rest as InputHTMLAttributes<HTMLInputElement>)}
+          />
+          {end && <div className="absolute inset-y-0 end-0 flex items-center pe-1">{end}</div>}
+        </div>
       )}
       {error ? (
         <p id={`${id}-error`} className="text-sm text-[#b42318]">

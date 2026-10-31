@@ -139,8 +139,8 @@
     "go": "go to cart"
   },
   "loginForm": {
-    "login": "login",
-    "register": "register now",
+    "login": "Log in",
+    "register": "Create an account",
     "labels": {
       "email": "Email",
       "password": "Password"
@@ -150,15 +150,15 @@
       "password": "Enter your password"
     },
     "errors": {
-      "email": "Not valid email"
+      "email": "Enter a valid email address"
     },
-    "submit": "submit",
-    "noAccount": " Don't have an account ?",
+    "submit": "Log in",
+    "noAccount": "Don't have an account?",
     "or": "or"
   },
   "registerForm": {
-    "login": "login",
-    "register": "register",
+    "login": "Log in",
+    "register": "Create an account",
     "labels": {
       "first": "First Name",
       "last": "Last Name",
@@ -168,20 +168,20 @@
       "confirm": "Confirm Password"
     },
     "placeholders": {
-      "first": "Enter first",
-      "last": "Enter last",
+      "first": "Enter your first name",
+      "last": "Enter your last name",
       "username": "Enter username",
       "email": "Enter your email",
       "password": "Enter your password",
       "confirm": "Confirm your password"
     },
     "errors": {
-      "email": "Not valid email",
-      "password": "Password must have  (1-6) letters includes at least one number and one uppercase letter  ",
-      "confirm": "Not the same password"
+      "email": "Enter a valid email address",
+      "password": "At least 6 characters, with one uppercase letter and one number",
+      "confirm": "Passwords don't match"
     },
-    "submit": "submit",
-    "haveAccount": "Already have an account ?",
+    "submit": "Create account",
+    "haveAccount": "Already have an account?",
     "or": "or"
   },
   "userLoggedIn": {
@@ -240,7 +240,7 @@
     "copyrights": "  © 2024 farida store. All Rights Reserved"
   },
   "google": {
-    "continue": "continue with google"
+    "continue": "Continue with Google"
   },
   "search": {
     "close": "Close search",
@@ -711,5 +711,16 @@
     "toastSuccess": "Payment successful",
     "toastFailed": "Payment failed",
     "toastError": "Error processing payment"
+  },
+  "auth": {
+    "panelTitle": "Welcome to Farida",
+    "panelText": "Kitchen appliances for every home, delivered across Egypt.",
+    "perks": {
+      "orders": "Track every order in one place",
+      "addresses": "Save addresses for faster checkout",
+      "wishlist": "Keep a wishlist of what you love"
+    },
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   }
 }

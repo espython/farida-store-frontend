@@ -111,8 +111,8 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [~] Success / failure / pending states — one white status card (icon, display heading, actions, transaction details), 20 inline en/ar strings moved to `paymentCallback`; "View my orders" went to `/profile/orders`, which does not exist — now `/userorders`. Failed and pending checked in the browser (en/ar, desktop and phone); success needs a logged-in cart, NOT checked
 
 ### Login `/login`, Register `/register`
-- [ ] `LoginForm`, `RegisterForm` (fields, errors, Google button, links)
-- [ ] Two-column layout on desktop (form + brand panel), single column on phone
+- [x] `LoginForm`, `RegisterForm` (fields, errors, Google button, links) — `TextField` + new `PasswordField` (real show/hide button; it was a hold-to-peek div), errors as text under the field, server error as an alert, form `onSubmit` (register's submit button also posted the form and reloaded the page), password hint now states the real rule (6+, one uppercase, one number); translated titles + `noindex`. Google button still does nothing (open decision, A2)
+- [x] Two-column layout on desktop (form + brand panel), single column on phone (`AuthShell`); checked en/ar, 1440 and 390
 
 ### Account `/user`
 - [ ] `UserPagesMenu`, `PageCard`
