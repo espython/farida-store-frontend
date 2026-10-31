@@ -140,7 +140,7 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [x] `Welcoming`, `ComplaintForm`, `Branch`, `Map` — 7/5 grid: form card (required + email checks; empty forms were posted) beside a visit card (tap-to-call) and a rounded, titled map. Owner content needed: the same placeholder branch was listed three times (now shown once), and the map pins the Cairo book fair grounds, not the store
 
 ### System pages
-- [ ] `[locale]/loading.tsx`, `[locale]/error.tsx`, `[locale]/not-found.tsx`, `app/global-error.tsx`
+- [~] `[locale]/loading.tsx`, `[locale]/error.tsx`, `[locale]/not-found.tsx`, `app/global-error.tsx` — EmptyState cards, palette spinner, global error in palette inline styles. Unmatched URLs rendered a blank error document; new `[locale]/[...rest]` catch-all calls `notFound()` (status is 200 + noindex because loading.tsx streams first, same as unknown products). 404 and loading checked; error and global-error NOT browser-checked (need a thrown error)
 
 ## 4. Strapi-only legacy (palette check only, deleted at cutover X4)
 
