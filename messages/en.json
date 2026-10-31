@@ -252,20 +252,20 @@
     "resultsFor": "search results"
   },
   "userPage": {
-    "account": "your account",
+    "account": "Your account",
     "title": {
-      "orders": " orders",
-      "profile": " profile",
-      "addresses": " addresses",
-      "cart": " cart",
-      "wishlist": " wishlist"
+      "orders": "Orders",
+      "profile": "Profile",
+      "addresses": "Addresses",
+      "cart": "Cart",
+      "wishlist": "Wishlist"
     },
     "description": {
-      "orders": "track , return , cancel an order , download invoice or buy again",
-      "profile": "edit your profile settings",
-      "addresses": "edit , remove or set default address",
-      "cart": "view all your cart items",
-      "wishlist": "view all your wishlist items"
+      "orders": "Track your orders and see their details",
+      "profile": "Edit your name and email",
+      "addresses": "Add or remove delivery addresses",
+      "cart": "View all your cart items",
+      "wishlist": "View all your wishlist items"
     }
   },
   "productPage": {
@@ -500,46 +500,52 @@
     }
   },
   "userAdderesses": {
-    "title": "your addresses",
+    "title": "Your addresses",
     "address": {
-      "address": "address",
-      "notFound": "not found",
-      "phone1": "phone :",
-      "phone2": "second phone :",
-      "state": "state :",
-      "country": "country :",
-      "city": "city :",
-      "street": "street :",
-      "postal": "postal code :",
-      "delete": "delete"
+      "address": "Address",
+      "notFound": "Not found",
+      "phone1": "Phone",
+      "phone2": "Second phone",
+      "state": "State",
+      "country": "Country",
+      "city": "City",
+      "street": "Street",
+      "postal": "Postal code",
+      "delete": "Delete",
+      "title": "Address {index}",
+      "confirm": "Delete this address?",
+      "cancel": "Cancel"
     },
-    "new": "add new address",
+    "new": "Add a new address",
     "empty": {
-      "description": " you have no addresses"
+      "description": "You have no saved addresses",
+      "text": "Save an address to check out faster."
     },
     "form": {
-      "new": "new address",
+      "new": "New address",
       "labels": {
-        "phone1": "phone",
-        "phone2": "second phone ",
-        "state": "state",
-        "country": "country",
-        "city": "city",
-        "street": "street",
-        "postal": "postal code"
+        "phone1": "Phone",
+        "phone2": "Second phone",
+        "state": "State",
+        "country": "Country",
+        "city": "City",
+        "street": "Street",
+        "postal": "Postal code"
       },
       "placeholders": {
-        "phone1": "phone number",
-        "phone2": "another phone number",
-        "state": "pick your state",
-        "country": "your country",
-        "city": "your city",
-        "street": "your street",
-        "postal": "postal code of your address"
+        "phone1": "Phone number",
+        "phone2": "Another phone number",
+        "state": "Pick your state",
+        "country": "Your country",
+        "city": "Your city",
+        "street": "Your street",
+        "postal": "Postal code of your address"
       },
       "action": {
-        "submit": "submit"
-      }
+        "submit": "Save address"
+      },
+      "required": "This field is required",
+      "optional": "Optional"
     }
   },
   "notFound": {
@@ -655,20 +661,20 @@
     }
   },
   "userProfilePage": {
-    "title": "user profile",
+    "title": "Your profile",
     "userDetails": {
-      "email": "email :",
-      "username": "username :",
-      "firstName": "first name :",
-      "lastName": "last name :"
+      "email": "Email",
+      "username": "Username",
+      "firstName": "First name",
+      "lastName": "Last name"
     },
     "actions": {
-      "main": "edit the profile",
-      "modal": "save"
+      "main": "Edit profile",
+      "modal": "Save"
     },
     "messages": {
-      "success": "updated successfully",
-      "failed": "failed to update"
+      "success": "Profile updated",
+      "failed": "Couldn't update your profile"
     }
   },
   "activeFilters": {

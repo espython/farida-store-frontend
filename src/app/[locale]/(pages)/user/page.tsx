@@ -3,6 +3,7 @@ import React from "react";
 import UserPagesMenu from "./components/UserPagesMenu";
 import { unstable_setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
+import PageContainer from "@/shared/ui/PageContainer";
 
 interface UserPageProps {
   params: { locale: string };
@@ -13,10 +14,12 @@ const UserPage = ({ params: { locale } }: UserPageProps) => {
 
   const t = useTranslations("userPage");
   return (
-    <div>
+    <>
       <PageTitle title={t("account")} />
-      <UserPagesMenu />
-    </div>
+      <PageContainer className="pt-6 pb-8">
+        <UserPagesMenu />
+      </PageContainer>
+    </>
   );
 };
 

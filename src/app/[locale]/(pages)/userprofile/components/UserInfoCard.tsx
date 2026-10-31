@@ -5,13 +5,12 @@ interface infoCardProps {
   description?: string;
 }
 
+/** One label/value pair inside a `<dl>`. */
 const UserInfoCard = ({ title, description }: infoCardProps) => {
   return (
-    <div className="grid grid-rows-2">
-      <h1 className="text-mainBlack/50 text-sm md:text-xl capitalize">
-        {title}
-      </h1>
-      <h1 className="text-mainBlack text-sm md:text-xl">{description}</h1>
+    <div className="flex flex-col gap-0.5 min-w-0">
+      <dt className="text-sm text-garden-muted first-letter:uppercase">{title}</dt>
+      <dd className="font-semibold break-words">{description || "—"}</dd>
     </div>
   );
 };

@@ -1,14 +1,14 @@
 "use client";
 
 import { StoreContext } from "@/contexts/StoreContext";
-import { Button } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
+import Button from "@/shared/ui/Button";
 import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import CustomizedInput from "../../cart/shipping/components/CustomizedInput";
-import { useLocale, useTranslations } from "next-intl";
-import { useScreenSize } from "react-screen-size-helper";
+import { useTranslations } from "next-intl";
 
 const ModalDataContainer = () => {
   const { register, setValue, handleSubmit } = useForm();
@@ -16,8 +16,6 @@ const ModalDataContainer = () => {
   const [loading, setLoading] = useState(false);
   const { profileModal } = useContext(StoreContext);
   const t = useTranslations("userProfilePage");
-  const locale = useLocale();
-  const { currentWidth } = useScreenSize({});
 
   const setFormValues = () => {
     setValue("username", user.strapiUserdata.username);
@@ -64,8 +62,7 @@ const ModalDataContainer = () => {
         onSubmit={handleSubmit((data) => {
           updateTheUserData(data);
         })}
-        className="flex flex-col gap-3"
-        dir={locale === "en" ? "ltr" : "rtl"}
+        className="flex flex-col gap-4"
       >
         <CustomizedInput
           formHookRegister={register("username")}
@@ -73,6 +70,7 @@ const ModalDataContainer = () => {
         />
         <CustomizedInput
           formHookRegister={register("email")}
+          type="email"
           label={t("userDetails.email")}
         />
         <CustomizedInput
@@ -83,15 +81,9 @@ const ModalDataContainer = () => {
           formHookRegister={register("last_name")}
           label={t("userDetails.lastName")}
         />
-        <Button
-          type="submit"
-          className="bg-mainBlack text-mainWhite text-sm md:text-xl capitalize"
-          radius="none"
-          isLoading={loading}
-          isDisabled={loading}
-          size={currentWidth > 768 ? "md" : "sm"}
-        >
-          {t("actions.modal")}
+        <Button type="submit" full size="lg" disabled={loading} aria-busy={loading} className="mt-2">
+          {loading && <Spinner size="sm" color="current" />}
+          <span className="first-letter:uppercase">{t("actions.modal")}</span>
         </Button>
       </form>
     </>

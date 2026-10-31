@@ -1,20 +1,18 @@
 import PageTitle from "@/components/PageTitle";
 import React from "react";
 import AddressesContainer from "./AddressesContainer";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
+import PageContainer from "@/shared/ui/PageContainer";
 
-interface UserAddressPageContainerProps {
-  // Define your props here
-}
-
-const UserAddressPageContainer = ({}: UserAddressPageContainerProps) => {
+const UserAddressPageContainer = () => {
   const t = useTranslations("userAdderesses");
-  const locale = useLocale();
   return (
-    <div dir={locale === "en" ? "ltr" : "rtl"}>
+    <>
       <PageTitle title={t("title")} />
-      <AddressesContainer />
-    </div>
+      <PageContainer className="pt-6 pb-8">
+        <AddressesContainer />
+      </PageContainer>
+    </>
   );
 };
 

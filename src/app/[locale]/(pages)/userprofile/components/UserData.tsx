@@ -25,7 +25,7 @@ const UserData = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-center justify-center mt-5">
+    <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 border-t border-line">
       {information.map((info) => (
         <UserInfoCard
           key={info.title}
@@ -33,7 +33,7 @@ const UserData = () => {
           description={info.description}
         />
       ))}
-    </div>
+    </dl>
   );
 };
 

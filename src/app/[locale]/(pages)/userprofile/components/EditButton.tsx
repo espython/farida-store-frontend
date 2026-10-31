@@ -1,26 +1,19 @@
 "use client";
 import { StoreContext } from "@/contexts/StoreContext";
-import { Button } from "@nextui-org/react";
+import Button from "@/shared/ui/Button";
 import { useTranslations } from "next-intl";
 import React, { useContext } from "react";
-import { useScreenSize } from "react-screen-size-helper";
+import { LuPencil } from "react-icons/lu";
 
 const EditButton = () => {
   const { profileModal } = useContext(StoreContext);
   const t = useTranslations("userProfilePage");
-  const { currentWidth } = useScreenSize({});
 
   return (
-    <div className="flex justify-center items-center">
-      <Button
-        className="bg-mainBlack text-mainWhite text-sm md:text-xl mt-10 capitalize"
-        radius="none"
-        onPress={profileModal.onOpen}
-        size={currentWidth > 768 ? "md" : "sm"}
-      >
-        {t("actions.main")}
-      </Button>
-    </div>
+    <Button variant="outline" onClick={profileModal.onOpen}>
+      <LuPencil aria-hidden="true" />
+      <span className="first-letter:uppercase">{t("actions.main")}</span>
+    </Button>
   );
 };
 

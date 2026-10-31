@@ -1,12 +1,11 @@
 "use client";
 import React, { useContext, useState } from "react";
 import AddressCell from "./AddressCell";
-import { Button } from "@nextui-org/react";
-import { MdOutlineDelete } from "react-icons/md";
+import { LuMapPin, LuTrash2 } from "react-icons/lu";
 import { StoreContext } from "@/contexts/StoreContext";
 import LoadingOverlay from "@/components/LoadingOverlay";
-import { useScreenSize } from "react-screen-size-helper";
 import { useTranslations } from "next-intl";
+import Button from "@/shared/ui/Button";
 
 interface userAddressProps {
   addressId: number | string;
@@ -34,10 +33,10 @@ const UserAddress = ({
   const t = useTranslations("userAdderesses");
 
   const information: { title: string; description: string }[] = [
+    { title: t("address.street"), description: street },
+    { title: t("address.city"), description: city },
     { title: t("address.state"), description: state },
     { title: t("address.country"), description: country },
-    { title: t("address.city"), description: city },
-    { title: t("address.street"), description: street },
     { title: t("address.postal"), description: postalCode },
     { title: t("address.phone1"), description: phone },
     { title: t("address.phone2"), description: secondPhone },
@@ -45,9 +44,9 @@ const UserAddress = ({
 
   const { userAddresses } = useContext(StoreContext);
 
-  const { currentWidth } = useScreenSize({});
-
   const [isLoading, setIsloading] = useState(false);
+  // Deleting is permanent, so it takes a second click.
+  const [confirming, setConfirming] = useState(false);
 
   const deleteTheAddress = () => {
     setIsloading(true);
@@ -61,33 +60,43 @@ const UserAddress = ({
       });
   };
 
+  const heading = t("address.title", { index });
+
   return (
-    <div className="relative">
+    <article aria-label={heading} className="relative h-full bg-white rounded-3xl p-5 md:p-6 flex flex-col gap-4">
       {isLoading && <LoadingOverlay />}
-      <div className="p-5 border-2 border-solid border-mainBlack/25 flex flex-col gap-3">
-        <h1 className="text-lg md:text-xl font-semibold text-center capitalize">
-          {t("address.address")} {index}
-        </h1>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 px-5 mt-3">
-          {information.map((info) => (
-            <AddressCell
-              key={info.title}
-              title={info.title}
-              description={info.description ? info.description : "not found"}
-            />
-          ))}
-        </div>
-        <Button
-          size={currentWidth > 768 ? "md" : "sm"}
-          className="bg-red-700 text-mainWhite capitalize text-lg md:text-xl "
-          radius="none"
-          endContent={<MdOutlineDelete />}
-          onClick={deleteTheAddress}
-        >
-          {t("address.delete")}
-        </Button>
+      <h2 className="flex items-center gap-2 font-display text-xl">
+        <LuMapPin aria-hidden="true" className="text-garden" />
+        {heading}
+      </h2>
+      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1 content-start">
+        {information.map(
+          (info) =>
+            info.description && <AddressCell key={info.title} title={info.title} description={info.description} />
+        )}
+      </dl>
+      <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-line">
+        {confirming ? (
+          <>
+            <span role="status" className="text-sm font-semibold me-auto">
+              {t("address.confirm")}
+            </span>
+            <Button variant="ghost" onClick={() => setConfirming(false)}>
+              {t("address.cancel")}
+            </Button>
+            <Button variant="danger" onClick={deleteTheAddress}>
+              <LuTrash2 aria-hidden="true" />
+              {t("address.delete")}
+            </Button>
+          </>
+        ) : (
+          <Button variant="ghost" className="text-[#b42318] -ms-3" onClick={() => setConfirming(true)}>
+            <LuTrash2 aria-hidden="true" />
+            <span className="first-letter:uppercase">{t("address.delete")}</span>
+          </Button>
+        )}
       </div>
-    </div>
+    </article>
   );
 };
 

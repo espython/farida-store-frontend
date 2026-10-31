@@ -1,41 +1,28 @@
-/* eslint-disable @next/next/no-img-element */
-// import Link from "next/link";
 import { Link } from "@/navigation";
 import React from "react";
-import { IconType } from "react-icons";
+import { LuChevronRight } from "react-icons/lu";
 
 interface pageCard {
   title: string;
   description: string;
   icon: React.ReactNode;
   pageLink: string;
-  locale: string;
 }
 
-const PageCard = ({ title, description, icon, pageLink, locale }: pageCard) => {
+const PageCard = ({ title, description, icon, pageLink }: pageCard) => {
   return (
     <Link
       href={pageLink}
-      className="p-5 border-mainBlack/25 border-2 border-solid rounded-lg grid grid-cols-1 grid-rows-2 lmob:grid-rows-1 lmob:grid-cols-[1fr_3fr] items-center gap-5 cursor-pointer transition-all hover:bg-mainGray"
+      className="group h-full flex items-center gap-4 p-5 md:p-6 bg-white rounded-3xl border-2 border-transparent hover:border-garden transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-garden"
     >
-      <div className="flex justify-center items-center text-5xl md:text-8xl text-mainPink">
+      <span aria-hidden="true" className="w-14 h-14 shrink-0 grid place-items-center rounded-full bg-sand text-garden text-2xl">
         {icon}
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <h1
-          className="text-xl md:text-2xl text-center lmob:ltr:text-left lmob:rtl:text-right font-semibold capitalize"
-          dir={locale === "en" ? "ltr" : "rtl"}
-        >
-          {title}
-        </h1>
-        <h2
-          className="text-sm md:text-lg  capitalize ltr:text-left rtl:text-right"
-          dir={locale === "en" ? "ltr" : "rtl"}
-        >
-          {description}
-        </h2>
-      </div>
+      </span>
+      <span className="flex flex-col gap-1 min-w-0 flex-1">
+        <span className="font-display text-xl first-letter:uppercase">{title}</span>
+        <span className="text-sm text-garden-muted first-letter:uppercase">{description}</span>
+      </span>
+      <LuChevronRight aria-hidden="true" className="shrink-0 text-xl text-garden-muted rtl:rotate-180 group-hover:text-garden" />
     </Link>
   );
 };

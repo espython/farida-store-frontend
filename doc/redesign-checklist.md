@@ -115,13 +115,13 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [x] Two-column layout on desktop (form + brand panel), single column on phone (`AuthShell`); checked en/ar, 1440 and 390
 
 ### Account `/user`
-- [ ] `UserPagesMenu`, `PageCard`
+- [x] `UserPagesMenu`, `PageCard` — white link cards with icon disc, 3/2/1 columns; descriptions no longer promise invoices or a default address
 
 ### Profile `/userprofile`
-- [ ] `UserInformation`, `UserInfoCard`, `UserData`, `EditButton`, `EditProfileModal`, `ModalDataContainer`
+- [x] `UserInformation`, `UserInfoCard`, `UserData`, `EditButton`, `EditProfileModal`, `ModalDataContainer` — one profile card (initials disc, name, email, `<dl>`), edit modal on cream with a header and mirrored close button
 
 ### Addresses `/useraddresses`
-- [ ] `UserAddressPageContainer`, `AddressesContainer`, `UserAddress`, `AddressCell`, `AddNewAddressModal`, `NewAddressForm`, `EmptyAddress`
+- [x] `UserAddressPageContainer`, `AddressesContainer`, `UserAddress`, `AddressCell`, `AddNewAddressModal`, `NewAddressForm`, `EmptyAddress` — address cards, delete now asks to confirm (was one click), form on `TextField` with real required checks (empty submits went through), autocomplete hints, EmptyState
 
 ### Orders `/userorders`
 - [ ] `UserOrdersPageContainer`, `OrderCardsContainer`, `OrderCard`, `OrderCardInfo`, `EmptyOrders`, `loading.tsx`
