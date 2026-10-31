@@ -1,49 +1,17 @@
 "use client";
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { IoMdClose } from "react-icons/io";
 import { LiaNewspaper } from "react-icons/lia";
 import { observer } from "mobx-react-lite";
-import { useLocale, useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import { StoreContext } from "@/contexts/StoreContext";
 import { useAuth } from "@/hooks/useAuth";
-import { CATALOG_SOURCE, CategoryLinks } from "@/modules/catalog";
+import { CategoryLinks } from "@/modules/catalog";
 import BrandLogo from "@/shared/ui/BrandLogo";
 import UserSidebarMenu from "./UserSidebarMenu";
 
 const rowClass = "flex items-center gap-3 min-h-[44px] px-3 -mx-3 rounded-xl hover:bg-sand transition-colors";
-
-/** Strapi-mode category list (the MobX store); Woo mode uses the catalog module instead. */
-const StrapiCategoryLinks = observer(({ onSelect }: { onSelect: () => void }) => {
-  const { categories } = useContext(StoreContext);
-  const locale = useLocale();
-  const params = useParams();
-  const active = typeof params?.name === "string" ? decodeURIComponent(params.name) : "";
-
-  useEffect(() => {
-    categories.getAllCategories();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <ul className="flex flex-col">
-      {categories.categories?.map((cat) => (
-        <li key={cat.id}>
-          <Link
-            href={`/categories/${cat.attributes.name}`}
-            onClick={onSelect}
-            aria-current={active === cat.attributes.name ? "page" : undefined}
-            className={`${rowClass} capitalize ${active === cat.attributes.name ? "font-bold text-saffron-ink" : ""}`}
-          >
-            {locale === "en" ? cat.attributes.name : cat.attributes?.localizations?.data[0]?.attributes.name}
-          </Link>
-        </li>
-      ))}
-    </ul>
-  );
-});
-StrapiCategoryLinks.displayName = "StrapiCategoryLinks";
 
 /** The menu drawer: main links (hidden in the header below xl), categories, order tracking, account. */
 const SidebarContent = () => {
@@ -90,7 +58,7 @@ const SidebarContent = () => {
 
       <nav aria-label={t("sections")} className="px-5 py-4 border-t border-line xl:border-t-0">
         <p className="text-xs font-bold uppercase tracking-wider text-garden-muted mb-1">{t("sections")}</p>
-        {CATALOG_SOURCE === "woo" ? <CategoryLinks onSelect={close} /> : <StrapiCategoryLinks onSelect={close} />}
+        <CategoryLinks onSelect={close} />
       </nav>
 
       <div className="px-5 py-4 border-t border-line">

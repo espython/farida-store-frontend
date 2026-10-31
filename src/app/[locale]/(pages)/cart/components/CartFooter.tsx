@@ -1,29 +1,15 @@
 "use client";
 import { buttonClass } from "@/shared/ui/Button";
-import { StoreContext } from "@/contexts/StoreContext";
-import { isUserLoggedIn } from "@/functions/credentials";
+import { useCart } from "@/modules/cart";
 import { Input } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import React, { useContext } from "react";
+import React from "react";
 import { BiSend } from "react-icons/bi";
 import { MdDeleteForever } from "react-icons/md";
 
 const CartFooter = () => {
-  const { cart, user } = useContext(StoreContext);
+  const { clear } = useCart();
   const t = useTranslations("cartPage");
-
-  const deleteAllCartProducts = () => {
-    if (isUserLoggedIn()) {
-      user.setIsMergingOrRemovingLoading = true;
-      user.clearUserCart(cart.userCartItems).then(() => {
-        user.setIsMergingOrRemovingLoading = false;
-      });
-    } else {
-      user.setIsMergingOrRemovingLoading = true;
-      cart.deleteAllProducts();
-      user.setIsMergingOrRemovingLoading = false;
-    }
-  };
 
   return (
     <div className="flex flex-wrap justify-between items-end gap-3">
@@ -39,7 +25,7 @@ const CartFooter = () => {
       />
       <button
         type="button"
-        onClick={deleteAllCartProducts}
+        onClick={clear}
         className={`${buttonClass({ variant: "ghost" })} text-[#b42318] capitalize`}
       >
         <MdDeleteForever className="text-xl" aria-hidden="true" />

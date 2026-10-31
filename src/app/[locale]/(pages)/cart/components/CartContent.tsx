@@ -1,32 +1,29 @@
 "use client";
-import React, { useContext } from "react";
+import React from "react";
+import { CartLineItem, useCart } from "@/modules/cart";
 import TotalPrice from "./TotalPrice";
 import CartFooter from "./CartFooter";
-import { StoreContext } from "@/contexts/StoreContext";
-import { observer } from "mobx-react-lite";
-
-import ProductsTable2 from "./ProductsTable2";
-import ConfirmMergeCart from "@/components/ConfirmMergeCart";
-import { useAuth } from "@/hooks/useAuth";
 
 const CartContent = () => {
-  const { cartSidebar, user } = useContext(StoreContext);
-  const { isLoggedIn } = useAuth();
+  const { lines } = useCart();
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
       <div className="lg:col-span-8 flex flex-col gap-4">
-        <ProductsTable2 />
+        <ul className="bg-white rounded-3xl px-4 md:px-6 divide-y divide-line">
+          {lines.map((line) => (
+            <li key={line.product.id} className="py-4">
+              <CartLineItem line={line} />
+            </li>
+          ))}
+        </ul>
         <CartFooter />
       </div>
-      <div className="lg:col-span-4 lg:sticky lg:top-24 flex flex-col gap-4">
+      <div className="lg:col-span-4 lg:sticky lg:top-24">
         <TotalPrice />
-        {isLoggedIn &&
-          cartSidebar.isLocalCartHasItems &&
-          !user.isMergingOrRemovingLoading && <ConfirmMergeCart />}
       </div>
     </div>
   );
 };
 
-export default observer(CartContent);
+export default CartContent;

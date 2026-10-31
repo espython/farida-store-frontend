@@ -1,13 +1,11 @@
 "use client";
 import { formatAmount } from "@/shared/lib/price";
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import MiniActiveFilter from "./MiniActiveFilter";
 import { useSearchParams } from "next/navigation";
 import { useRouter, usePathname } from "@/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { StoreContext } from "@/contexts/StoreContext";
-import { observer } from "mobx-react-lite";
-import { CATALOG_SOURCE, findColor, useGetColorsQuery } from "@/modules/catalog";
+import { findColor, useGetColorsQuery } from "@/modules/catalog";
 import type { Locale } from "@/shared/kernel/Locale";
 
 const ActiveFiltersView = ({ colorLabel }: { colorLabel: string }) => {
@@ -57,27 +55,8 @@ const ActiveFiltersView = ({ colorLabel }: { colorLabel: string }) => {
   );
 };
 
-const StrapiActiveFilters = observer(() => {
-  const searchParams = useSearchParams();
-  const locale = useLocale();
-  const { colors } = useContext(StoreContext);
-  const colorName = searchParams.get("color");
-
-  useEffect(() => {
-    colors.getArabicColor(colorName ?? "");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colorName]);
-
-  return (
-    <ActiveFiltersView
-      colorLabel={locale === "en" ? colorName ?? "" : colors.arabicColorName}
-    />
-  );
-});
-StrapiActiveFilters.displayName = "StrapiActiveFilters";
-
 // The Woo colour list is already localized, so no extra lookup per colour.
-const WooActiveFilters = () => {
+const ActiveFilters = () => {
   const searchParams = useSearchParams();
   const locale = useLocale() as Locale;
   const colorSlug = searchParams.get("color");
@@ -86,8 +65,5 @@ const WooActiveFilters = () => {
     <ActiveFiltersView colorLabel={findColor(data, colorSlug)?.name ?? colorSlug ?? ""} />
   );
 };
-
-const ActiveFilters = () =>
-  CATALOG_SOURCE === "woo" ? <WooActiveFilters /> : <StrapiActiveFilters />;
 
 export default ActiveFilters;

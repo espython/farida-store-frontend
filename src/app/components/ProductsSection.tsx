@@ -1,18 +1,16 @@
 "use client";
 import React, { useContext, useEffect } from "react";
-import ProductsPagination from "./ProductsPagination";
 import { StoreContext } from "@/contexts/StoreContext";
 import { observer } from "mobx-react-lite";
 
 import { AnimatePresence, motion } from "framer-motion";
 import FilterSidebarContents from "@/app/components/FilterSidebarContents";
-import GridStyleView from "./GridStyleView";
-import RowStyleView from "./RowStyleView";
 import { useLocale, useTranslations } from "next-intl";
-import { CATALOG_SOURCE, CatalogListing } from "@/modules/catalog";
+import { CatalogListing } from "@/modules/catalog";
+import { AddToCartButton, toProductRef } from "@/modules/cart";
 
 const ProductsSection = () => {
-  const { products, viewStyle, filter } = useContext(StoreContext);
+  const { viewStyle, filter } = useContext(StoreContext);
 
   const locale = useLocale();
   const t = useTranslations("filters");
@@ -28,19 +26,12 @@ const ProductsSection = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      {CATALOG_SOURCE === "woo" ? (
-        <CatalogListing
-          view={viewStyle.gridView ? "grid" : "row"}
-          onFiltersChange={filter.hideWholeFilterSidebar}
-        />
-      ) : (
-        <>
-          {viewStyle.gridView ? <GridStyleView /> : <RowStyleView />}
-
-          {/* ============ */}
-          <ProductsPagination />
-        </>
-      )}
+      {/* The page composes catalog and cart: the catalog never imports the cart. */}
+      <CatalogListing
+        view={viewStyle.gridView ? "grid" : "row"}
+        onFiltersChange={filter.hideWholeFilterSidebar}
+        renderActions={(product) => <AddToCartButton product={toProductRef(product)} />}
+      />
 
       <AnimatePresence mode="wait">
         {filter.showBackdrop && (

@@ -10,6 +10,7 @@ import {
   useGetProductQuery,
 } from "@/modules/catalog";
 import type { Product } from "@/modules/catalog";
+import { AddToCartButton, toProductRef } from "@/modules/cart";
 import type { Locale } from "@/shared/kernel/Locale";
 import Breads from "./Breads";
 import PageContainer from "@/shared/ui/PageContainer";
@@ -28,8 +29,8 @@ interface Props {
 }
 
 /**
- * Product page on the Woo catalog. The route segment is the product slug (cards link
- * by slug). Add to cart and reviews come with the cart (C1-C3) and reviews (O3) work.
+ * Product page. The route segment is the product slug (cards link by slug). The page
+ * composes catalog and cart (the catalog never imports the cart). Reviews come with O3.
  */
 const WooProductPage = ({ slug, initialProduct }: Props) => {
   const locale = useLocale() as Locale;
@@ -73,7 +74,12 @@ const WooProductPage = ({ slug, initialProduct }: Props) => {
               <ProductGallery images={product.images} title={product.title} />
             </div>
             <div className="lg:col-span-5 lg:sticky lg:top-24">
-              <ProductDetails product={product} showDescription={false} footer={<TrustList />} />
+              <ProductDetails
+                product={product}
+                showDescription={false}
+                actions={<AddToCartButton product={toProductRef(product)} variant="full" />}
+                footer={<TrustList />}
+              />
             </div>
           </div>
         </div>
@@ -91,7 +97,7 @@ const WooProductPage = ({ slug, initialProduct }: Props) => {
           <SectionHeading>
             <span className="capitalize">{details("bestSeller")}</span>
           </SectionHeading>
-          <BestSellers excludeId={product.id} />
+          <BestSellers excludeId={product.id} renderActions={(p) => <AddToCartButton product={toProductRef(p)} />} />
         </section>
       </PageContainer>
     </div>

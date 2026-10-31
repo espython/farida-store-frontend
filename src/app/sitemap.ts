@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { CATALOG_SOURCE, featuredCategories } from "@/modules/catalog";
+import { featuredCategories } from "@/modules/catalog";
 import { listCategories, listProducts } from "@/modules/catalog/index.server";
 import { LOCALES } from "@/shared/kernel/Locale";
 import type { Locale } from "@/shared/kernel/Locale";
@@ -42,7 +42,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl(`/${locale}`), changeFrequency: "daily", priority: 1 },
     { url: absoluteUrl(`/${locale}/contact`), changeFrequency: "yearly", priority: 0.3 },
   ]);
-  if (CATALOG_SOURCE !== "woo") return pages;
   try {
     const catalog = await Promise.all(LOCALES.map(catalogEntries));
     return [...pages, ...catalog.flat()];

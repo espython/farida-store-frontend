@@ -24,3 +24,9 @@ export {
 export { CART_KEY, cartActions, cartReducer, initialCartState } from "./application/cartSlice";
 export type { CartState } from "./application/cartSlice";
 export { startCartPersistence, useCartPersistence } from "./application/cartPersistence";
+
+// UI: cart controls and views. Catalog UI receives AddToCartButton through its
+// actions slot from the page that composes both.
+export { default as AddToCartButton } from "./ui/AddToCartButton";
+export { default as CartLineItem } from "./ui/CartLineItem";
+export { default as CartSummary } from "./ui/CartSummary";

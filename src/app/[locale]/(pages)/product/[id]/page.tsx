@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { unstable_setRequestLocale } from "next-intl/server";
 import {
-  CATALOG_SOURCE,
   productJsonLd,
   productMetaDescription,
   serializeJsonLd,
@@ -13,7 +12,7 @@ import { AppError } from "@/shared/kernel/AppError";
 import { isLocale, LOCALES } from "@/shared/kernel/Locale";
 import type { Locale } from "@/shared/kernel/Locale";
 import { absoluteUrl, ogLocale, SITE_URL } from "@/shared/lib/siteUrl";
-import ProductPageContainer from "./components/ProductPageContainer";
+import WooProductPage from "./components/WooProductPage";
 
 interface productPageProps {
   params: { id: string; locale: string };
@@ -22,12 +21,12 @@ interface productPageProps {
 const productPath = (locale: Locale, slug: string) => `/${locale}/product/${slug}`;
 
 /**
- * The product for SEO, on the Woo catalog only. Undefined when the shop is unreachable:
+ * The product for SEO and the first render. Undefined when the shop is unreachable:
  * the client page then shows its own retry. Woo fetches are cached, so metadata and
  * page share one request.
  */
 async function loadProduct({ id, locale }: productPageProps["params"]): Promise<Product | undefined> {
-  if (CATALOG_SOURCE !== "woo" || !isLocale(locale)) return undefined;
+  if (!isLocale(locale)) return undefined;
   try {
     return await getProductBySlug(id, locale);
   } catch (err) {
@@ -74,7 +73,7 @@ const ProductPage = async ({ params }: productPageProps) => {
           }}
         />
       )}
-      <ProductPageContainer id={params.id} initialProduct={product} />
+      <WooProductPage slug={params.id} initialProduct={product} />
     </>
   );
 };

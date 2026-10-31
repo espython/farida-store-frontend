@@ -1,6 +1,6 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import type { CartLine, CartTotals, ProductRef } from "../domain/cart";
+import { cartTotals, emptyCart, type CartLine, type CartTotals, type ProductRef } from "../domain/cart";
 import { cartActions } from "./cartSlice";
 import { selectCartHydrated, selectCartLines, selectCartTotals } from "./selectors";
 
@@ -21,11 +21,25 @@ export interface UseCart {
  * so C2 can switch a signed-in shopper to the server cart (Store API) behind
  * the same interface.
  */
+const EMPTY_LINES: CartLine[] = emptyCart().lines;
+const EMPTY_TOTALS = cartTotals(emptyCart());
+
 export const useCart = (): UseCart => {
   const dispatch = useDispatch();
-  const lines = useSelector(selectCartLines);
-  const totals = useSelector(selectCartTotals);
-  const hydrated = useSelector(selectCartHydrated);
+  const storeLines = useSelector(selectCartLines);
+  const storeTotals = useSelector(selectCartTotals);
+  const storeHydrated = useSelector(selectCartHydrated);
+
+  // The server renders an empty, not-yet-loaded cart. A component that
+  // hydrates late (behind a Suspense/loading boundary) can find the stored
+  // cart already loaded by then, so each consumer shows the empty view until
+  // it has mounted itself; otherwise its first render would not match the
+  // server HTML.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const lines = mounted ? storeLines : EMPTY_LINES;
+  const totals = mounted ? storeTotals : EMPTY_TOTALS;
+  const hydrated = mounted && storeHydrated;
 
   const add = useCallback(
     (product: ProductRef, quantity = 1) => dispatch(cartActions.itemAdded({ product, quantity })),

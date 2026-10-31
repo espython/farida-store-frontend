@@ -5,15 +5,12 @@ import { UserDropStore } from "./userDropStore";
 import React, { createContext } from "react";
 import { userStore } from "./userStore";
 import { SideBarStore } from "./sidebarStore";
-import { ProductsStore } from "./productsStore";
 import { CartSidebarStore } from "./cartSidebarStore";
 import { FilterSidebarStore } from "./filterSidebarStore";
 import { ProductsView } from "./productsViewStore";
 import { SearchBoxStore } from "./searchBoxStore";
 import { WishListStore } from "./wishListStore";
 import { AdsSliderStore } from "./adsStore";
-import { CategoriesStore } from "./categoriesStore";
-import { ColorsStore } from "./colorsStore";
 import { LoginFormStore } from "./loginFormStore";
 import { RegisterFormStore } from "./registerFormStore";
 import { userWishListStore } from "./userWishlist";
@@ -52,10 +49,6 @@ const filterSidebarInstance = new FilterSidebarStore();
 
 const searchBoxInstance = new SearchBoxStore();
 
-// products store
-
-const allProducts = new ProductsStore();
-
 // products view style store
 
 const productsViewStyle = new ProductsView();
@@ -67,14 +60,6 @@ const wishlistProducts = new WishListStore();
 // slider ads  store
 
 const adsInstance = new AdsSliderStore();
-
-// products categories store
-
-const categoriesInstance = new CategoriesStore();
-
-// products colors store
-
-const colorsInstance = new ColorsStore();
 
 // register form store
 
@@ -128,14 +113,11 @@ export const store = {
   user: userStoreInstance,
   sidebar: sidebarInstance,
   cartSidebar: cartSidebarInstance,
-  products: allProducts,
   filter: filterSidebarInstance,
   viewStyle: productsViewStyle,
   searchBox: searchBoxInstance,
   wishlist: wishlistProducts,
   ads: adsInstance,
-  categories: categoriesInstance,
-  colors: colorsInstance,
   registerForm: registerFormInstance,
   loginForm: loginFormInstance,
   userWishlist: userWishlistInstance,

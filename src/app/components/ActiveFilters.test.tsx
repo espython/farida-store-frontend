@@ -12,7 +12,6 @@ vi.mock("@/navigation", () => ({
   useRouter: () => ({ replace }),
 }));
 vi.mock("@/modules/catalog", () => ({
-  CATALOG_SOURCE: "woo",
   useGetColorsQuery: () => ({ data: [{ id: "1", slug: "red", name: "أحمر", hex: "#f00" }] }),
   findColor: (list: { slug: string }[], slug: string) => list.find((c) => c.slug === slug),
 }));

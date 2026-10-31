@@ -1,10 +1,11 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { Button, Pagination, Spinner } from "@nextui-org/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useScreenSize } from "react-screen-size-helper";
 import EmptyProducts from "@/app/components/EmptyProducts";
 import type { Locale } from "@/shared/kernel/Locale";
+import type { Product } from "../domain/Product";
 import { useCatalogListing } from "../application/useCatalogListing";
 import CatalogProductCard from "./CatalogProductCard";
 
@@ -12,9 +13,11 @@ interface Props {
   view: "grid" | "row";
   /** Called when the filters change, e.g. to close the filter sidebar. */
   onFiltersChange?: () => void;
+  /** Per-card controls (add to cart), injected by the page so the catalog does not depend on the cart. */
+  renderActions?: (product: Product) => ReactNode;
 }
 
-const CatalogListing = ({ view, onFiltersChange }: Props) => {
+const CatalogListing = ({ view, onFiltersChange, renderActions }: Props) => {
   const locale = useLocale() as Locale;
   const t = useTranslations("errorPage");
   const loading = useTranslations("loading");
@@ -75,7 +78,7 @@ const CatalogListing = ({ view, onFiltersChange }: Props) => {
           aria-busy={isFetching}
         >
           {data.items.map((product) => (
-            <CatalogProductCard key={product.id} product={product} row={view === "row"} />
+            <CatalogProductCard key={product.id} product={product} row={view === "row"} actions={renderActions?.(product)} />
           ))}
         </div>
       )}
