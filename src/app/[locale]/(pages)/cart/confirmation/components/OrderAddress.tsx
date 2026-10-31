@@ -11,20 +11,20 @@ const OrderAddress = () => {
 
   const information = [
     {
-      title: t("orderAddress.state"),
-      description: userOrders.orderDetails?.data?.attributes?.state,
-    },
-    {
-      title: t("orderAddress.country"),
-      description: userOrders.orderDetails?.data?.attributes?.country,
+      title: t("orderAddress.street"),
+      description: userOrders.orderDetails?.data?.attributes?.street,
     },
     {
       title: t("orderAddress.city"),
       description: userOrders.orderDetails?.data?.attributes?.city,
     },
     {
-      title: t("orderAddress.street"),
-      description: userOrders.orderDetails?.data?.attributes?.street,
+      title: t("orderAddress.state"),
+      description: userOrders.orderDetails?.data?.attributes?.state,
+    },
+    {
+      title: t("orderAddress.country"),
+      description: userOrders.orderDetails?.data?.attributes?.country,
     },
     {
       title: t("orderAddress.postal"),

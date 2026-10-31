@@ -23,12 +23,14 @@ const AddressSelectionModal = () => {
         base: "z-[87] bg-cream md:rounded-3xl",
         body: "z-[87]",
         wrapper: "z-[87]",
+        // NextUI pins the close button to the physical right; mirror it for RTL.
+        closeButton: "top-3 rtl:right-auto rtl:left-3 w-11 h-11 grid place-items-center text-lg",
       }}
     >
       <ModalContent>
         {() => (
           <>
-            <ModalHeader className="font-display text-xl md:text-2xl font-medium">{t("title")}</ModalHeader>
+            <ModalHeader className="font-display text-xl md:text-2xl font-medium pe-14">{t("title")}</ModalHeader>
             <ModalBody className="pb-6">
               <AddressesSelections />
             </ModalBody>

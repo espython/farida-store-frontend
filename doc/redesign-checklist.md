@@ -98,14 +98,14 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [x] `EmptyCart`, `loading.tsx`
 
 ### Shipping `/cart/shipping`
-- [~] `ShippingContent`, `ShippingForm`, `CustomizedInput` (form fields), `ShippingOrderAndPrice`, `ShippingRowDetails`, `OrderedItem` — restyled (7/5 grid, labelled fields, summary card), NOT checked in the browser (needs a logged-in Strapi user); line totals were multiplied by quantity twice — fixed; shipping is a flat 100 EGP and the coupon box does nothing (C3)
+- [x] `ShippingContent`, `ShippingForm`, `CustomizedInput` (form fields), `ShippingOrderAndPrice`, `ShippingRowDetails`, `OrderedItem` — restyled (7/5 grid, labelled fields, summary card); checked with the mock user (`infra/woo-staging/mock/user-mock.mjs`); line totals were multiplied by quantity twice — fixed; shipping is a flat 100 EGP and the coupon box does nothing (C3)
 
 ### Payment `/cart/payment`
-- [~] `PaymentSummary`, `PaymentIframe` (frame container) — restyled (radio cards, summary card), 37 inline en/ar strings moved to `paymentFlow`; NOT browser-checked (needs login). Totals disagree between steps: shipping step adds 100 EGP, payment adds 50 EGP + 14% tax (C3, business logic, left as is)
+- [x] `PaymentSummary`, `PaymentIframe` (frame container) — restyled (radio cards, summary card), 37 inline en/ar strings moved to `paymentFlow`; checked with the mock user (iframe view not opened: needs Paymob keys). Totals disagree between steps: shipping step adds 100 EGP, payment adds 50 EGP + 14% tax (C3, business logic, left as is)
 
 ### Confirmation `/cart/confirmation`
-- [~] `ConfirmationPageContainer`, `Thanks`, `Orderinfo`, `InfoCard`, `PaymentDetails`, `OrderAddress`, `ItemsContainer`, `NoOrder` — restyled (success card with track/continue links, 7/5 grid of white cards, `<dl>` fields, skeleton while the ownership check runs instead of a flash of "no order"), payment strings moved to messages, unused `CompletedOrderedItem` deleted; NOT browser-checked (needs a logged-in Strapi user and an order)
-- [~] `AddressesSelections`, `UserAddressSelection`, `AddressSelectionModal` — Swiper replaced by a scrollable list of address cards, selected one marked, labels translated (were hard-coded English); NOT browser-checked (needs login)
+- [x] `ConfirmationPageContainer`, `Thanks`, `Orderinfo`, `InfoCard`, `PaymentDetails`, `OrderAddress`, `ItemsContainer`, `NoOrder` — restyled (success card with track/continue links, 7/5 grid of white cards, `<dl>` fields, skeleton while the ownership check runs instead of a flash of "no order"), payment strings moved to messages, unused `CompletedOrderedItem` deleted; checked with the mock user
+- [x] `AddressesSelections`, `UserAddressSelection`, `AddressSelectionModal` — Swiper replaced by a scrollable list of address cards, selected one marked, labels translated (were hard-coded English), close button mirrored for RTL; checked with the mock user
 
 ### Payment callback `/payment-callback`
 - [~] Success / failure / pending states — one white status card (icon, display heading, actions, transaction details), 20 inline en/ar strings moved to `paymentCallback`; "View my orders" went to `/profile/orders`, which does not exist — now `/userorders`. Failed and pending checked in the browser (en/ar, desktop and phone); success needs a logged-in cart, NOT checked
