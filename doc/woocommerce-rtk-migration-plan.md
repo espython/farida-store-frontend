@@ -1,8 +1,8 @@
 # Master plan: Strapi → WooCommerce and MobX → Redux Toolkit / RTK Query
 
-Status: **approved direction, no code merged yet.** Last updated 2026-10-14.
+Status: **in progress** (see section 12). Last updated 2026-10-31: no data migration, Strapi is replaced directly (see the decision log).
 
-This is the single complete plan. It replaces the Strapi-specific parts of `rtk-query-migration.md` and expands `woocommerce-roadmap.md`. Related docs: `woocommerce-spike-checklist.md` (acceptance checks), `strapi-to-woocommerce-data-mapping.md` (data migration), `missing-features.md` (feature gaps).
+This is the single complete plan. It replaces the Strapi-specific parts of `rtk-query-migration.md` and expands `woocommerce-roadmap.md`. Related docs: `woocommerce-spike-checklist.md` (acceptance checks), `strapi-to-woocommerce-data-mapping.md` (data migration, no longer needed: see the 2026-10-31 decision), `missing-features.md` (feature gaps).
 
 ## 1. Decision log
 
@@ -15,14 +15,15 @@ This is the single complete plan. It replaces the Strapi-specific parts of `rtk-
 | 2026-10-14 | Evaluate **Polylang** (+ Polylang for WooCommerce) for Arabic/English | Cheaper than WPML. Final choice confirmed in epic E1. |
 | 2026-10-14 | Start with backend-independent frontend work; no Woo instance exists yet | Avoids blocking on the backend. |
 | 2026-10-14 | `react-redux` **8.1.x** with `@reduxjs/toolkit` 2.x | `react-redux` 9.3 failed to install (`ERESOLVE`): it requires `@types/react` ≥ 18.2.25 while the repo pins 18.2.7. v8.1 is supported by RTK 2. Revisit when the type packages are upgraded. |
-| 2026-10-14 | `backend-admin` (Strapi) is **not deleted** until after cutover and a stable period | Needed for the data export and for rollback. |
+| 2026-10-14 | ~~`backend-admin` (Strapi) is **not deleted** until after cutover and a stable period~~ | ~~Needed for the data export and for rollback.~~ Superseded 2026-10-31. |
 | 2026-10-14 | Adopt **DDD-lite**: bounded-context modules (`src/modules/<context>`) with domain / infrastructure / application / ui layers, a shared kernel, and an anti-corruption layer for Woo | Keeps Woo and RTK specifics out of components and makes pricing, coupon, cancellation and status rules pure and testable. See `ddd-architecture.md`. |
+| 2026-10-31 | **No data migration and no Strapi fallback.** Strapi holds only test data (no real customers, products or orders). Each feature replaces Strapi directly when it moves to Woo and deletes its Strapi code in the same change; no `*_SOURCE` switches, no import, no rollback. Phase 7 is dropped (M1–M4 closed) and Phase 9 becomes a launch. | Owner decision. The fallback and migration work protected data that does not exist. The only constraint left is that a feature works on Woo before its Strapi code is deleted. |
 | 2026-10-29 | Keep **NextUI** through the migration; after launch, move to **HeroUI** (option 1) rather than shadcn/ui | NextUI is used in ~100 files and the migration should not double as a redesign. NextUI was renamed HeroUI and `@nextui-org/*` no longer gets updates; HeroUI is the same library under a new name, so the move is mostly a package rename. A gradual move to shadcn/ui stays possible later. |
 
 ## 2. Goals and non-goals
 
 **Goals**
-- WooCommerce is the only backend. No Strapi code, env var or doc remains in the frontend after cutover.
+- WooCommerce is the only backend. No Strapi code, env var or doc remains in the frontend at launch.
 - MobX removed entirely. Server data in RTK Query; client/UI state in Redux slices.
 - The storefront gets server-rendered catalog pages (SEO), error/loading boundaries, tests for cart and checkout, and a locked-down API surface.
 - The store owner manages products, orders, refunds, coupons and shipping in the Woo admin without developer help.
@@ -162,6 +163,10 @@ Estimates are rough, for one developer, and exclude waiting time on hosting and 
 - Accept: view-source of a product page contains title, price and JSON-LD; Lighthouse SEO ≥ 90.
 **B5. Banners and ads**
 - `contentApi` for ads/mini-ads/fast-ads from the custom post type; delete `adsStore`, `fastAdsStore`.
+**B6. Woo-only catalog** (#303)
+- Delete `NEXT_PUBLIC_CATALOG_SOURCE` and every Strapi catalog branch, store and component; add to cart from Woo product cards and pages through `useCart()` (C1).
+**B7. Contact form** (#304)
+- Messages stored in WordPress (private post type) with an email to the owner, instead of Strapi `contact-messages`.
 
 ### Phase 4 – Accounts · P1 · ~1.5 weeks
 **A1. Auth BFF + session**
@@ -176,6 +181,8 @@ Estimates are rough, for one developer, and exclude waiting time on hosting and 
 - `accountApi`, `addressesApi` on Woo customer billing/shipping fields (and meta for extra addresses); ownership checks in the BFF.
 - Delete `userStore` (profile parts), `userAddressesStore`.
 - Accept: a user can register, verify, log in, reset a password, edit profile and manage addresses; cross-user access returns 403 in tests.
+**A5. Woo auth only** (#302)
+- Login, register and logout forms on `/api/auth/*`; delete `loginFormStore`, `registerFormStore`, `createSession`/`destroySession`, the `auth/session` route and the Strapi `users/me` session read. No switch: account features still on Strapi stop working for signed-in users until they move (accepted, nothing is live).
 
 ### Phase 5 – Cart and checkout · P1 · ~2–3 weeks (highest risk)
 **C1. Cart slice and tests first**
@@ -198,11 +205,8 @@ Estimates are rough, for one developer, and exclude waiting time on hosting and 
 - O3. Reviews: `reviewsApi` (list, add) with moderation; verified-buyer badge.
 - O4. Wishlist: decide plugin (with API) or user-meta endpoint; `wishlistSlice` for guests; delete `wishListStore`, `userWishlist`.
 
-### Phase 7 – Data migration · P1 · ~2 weeks, starts after W9
-- M1. Answer the open questions in `strapi-to-woocommerce-data-mapping.md` against production data.
-- M2. Export script (Strapi → JSON) and import script (JSON → Woo) with dry run and verification report.
-- M3. Repeated rehearsals on staging; compare counts, totals, 20-sample spot checks.
-- M4. Customer password strategy (hash import vs forced reset email) tested.
+### Phase 7 – Data migration · dropped (2026-10-31)
+Not needed: Strapi holds only test data. M1–M4 (#257–#260) were closed. WooCommerce starts from its own catalog.
 
 ### Phase 8 – UI state and cleanup · P2 · ~1 week
 - U1. Sidebars, modals, view style, filters drop, cart sidebar → `uiSlice`.
@@ -210,11 +214,11 @@ Estimates are rough, for one developer, and exclude waiting time on hosting and 
 - U3. Remove `mobx`, `mobx-react-lite`, `StoreContext`, all `observer()` wrappers.
 - Accept: `grep -r mobx src` finds nothing.
 
-### Phase 9 – Cutover and decommission · P1 · ~1 week + stabilization
-- X1. Freeze plan, final delta import, switch env, redirects from old URLs, submit sitemap.
+### Phase 9 – Launch and Strapi removal · P1 · ~1 week
+- X1. Launch on the hosted Woo (W1): production env without Strapi variables, Woo webhooks to `/api/revalidate`, sitemap submitted; browsing, cart and checkout verified in en and ar. No freeze or import.
 - X2. Monitoring (errors, checkout success rate), first-week watch.
-- X3. Rollback runbook with a named owner (repoint env to Strapi, replay new orders).
-- X4. After a stable period: delete Strapi code paths, old env vars and docs; archive `backend-admin`.
+- ~~X3. Rollback runbook~~: closed, there is nothing to roll back to.
+- X4. Final sweep of what the feature tickets left (Strapi proxy, env vars, types, docs, local mock); archive `backend-admin`.
 
 ### Phase 10 – Post-launch · P2/P3
 - Analytics and conversion tracking (GA4, Meta Pixel, cookie consent).
@@ -232,8 +236,8 @@ Estimates are rough, for one developer, and exclude waiting time on hosting and 
 | Priority | Items |
 |---|---|
 | **P0** | F1 RTK foundation · W1–W9 Woo setup and acceptance |
-| **P1** | F2 boundaries · F3 housekeeping · F4 tests · F5 legal pages · B1–B5 BFF and catalog · A1–A4 accounts · C1–C4 cart and checkout · O1–O3 orders and reviews · M1–M4 migration · X1–X4 cutover |
-| **P2** | O4 wishlist · U1–U3 UI state and cleanup · H1 NextUI → HeroUI · analytics · merchandising |
+| **P1** | F2 boundaries · F3 housekeeping · F4 tests · F5 legal pages · B1–B6 BFF and catalog · A1–A5 accounts · C1–C4 cart and checkout · O1–O3 orders and reviews · X1, X2, X4 launch |
+| **P2** | B7 contact form · O4 wishlist · U1–U3 UI state and cleanup · H1 NextUI → HeroUI · analytics · merchandising |
 | **P3** | Growth features |
 
 ## 7. Strapi endpoint → Woo mapping
@@ -304,22 +308,20 @@ Note: `selectionAddressModal` is currently `new AddressModalStore()`; it becomes
 | Store API cart/checkout needs nonces or cookies that are awkward headless | High | Prove cart-token flow in W9 before building C2; fallback is a thin WP plugin exposing cart/checkout endpoints |
 | Consumer keys read any customer's data | High | Keys server-only; ownership checks in BFF; tests for cross-user access |
 | Polylang API gaps (language param, translated attributes) | Medium | Verify in W4/W9; pass `lang` explicitly |
-| Migration data quality (translations, color variants stored as separate products, inventory rows that are categories) | High | Answer open questions in M1; dry runs |
-| Users cannot log in after import | Medium | Test hash import; else forced reset emails |
 | Shared public cache + auth in server components | Medium | Cache only anonymous catalog data; never cache with auth headers |
 | Large change across ~100 consumer files | Medium | One slice per PR; MobX and Redux coexist until Phase 8 |
 | WordPress upkeep falls on a non-technical owner | Medium | Managed hosting, automatic updates, backups, named technical owner |
-| `react-redux` 8 + `@types/react` 18.2.7 are old | Low | Plan a dependency upgrade after cutover |
+| `react-redux` 8 + `@types/react` 18.2.7 are old | Low | Plan a dependency upgrade after launch |
 | NextUI (`@nextui-org/*`) is no longer maintained | Low | H1 moves to HeroUI after launch; do it together with the dependency upgrade |
 
 ## 11. Open questions
 
 1. Hosting provider and budget for managed WordPress? Who is the technical owner?
 2. Which Polylang add-on tier, and which invoice/shipping/wishlist plugins are approved?
-3. Production data: translation model, color-variant model, user and order counts (see the mapping doc).
+3. ~~Production data~~: answered 2026-10-31, there is none (test data only).
 4. Google login: keep it, and if so which WP plugin?
 5. Do we keep the saved-address book (multiple addresses) or move to billing/shipping only?
-6. Cutover date and acceptable downtime window.
+6. Launch date (no downtime window needed: nothing is live).
 7. Should the Next.js upgrade (14/15) happen before Phase 3 to allow `react-redux` 9 and better caching APIs?
 
 ## 12. Progress tracker
@@ -328,11 +330,11 @@ Note: `selectionAddressModal` is currently `new AddressModalStore()`; it becomes
 - [x] Phase 0: commit docs, create issues and project board (#222–#276)
 - [ ] Phase 1: foundations (F1–F5). F1–F4 and D1 (module structure, boundary lint rules) done; F5 legal pages wait on owner content
 - [ ] Phase 2: Woo platform (W1–W9). W0 staging spike done on local Docker; W1–W9 not started. Open: Polylang add-on, Paymob sandbox keys, hosting
-- [ ] Phase 3: BFF and catalog (B1–B5). B1–B3 done; B4 code done (#293, #295–#298), Lighthouse SEO ≥ 90 on a deployed Woo build still to run; B5 waits on W7
-- [ ] Phase 4: accounts (A1–A4)
-- [ ] Phase 5: cart and checkout (C1–C4)
+- [ ] Phase 3: BFF and catalog (B1–B7). B1–B3 done; B4 code done (#293, #295–#298), Lighthouse SEO ≥ 90 on a deployed Woo build still to run; B5 waits on W7; B6 (#303) and B7 (#304) open
+- [ ] Phase 4: accounts (A1–A5). A1 BFF built (branch `feat/a1-customer-auth`); A5 (#302) removes Strapi auth
+- [ ] Phase 5: cart and checkout (C1–C4). C1 cart context in PR #301
 - [ ] Phase 6: orders and wishlist (O1–O4)
-- [ ] Phase 7: data migration (M1–M4)
+- [x] Phase 7: data migration (M1–M4): dropped 2026-10-31, no real data
 - [ ] Phase 8: UI state and cleanup (U1–U3)
-- [ ] Phase 9: cutover and decommission (X1–X4)
+- [ ] Phase 9: launch and Strapi removal (X1, X2, X4; X3 dropped)
 - [ ] Phase 10: post-launch
