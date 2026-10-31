@@ -21,17 +21,22 @@ interface Props {
  */
 const AddToCartButton = ({ product, variant = "icon" }: Props) => {
   const t = useTranslations("cart");
-  const { add, quantityOf, hydrated } = useCart();
+  const { add, quantityOf, hydrated, pending } = useCart();
   const [quantity, setQuantity] = useState(1);
 
   const inCart = quantityOf(product.id);
   const room = Math.max(0, lineLimit(product) - inCart);
   const soldOut = lineLimit(product) === 0;
 
-  const addNow = (qty: number) => {
-    add(product, qty);
-    toast.success(t("added", { title: product.title }), { toastId: `cart-${product.id}` });
-    setQuantity(1);
+  const addNow = async (qty: number) => {
+    const result = await add(product, qty);
+    if (result.ok) {
+      toast.success(t("added", { title: product.title }), { toastId: `cart-${product.id}` });
+      setQuantity(1);
+    } else {
+      // The saved cart is checked by Woo: stock can run out after the page loaded.
+      toast.error(t(result.code.includes("out_of_stock") ? "outOfStock" : "changeFailed"), { toastId: `cart-err-${product.id}` });
+    }
   };
 
   if (variant === "icon") {
@@ -39,7 +44,7 @@ const AddToCartButton = ({ product, variant = "icon" }: Props) => {
       <button
         type="button"
         onClick={() => addNow(1)}
-        disabled={!hydrated || room === 0}
+        disabled={!hydrated || pending || room === 0}
         aria-label={soldOut ? t("soldOut") : t("addNamed", { title: product.title })}
         className={`relative shrink-0 w-11 h-11 grid place-items-center rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-garden disabled:opacity-40 ${
           inCart > 0 ? "bg-saffron text-garden" : "bg-garden text-cream hover:bg-garden-600"
@@ -75,7 +80,7 @@ const AddToCartButton = ({ product, variant = "icon" }: Props) => {
           onIncrement={() => setQuantity((q) => Math.min(q + 1, room))}
           onDecrement={() => setQuantity((q) => Math.max(1, q - 1))}
         />
-        <Button size="lg" className="flex-1" disabled={!hydrated || room === 0} onClick={() => addNow(quantity)}>
+        <Button size="lg" className="flex-1" disabled={!hydrated || pending || room === 0} aria-busy={pending} onClick={() => addNow(quantity)}>
           <LuShoppingCart aria-hidden="true" />
           {room === 0 ? t("limitReached") : t("add")}
         </Button>

@@ -84,6 +84,14 @@ describe("wooFetch", () => {
     });
   });
 
+  it("never caches a request that carries a customer's Authorization", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(ok({}));
+    vi.stubGlobal("fetch", fetchMock);
+    await wooFetch({ path: "/wc/store/v1/cart", headers: { Authorization: "Bearer jwt" }, next: { revalidate: 60 } });
+    expect(fetchMock.mock.calls[0][1]).toMatchObject({ cache: "no-store" });
+    expect(fetchMock.mock.calls[0][1].next).toBeUndefined();
+  });
+
   it("lets a request translate expected failures before the generic mapping", async () => {
     const mapError = (status: number) => (status === 403 ? new AppError("invalid_credentials", "Nope", 401) : undefined);
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(ok({ code: "x" }, 403)));

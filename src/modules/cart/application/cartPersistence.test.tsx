@@ -31,23 +31,34 @@ const Persist = () => {
 afterEach(() => localStorage.clear());
 
 describe("useCart", () => {
-  it("exposes the cart use cases and writes each change to storage", () => {
+  it("exposes the cart use cases and writes each change to storage", async () => {
     const store = makeStore();
     const wrapper = ({ children }: { children: ReactNode }) => <Provider store={store}>{children}</Provider>;
     const { result } = renderHook(() => useCart(), { wrapper });
 
-    act(() => result.current.add(ref("1"), 2));
-    act(() => result.current.add(ref("2")));
+    await act(async () => {
+      await result.current.add(ref("1"), 2);
+    });
+    await act(async () => {
+      await result.current.add(ref("2"));
+    });
+    expect(result.current.source).toBe("guest");
     expect(result.current.totals).toMatchObject({ itemCount: 3, subtotal: Money.of(3000) });
     expect(result.current.quantityOf("1")).toBe(2);
     expect(JSON.parse(localStorage.getItem(CART_STORAGE_KEY)!).lines).toHaveLength(2);
 
-    act(() => result.current.setQuantity("1", 5));
-    act(() => result.current.remove("2"));
+    await act(async () => {
+      await result.current.setQuantity("1", 5);
+    });
+    await act(async () => {
+      await result.current.remove("2");
+    });
     expect(result.current.lines.map((l) => [l.product.id, l.quantity])).toEqual([["1", 5]]);
     expect(result.current.quantityOf("2")).toBe(0);
 
-    act(() => result.current.clear());
+    await act(async () => {
+      await result.current.clear();
+    });
     expect(result.current.lines).toEqual([]);
     expect(localStorage.getItem(CART_STORAGE_KEY)).toBeNull();
   });

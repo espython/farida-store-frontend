@@ -20,6 +20,7 @@ import Uiproviders from "@/providers/UiProviders";
 import ReduxStoreProvider from "@/store/StoreProvider";
 import { elMessiri, fraunces } from "@/shared/ui/fonts";
 import Toaster from "@/shared/ui/Toaster";
+import { CartSync } from "@/modules/cart";
 
 export const metadata = {
   title: { default: "Farida Store", template: "%s | Farida Store" },
@@ -69,6 +70,8 @@ export default function RootLayout({
                   <GoTopFloatingButton />
                   <BottomNavigation />
                   <Toaster />
+                  {/* Cart storage, cross-tab sync and the guest → account merge (needs translations and the store). */}
+                  <CartSync />
                 </div>
                 {/* Outside the wrapper above so it stays sticky for the whole page. */}
                 <NavBar />

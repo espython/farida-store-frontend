@@ -4,6 +4,7 @@ export type { SignedIn } from "./infrastructure/authClient.server";
 export {
   clearSessionCookies,
   FLAG_COOKIE,
+  readSessionClaims,
   readSessionToken,
   setSessionCookies,
   TOKEN_COOKIE,

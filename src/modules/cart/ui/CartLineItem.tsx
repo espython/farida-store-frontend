@@ -1,6 +1,7 @@
 "use client";
 import { Image } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
+import { toast } from "react-toastify";
 import { LuTrash2 } from "react-icons/lu";
 import { Link } from "@/navigation";
 import { Money } from "@/shared/kernel/Money";
@@ -20,10 +21,17 @@ const CartLineItem = ({ line, variant = "page", onNavigate }: Props) => {
   const t = useTranslations("cart");
   const drop = useTranslations("cartDrop");
   const currency = useTranslations("currency");
-  const { setQuantity, remove } = useCart();
+  const { setQuantity, remove, pending } = useCart();
   const { product, quantity } = line;
   const href = `/product/${product.slug}`;
   const compact = variant === "compact";
+
+  // Saved-cart changes can be refused by Woo (stock); the line keeps its old value.
+  const report = (result: { ok: boolean; code?: string }) => {
+    if (!result.ok) {
+      toast.error(t(result.code?.includes("out_of_stock") ? "outOfStock" : "changeFailed"), { toastId: `line-${product.id}` });
+    }
+  };
 
   const price = (
     <p className="font-bold whitespace-nowrap">
@@ -36,14 +44,16 @@ const CartLineItem = ({ line, variant = "page", onNavigate }: Props) => {
       size={compact ? "sm" : "md"}
       value={quantity}
       max={lineLimit(product)}
-      onIncrement={() => setQuantity(product.id, quantity + 1)}
-      onDecrement={() => setQuantity(product.id, quantity - 1)}
+      disabled={pending}
+      onIncrement={() => setQuantity(product.id, quantity + 1).then(report)}
+      onDecrement={() => setQuantity(product.id, quantity - 1).then(report)}
     />
   );
   const removeButton = (
     <button
       type="button"
-      onClick={() => remove(product.id)}
+      onClick={() => remove(product.id).then(report)}
+      disabled={pending}
       aria-label={`${drop("remove")} ${product.title}`}
       className={`${compact ? "w-9 h-9 -mt-2 -me-2" : "w-11 h-11"} shrink-0 grid place-items-center rounded-full text-[#b42318] hover:bg-sand focus-visible:outline focus-visible:outline-2 focus-visible:outline-garden`}
     >
