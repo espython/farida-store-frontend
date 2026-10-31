@@ -8,3 +8,6 @@ export {
   setSessionCookies,
   TOKEN_COOKIE,
 } from "./infrastructure/sessionCookie.server";
+
+// Domain rules the routes apply (server-safe; the client index also has hooks).
+export { validateLogin, validateRegistration, PASSWORD_MAX_LENGTH } from "./domain/credentials";

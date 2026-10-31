@@ -4,7 +4,10 @@ const STRAPI_API_ENDPOINT =
   process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT || "";
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN || "";
 
-const PASSTHROUGH_AUTH_PATHS = ["auth/local", "auth/local/register"];
+// Strapi holds no real users any more: sign-in is WooCommerce (/api/auth/*)
+// and the session cookie carries a WordPress token, which Strapi would
+// reject. The proxy always uses the service token and refuses auth routes.
+const BLOCKED_PATHS = /(^|\/)(auth|users)(\/|$)/;
 
 async function proxy(
   req: NextRequest,
@@ -21,8 +24,9 @@ async function proxy(
     );
   }
 
-  const userToken = req.cookies.get("credentials")?.value;
-  const isAuthPath = PASSTHROUGH_AUTH_PATHS.some((p) => strapiPath.includes(p));
+  if (BLOCKED_PATHS.test(strapiPath)) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
   const method = req.method.toUpperCase();
 
   const headers: Record<string, string> = {
@@ -32,9 +36,7 @@ async function proxy(
   const contentType = req.headers.get("content-type");
   if (contentType) headers["Content-Type"] = contentType;
 
-  if (userToken) {
-    headers["Authorization"] = `Bearer ${userToken}`;
-  } else if (STRAPI_API_TOKEN && !isAuthPath) {
+  if (STRAPI_API_TOKEN) {
     headers["Authorization"] = `Bearer ${STRAPI_API_TOKEN}`;
   }
 

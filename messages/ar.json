@@ -187,7 +187,8 @@
   "userLoggedIn": {
     "orders": "طلباتك",
     "profile": "اعدادات الملف الشخصي",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "account": "الحساب"
   },
   "mergeCart": {
     "merge": "اضافة المنتجات الى عربتك ؟",
@@ -768,5 +769,20 @@
     "browse": "ابدأ التسوق",
     "count": "{count, plural, zero {العربة فارغة} one {العربة، قطعة واحدة} two {العربة، قطعتان} few {العربة، # قطع} many {العربة، # قطعة} other {العربة، # قطعة}}",
     "clear": "حذف الكل"
+  },
+  "authErrors": {
+    "email_invalid": "أدخل بريدًا إلكترونيًا صحيحًا",
+    "password_required": "أدخل كلمة المرور",
+    "password_too_short": "استخدم 6 أحرف على الأقل",
+    "password_too_long": "كلمة المرور طويلة جدًا",
+    "password_needs_uppercase": "أضف حرفًا كبيرًا",
+    "password_needs_number": "أضف رقمًا",
+    "name_required": "هذا الحقل مطلوب",
+    "name_too_long": "استخدم 60 حرفًا أو أقل",
+    "invalid_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "email_taken": "يوجد حساب بهذا البريد الإلكتروني. سجّل الدخول بدلًا من ذلك.",
+    "invalid_input": "راجع الحقول المحددة",
+    "unauthenticated": "انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.",
+    "unavailable": "تعذّر الاتصال بالمتجر. يرجى المحاولة مرة أخرى."
   }
 }

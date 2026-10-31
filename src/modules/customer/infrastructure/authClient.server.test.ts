@@ -92,6 +92,13 @@ describe("customer auth client", () => {
     expect(await getSession(token(7))).toBeNull();
   });
 
+  it("shows the customer's name, not the random internal username", async () => {
+    fetchMock.mockResolvedValueOnce(respond(200, { id: 7, name: "c_3f9a1b", email: "s@x.io", first_name: "Salma", last_name: "Kamal" }));
+    expect((await getSession(token(7)))?.displayName).toBe("Salma Kamal");
+    fetchMock.mockResolvedValueOnce(respond(200, { id: 7, name: "c_3f9a1b", email: "s@x.io", first_name: "", last_name: "" }));
+    expect((await getSession(token(7)))?.displayName).toBe("c_3f9a1b");
+  });
+
   it("rejects expired or malformed tokens without calling WordPress", async () => {
     expect(await getSession(token(7, Math.floor(Date.now() / 1000) - 5))).toBeNull();
     expect(await getSession("not-a-jwt")).toBeNull();

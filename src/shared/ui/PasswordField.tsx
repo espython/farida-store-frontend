@@ -3,7 +3,7 @@ import { forwardRef, useState } from "react";
 import type { InputHTMLAttributes } from "react";
 import { useTranslations } from "next-intl";
 import { LuEye, LuEyeOff } from "react-icons/lu";
-import TextField from "@/shared/ui/TextField";
+import TextField from "./TextField";
 
 type Props = InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string; hint?: string };
 

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { LOCALES } from "@/shared/kernel/Locale";
-import { DEFAULT_SORT, PRODUCT_SORTS } from "@/modules/catalog";
+import { DEFAULT_SORT, PRODUCT_SORTS } from "@/modules/catalog/index.server";
 
 export const localeSchema = z.enum(LOCALES).default("en");
 

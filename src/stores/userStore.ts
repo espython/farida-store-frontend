@@ -3,7 +3,6 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { Userdata } from "./specificTypes/userdata";
 import { cartProductType } from "./specificTypes/cartProductType";
 import { userCartProductType } from "./specificTypes/userCartProductType";
-import { destroySession } from "@/functions/credentials";
 import { STRAPI_ENDPOINT } from "@/api/config";
 
 export class userStore {
@@ -19,36 +18,9 @@ export class userStore {
     makeAutoObservable(this);
   }
 
-  // get user data
-
-  getUserData = async () => {
-    await fetch(
-      `${STRAPI_ENDPOINT}/users/me?populate=*`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((res) => res.json())
-      .then((data): void => {
-        runInAction(() => {
-          this.strapiUserdata = data;
-        });
-      })
-      .catch((err) => {});
-  };
-
-  // user logged out
-
-  userLogout() {
-    const logoutPromise = new Promise((resolve, reject) => {
-      resolve(destroySession());
-    });
-
-    return logoutPromise;
-  }
+  // The signed-in customer now comes from WordPress (useSession in
+  // modules/customer). strapiUserdata stays empty; the account pages that
+  // still read it move to Woo in A4 / O1 / C3.
 
   // user products methods
 

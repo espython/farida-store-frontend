@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { AppError } from "@/shared/kernel/AppError";
 import { defineRoute, parseJson } from "@/shared/infrastructure/bff";
-import { validateRegistration } from "@/modules/customer";
-import { register, setSessionCookies } from "@/modules/customer/index.server";
+import { register, setSessionCookies, validateRegistration } from "@/modules/customer/index.server";
 import { registerBody } from "../authSchemas";
 
 export const { GET, POST, PUT, PATCH, DELETE, OPTIONS } = defineRoute({

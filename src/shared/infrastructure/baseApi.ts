@@ -5,7 +5,6 @@ import {
   type FetchArgs,
   type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
-import { AUTH_SESSION_ENDPOINT } from "@/api/config";
 
 // All requests go through our own Next route handlers (the BFF), never to
 // WordPress directly. Routes are added under /api/shop as endpoints migrate.
@@ -29,8 +28,10 @@ const rawBaseQuery = fetchBaseQuery({
   credentials: "same-origin",
 });
 
-// Single place that reacts to an expired/invalid session: clear the httpOnly
-// cookie through the session route, then send the user to the localized login.
+// Single place that reacts to an expired/invalid session on shop routes: clear
+// the session cookies (/api/auth/logout), then send the user to the localized
+// login. Auth routes use their own API slice (modules/customer), where a 401
+// means "wrong password" or "not signed in".
 const baseQueryWithAuth: BaseQueryFn<
   string | FetchArgs,
   unknown,
@@ -40,7 +41,7 @@ const baseQueryWithAuth: BaseQueryFn<
 
   if (result.error?.status === 401 && typeof window !== "undefined") {
     try {
-      await fetch(AUTH_SESSION_ENDPOINT, { method: "DELETE" });
+      await fetch("/api/auth/logout", { method: "POST" });
     } catch {
       // The redirect below still happens; middleware re-checks the cookie.
     }

@@ -1,8 +1,8 @@
 import React from "react";
 import type { Metadata } from "next";
 
-import RegisterForm from "./components/RegisterForm";
 import AuthShell from "../AuthShell";
+import RegisterPanel from "./RegisterPanel";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
 
@@ -22,7 +22,7 @@ const RegisterPage = ({ params: { locale } }: RegisterPageProps) => {
 
   return (
     <AuthShell title={t("register")}>
-      <RegisterForm />
+      <RegisterPanel />
     </AuthShell>
   );
 };
