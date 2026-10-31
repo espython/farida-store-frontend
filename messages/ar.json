@@ -481,22 +481,24 @@
       "items": "العناصر",
       "emptyWishlist": {
         "empty": "قائمة رغباتك فارغة",
-        "action": "تصفح"
+        "action": "تصفح المنتجات",
+        "text": "اضغط على القلب في أي منتج لحفظه هنا."
       },
       "item": {
-        "addToCart": "أضف الى العربة",
-        "addedToCart": "تمت الإضافة ",
-        "delete": "حذف"
+        "addToCart": "أضف للعربة",
+        "addedToCart": "في العربة",
+        "delete": "إزالة",
+        "remove": "إزالة {title} من قائمة الرغبات"
       },
       "filters": {
-        "action": "إضافة عنصر جديد",
-        "filters": "الفلاتر",
-        "filterBy": "ترتيب حسب ->",
         "rating": "التقييم",
-        "pricesUp": "السعر تصاعديا",
-        "pricesDown": "السعر تنازليا",
-        "AZ": "أ-ي"
-      }
+        "pricesUp": "السعر: من الأقل للأعلى",
+        "pricesDown": "السعر: من الأعلى للأقل",
+        "AZ": "الاسم: أ–ي",
+        "sortBy": "ترتيب حسب",
+        "choose": "اختر"
+      },
+      "count": "{count, plural, zero {لا توجد منتجات محفوظة} one {منتج محفوظ واحد} two {منتجان محفوظان} few {# منتجات محفوظة} many {# منتجًا محفوظًا} other {# منتج محفوظ}}"
     }
   },
   "userAdderesses": {

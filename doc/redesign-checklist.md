@@ -134,7 +134,7 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [x] `TrackOrderContainer`, `OrderReceived`, `OrderPaid`, `OrderShipped` (status timeline), `EmptyOrderTrack` — one vertical timeline (`TrackStep`) replaces the three cards and their PNGs; `/trackorder` without an id was blank, now redirects to `/order`. Ownership check moved to `useOwnedOrder`: both pages compared two undefined ids before loading and rendered an empty order or a timeline for orders that don't exist
 
 ### Wishlist `/wishlist`
-- [ ] `WishlistContent`, `WishListContainer`, `WishListSections`, `WishListItem` (reuse the product card look), `WishListFliters`, `FiltersDropMenu`, `WishListIsEmpty`, `LoginWarning`, `loading.tsx`
+- [x] `WishlistContent`, `WishListContainer`, `WishListSections`, `WishListItem` (reuse the product card look), `WishListIsEmpty`, `LoginWarning`, `loading.tsx` — product-card grid (4/3/2) with a labelled remove button and add to cart; the two sort widgets (`WishListFliters` Autocomplete on desktop, `FiltersDropMenu` with hard-coded English on mobile, plus its MobX store) replaced by one labelled `<select>`; review count came from whichever product page was opened last, now this product's
 
 ### Contact `/contact`
 - [ ] `Welcoming`, `ComplaintForm`, `Branch`, `Map`

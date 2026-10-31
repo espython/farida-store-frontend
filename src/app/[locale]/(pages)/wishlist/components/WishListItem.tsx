@@ -1,43 +1,39 @@
 "use client";
 import LoadingOverlay from "@/components/LoadingOverlay";
-import Rating from "@/components/Rating";
 import { StoreContext } from "@/contexts/StoreContext";
 import { getAverageRatings } from "@/functions/getAverageRatings";
-import { getTheLengthOfAllowedRatings } from "@/functions/getTheLengthOfAllowedRatings";
 import { userWishlistProductType } from "@/stores/specificTypes/wishlistProductType";
-import { Button, Image } from "@nextui-org/react";
+import { Image } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { Link } from "@/navigation";
-import React, { useContext, useMemo, useState } from "react";
-import { FaCheck } from "react-icons/fa";
-import { MdAddShoppingCart, MdDelete } from "react-icons/md";
-import { useScreenSize } from "react-screen-size-helper";
+import React, { useContext, useState } from "react";
+import { LuCheck, LuShoppingCart, LuX } from "react-icons/lu";
 import { useLocale, useTranslations } from "next-intl";
+import { formatAmount } from "@/shared/lib/price";
+import Button from "@/shared/ui/Button";
 
 interface wishlistItemProps {
   product: userWishlistProductType;
 }
 
+/** Wishlist entry in the product card look: 1:1 image, remove button, title, price, add to cart. */
 const WishListItem = ({ product }: wishlistItemProps) => {
-  const { userWishlist, user, cart, products } = useContext(StoreContext);
-  const { isMobile, isTablet, isDesktop, isLargeDesktop } = useScreenSize({});
+  const { userWishlist, user, cart } = useContext(StoreContext);
 
   const [isLoading, setIsloading] = useState(false);
   const t = useTranslations("wishList");
   const currency = useTranslations("currency");
   const locale = useLocale();
 
-  const foundedInCart = useMemo(() => {
-    if (cart.isInUserCart(Number(product.id))) {
-      return true;
-    } else {
-      return false;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cart.totalPrice]);
+  const inCart = Boolean(cart.isInUserCart(Number(product.id)));
+  const title = locale === "en" ? product.title : product.localization.title;
+  // The count came from products.targetProductReviews, i.e. whichever
+  // product page was opened last, not this product.
+  const reviewCount = (product.reviews ?? []).filter((r) => r.allowed).length;
+  const average = reviewCount > 0 ? getAverageRatings(product.reviews) : 0;
+  const href = `/product/${product.id}`;
 
   const addToCart = () => {
-    // cart.addProduct({...product,quantity:1})
     setIsloading(true);
     user.addProductToUserCart(product.id, 1).then(() => {
       cart.setProductsCount = cart.productsCount + 1;
@@ -45,7 +41,6 @@ const WishListItem = ({ product }: wishlistItemProps) => {
     });
   };
   const removeFromWishlist = () => {
-    // wishlist.removeFromWishlist(product.id)
     setIsloading(true);
     userWishlist
       .removeProductFromUserWishlistByProductId(product.id)
@@ -57,106 +52,58 @@ const WishListItem = ({ product }: wishlistItemProps) => {
   };
 
   return (
-    <div className="relative py-3  border-solid border-1 border-x-mainGray px-2 shadow-sm">
+    <article className="relative flex flex-col gap-3 h-full">
       {isLoading && <LoadingOverlay />}
-
-      <div className="grid  grid-rows-[1fr_auto] grid-cols-[2fr_4fr] sm:grid-cols-[2fr_4fr_2fr] sm:grid-rows-1  md:grid-cols-[2fr_4fr_2fr_auto] gap-5 py-3 w-full">
-        <Link
-          href={`/product/${product.id}`}
-          className="w-full aspect-square flex items-center justify-center"
-        >
+      <div className="relative aspect-square rounded-[20px] overflow-hidden bg-sand">
+        <Link href={href} className="block w-full h-full" tabIndex={-1} aria-hidden="true">
           <Image
             src={product.imgSrc}
             alt=""
-            className="flex justify-center items-center w-full aspect-square"
-            classNames={{
-              img: "w-full h-full object-contain",
-            }}
+            radius="none"
+            removeWrapper
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.03]"
           />
         </Link>
-        <div className="flex flex-col gap-1  justify-center">
-          <Link href={`/product/${product.id}`}>
-            <h1 className="text-sm md:text-2xl capitalize line-clamp-1">
-              {locale === "en" ? product.title : product.localization.title}
-            </h1>
-          </Link>
-          <div className="flex items-center gap-2">
-            <Rating
-              rating={getAverageRatings(product.reviews)}
-              size={isMobile || isTablet || isDesktop ? ".8rem" : "2rem"}
-            />
-            <h1 className="text-sm md:text-lg hidden lmob:block">
-              ({getTheLengthOfAllowedRatings(products.targetProductReviews)})
-            </h1>
-          </div>
-          <h1 className="text-xs md:text-xl capitalize text-mainBlack/50   w-full line-clamp-1">
-            {locale === "en"
-              ? product.description
-              : product.localization.desscription}
-          </h1>
-        </div>
-        <div className="grid col-span-2 sm:col-auto grid-rows-1 grid-cols-[2fr_4fr] sm:grid-rows-1 sm:grid-cols-1  place-items-center">
-          <h1 className="text-sm sm:text-lg md:text-2xl text-center font-bold capitalize text-green-500">
-            {product.price}{" "}
-            <span className="text-sm ltr:ml-1 rtl:mr-1">
-              {currency("currency")}
-            </span>
-          </h1>
-
-          <div className="grid md:hidden grid-cols-2 items-center justify-self-end sm:justify-self-center gap-2 ">
-            <button
-              className={`${
-                foundedInCart ? `bg-emerald-500` : `bg-mainBlack`
-              } p-1 lmob:p-2 sm:p-3 rounded-full`}
-              onClick={addToCart}
-              disabled={foundedInCart}
-            >
-              {foundedInCart ? (
-                <FaCheck className="text-mainWhite" />
-              ) : (
-                <MdAddShoppingCart className="text-mainWhite" />
-              )}
-            </button>
-            <button
-              className="bg-red-500 p-1 lmob:p-2 sm:p-3 rounded-full"
-              onClick={removeFromWishlist}
-            >
-              <MdDelete className="text-mainWhite" />
-            </button>
-          </div>
-        </div>
-
-        <div className="hidden md:flex  flex-col gap-2    justify-center items-center ">
-          <Button
-            radius="lg"
-            className={` ${
-              foundedInCart ? `bg-emerald-500` : `bg-mainBlack`
-            }  text-mainWhite px-10 py-8 capitalize text-lg lg:text-xl xl:text-2xl`}
-            endContent={
-              foundedInCart ? (
-                <FaCheck className="text-mainWhite" />
-              ) : (
-                <MdAddShoppingCart className="text-mainWhite" />
-              )
-            }
-            isDisabled={foundedInCart}
-            onClick={addToCart}
-          >
-            {foundedInCart
-              ? t("content.item.addedToCart")
-              : t("content.item.addToCart")}
-          </Button>
-          <Button
-            radius="lg"
-            className="bg-red-500 text-mainWhite px-10 py-8 capitalize text-lg lg:text-xl xl:text-2xl w-full"
-            endContent={<MdDelete className="text-mainWhite" />}
-            onClick={removeFromWishlist}
-          >
-            {t("content.item.delete")}
-          </Button>
-        </div>
+        <button
+          type="button"
+          onClick={removeFromWishlist}
+          aria-label={t("content.item.remove", { title })}
+          className="absolute z-20 top-2 end-2 w-11 h-11 grid place-items-center rounded-full bg-white/90 text-garden hover:bg-white hover:text-[#b42318] focus-visible:outline focus-visible:outline-2 focus-visible:outline-garden"
+        >
+          <LuX aria-hidden="true" />
+        </button>
       </div>
-    </div>
+
+      <div className="flex flex-col gap-2 flex-1 min-w-0">
+        <h2 className="text-base md:text-[1.0625rem] font-semibold leading-snug line-clamp-2 min-h-[2.75em]">
+          <Link href={href} className="hover:text-saffron-ink transition-colors">
+            {title}
+          </Link>
+        </h2>
+        <p className="flex flex-wrap items-baseline gap-x-2">
+          <span className="text-lg md:text-xl font-bold">
+            {formatAmount(product.price)} <span className="text-sm font-semibold">{currency("currency")}</span>
+          </span>
+          {reviewCount > 0 && (
+            <span className="text-sm text-garden-muted">
+              <span aria-hidden="true">★</span> {average.toFixed(1)} ({reviewCount})
+            </span>
+          )}
+        </p>
+        <Button
+          variant={inCart ? "ghost" : "primary"}
+          full
+          className="mt-auto !px-3 whitespace-nowrap"
+          disabled={inCart}
+          onClick={addToCart}
+        >
+          {inCart ? <LuCheck aria-hidden="true" /> : <LuShoppingCart aria-hidden="true" />}
+          <span className="first-letter:uppercase">
+            {inCart ? t("content.item.addedToCart") : t("content.item.addToCart")}
+          </span>
+        </Button>
+      </div>
+    </article>
   );
 };
 

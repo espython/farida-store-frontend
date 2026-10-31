@@ -472,31 +472,33 @@
     }
   },
   "wishList": {
-    "title": "wish list",
+    "title": "Wishlist",
     "noSignIn": {
-      "descritpion": "sign in first to see your wish list",
-      "action": "sign in"
+      "descritpion": "Sign in to see your wishlist",
+      "action": "Sign in"
     },
     "content": {
       "items": "wish list items",
       "emptyWishlist": {
-        "empty": "your wish list is empty",
-        "action": "explore"
+        "empty": "Your wishlist is empty",
+        "text": "Tap the heart on any product to save it here.",
+        "action": "Browse products"
       },
       "item": {
-        "addToCart": "add to cart",
-        "addedToCart": "added to cart",
-        "delete": "delete"
+        "addToCart": "Add to cart",
+        "addedToCart": "In your cart",
+        "delete": "Remove",
+        "remove": "Remove {title} from wishlist"
       },
       "filters": {
-        "action": "add new item",
-        "filters": "Filters",
-        "filterBy": "Filter by ->",
         "rating": "Rating",
-        "pricesUp": "Prices Up",
-        "pricesDown": "Prices Down",
-        "AZ": "A-Z"
-      }
+        "pricesUp": "Price: low to high",
+        "pricesDown": "Price: high to low",
+        "AZ": "Name: A–Z",
+        "sortBy": "Sort by",
+        "choose": "Choose"
+      },
+      "count": "{count, plural, one {# saved item} other {# saved items}}"
     }
   },
   "userAdderesses": {
