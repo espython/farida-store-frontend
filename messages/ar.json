@@ -568,16 +568,18 @@
     "title": "طلباتك",
     "empty": "ليس لديك طلبات",
     "details": {
-      "orderNumber": "رقم الطلب :",
-      "numberOfItems": "عدد العناصر :",
-      "orderedOn": "تم الطلب يوم :",
-      "arrivedOn": "الوصول يوم :",
-      "totalPrice": "الإجمالي :",
+      "orderNumber": "رقم الطلب",
+      "numberOfItems": "عدد المنتجات",
+      "orderedOn": "تم الطلب يوم",
+      "arrivedOn": "موعد الوصول",
+      "totalPrice": "الإجمالي",
       "items": "العناصر",
       "actions": {
         "seeDetails": "شاهد التفاصيل",
         "trackOrder": "تتبع الطلب"
-      }
+      },
+      "order": "طلب رقم {number}",
+      "soon": "قريبًا"
     },
     "orderPage": {
       "title": "الطلب",
@@ -615,6 +617,13 @@
         "progress": "في تقدم",
         "hold": "في الانتظار"
       }
+    },
+    "emptyText": "ستظهر طلباتك هنا عند إتمام أول طلب.",
+    "startShopping": "ابدأ التسوق",
+    "statuses": {
+      "placed": "تم الطلب",
+      "delivery": "في الطريق",
+      "arrived": "تم التسليم"
     }
   },
   "trackOrderPage": {

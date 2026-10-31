@@ -1,10 +1,15 @@
 "use client";
 import React from "react";
 import OrderCardInfo from "./OrderCardInfo";
-import { Button } from "@nextui-org/react";
-import { useRouter } from "@/navigation";
-import { useScreenSize } from "react-screen-size-helper";
+import { Link } from "@/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { buttonClass } from "@/shared/ui/Button";
+import Badge from "@/shared/ui/Badge";
+import { formatAmount } from "@/shared/lib/price";
+
+type OrderStatus = "placed" | "delivery" | "arrived";
+
+const STATUS_TONE = { placed: "muted", delivery: "warning", arrived: "success" } as const;
 
 interface orderCardProps {
   orderNumber: number;
@@ -12,6 +17,7 @@ interface orderCardProps {
   orderedOn: Date;
   arrivedOn: Date;
   orderItemsCount: number;
+  status?: OrderStatus;
 }
 
 const OrderCard = ({
@@ -20,6 +26,7 @@ const OrderCard = ({
   orderedOn,
   arrivedOn,
   orderItemsCount,
+  status,
 }: orderCardProps) => {
   const locale = useLocale();
   const t = useTranslations("userOrders");
@@ -36,65 +43,40 @@ const OrderCard = ({
         month: "short",
         year: "numeric",
       })
-    : "soon";
+    : t("details.soon");
 
   const information: { title: string; description: string }[] = [
-    { title: t("details.orderNumber"), description: `${orderNumber}` },
-    {
-      title: t("details.numberOfItems"),
-      description: `${orderItemsCount} ${t("details.items")}`,
-    },
     { title: t("details.orderedOn"), description: orderedOnDate },
     { title: t("details.arrivedOn"), description: arrivedOnDate },
+    { title: t("details.numberOfItems"), description: `${orderItemsCount}` },
     {
       title: t("details.totalPrice"),
-      description: `${totalPrice} ${currency("currency")}`,
+      description: `${formatAmount(totalPrice)} ${currency("currency")}`,
     },
   ];
 
-  const router = useRouter();
-  const { currentWidth } = useScreenSize({});
-
-  const goToDetails = () => {
-    router.push(`/order/${orderNumber}`);
-  };
-
-  const goToTrackOrder = () => {
-    router.push(`/trackorder/${orderNumber}`);
-  };
+  const heading = t("details.order", { number: orderNumber });
 
   return (
-    <div className="border-2 border-mainBlack/25 border-solid rounded-md p-10">
-      <div className="flex flex-col gap-5">
-        <div className="grid grid-cols-1 lmob:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-5">
-          {information.map((item) => (
-            <OrderCardInfo
-              key={item.title}
-              title={item.title}
-              description={item.description}
-            />
-          ))}
-        </div>
-        <div className="flex flex-col gap-3">
-          <Button
-            size={currentWidth > 768 ? "md" : "sm"}
-            className="bg-mainBlack capitalize text-mainWhite"
-            radius="none"
-            onClick={goToDetails}
-          >
-            {t("details.actions.seeDetails")}
-          </Button>
-          <Button
-            size={currentWidth > 768 ? "md" : "sm"}
-            className="text-mainBlack capitalize bg-mainWhite border-1 border-solid border-mainBlack"
-            radius="none"
-            onClick={goToTrackOrder}
-          >
-            {t("details.actions.trackOrder")}
-          </Button>
-        </div>
+    <article aria-label={heading} className="h-full bg-white rounded-3xl p-5 md:p-6 flex flex-col gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="font-display text-xl">{heading}</h2>
+        {status && STATUS_TONE[status] && <Badge tone={STATUS_TONE[status]}>{t(`statuses.${status}`)}</Badge>}
       </div>
-    </div>
+      <dl className="grid grid-cols-2 gap-4 flex-1 content-start">
+        {information.map((item) => (
+          <OrderCardInfo key={item.title} title={item.title} description={item.description} />
+        ))}
+      </dl>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-line">
+        <Link href={`/order/${orderNumber}`} className={buttonClass({ full: true })}>
+          {t("details.actions.seeDetails")}
+        </Link>
+        <Link href={`/trackorder/${orderNumber}`} className={buttonClass({ variant: "outline", full: true })}>
+          {t("details.actions.trackOrder")}
+        </Link>
+      </div>
+    </article>
   );
 };
 

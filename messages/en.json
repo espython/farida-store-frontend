@@ -565,19 +565,21 @@
     "label": "Loading"
   },
   "userOrders": {
-    "title": "your orders",
-    "empty": "you have no orders",
+    "title": "Your orders",
+    "empty": "You have no orders yet",
     "details": {
-      "orderNumber": "order number :",
-      "numberOfItems": "number of items :",
-      "orderedOn": "ordered on :",
-      "arrivedOn": "arrived on :",
-      "totalPrice": "total price :",
+      "orderNumber": "Order number",
+      "numberOfItems": "Items",
+      "orderedOn": "Ordered on",
+      "arrivedOn": "Arrives on",
+      "totalPrice": "Total",
       "items": "items",
       "actions": {
-        "seeDetails": "see details",
-        "trackOrder": "track order"
-      }
+        "seeDetails": "View details",
+        "trackOrder": "Track order"
+      },
+      "order": "Order #{number}",
+      "soon": "Soon"
     },
     "orderPage": {
       "title": "order",
@@ -615,6 +617,13 @@
         "progress": "in progress",
         "hold": "on hold"
       }
+    },
+    "emptyText": "When you place an order, it will show up here.",
+    "startShopping": "Start shopping",
+    "statuses": {
+      "placed": "Placed",
+      "delivery": "On the way",
+      "arrived": "Delivered"
     }
   },
   "trackOrderPage": {

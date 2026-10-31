@@ -124,7 +124,7 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [x] `UserAddressPageContainer`, `AddressesContainer`, `UserAddress`, `AddressCell`, `AddNewAddressModal`, `NewAddressForm`, `EmptyAddress` — address cards, delete now asks to confirm (was one click), form on `TextField` with real required checks (empty submits went through), autocomplete hints, EmptyState
 
 ### Orders `/userorders`
-- [ ] `UserOrdersPageContainer`, `OrderCardsContainer`, `OrderCard`, `OrderCardInfo`, `EmptyOrders`, `loading.tsx`
+- [x] `UserOrdersPageContainer`, `OrderCardsContainer`, `OrderCard`, `OrderCardInfo`, `EmptyOrders`, `loading.tsx` — order cards with a status badge (placed / on the way / delivered), links instead of router buttons, skeleton until the first fetch (no flash of "no orders"), EmptyState with a shop link
 
 ### Order lookup `/order`, Order detail `/order/[id]`
 - [ ] `OrderForm`
