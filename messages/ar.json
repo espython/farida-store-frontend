@@ -406,72 +406,6 @@
       }
     }
   },
-  "confirmationPage": {
-    "thanks": {
-      "thank": "شكرًا لك!",
-      "message": "تم استلام طلبك بنجاح. سنخبرك عند شحنه.",
-      "track": "تتبع طلبك",
-      "continue": "متابعة التسوق"
-    },
-    "orderInfo": {
-      "date": {
-        "soon": "قريبا"
-      },
-      "information": {
-        "title": "معلومات الطلب",
-        "orderFor": "مالك الطلب",
-        "orderNumber": "رقم الطلب",
-        "orderOn": "تم الطلب يوم",
-        "arrivedOn": "الوصول يوم",
-        "totalPrice": "الإجمالي",
-        "payment": "طريقة الدفع",
-        "cash": "كاش",
-        "notes": "ملاحظات"
-      }
-    },
-    "orderAddress": {
-      "title": "عنوان الطلب",
-      "phone1": "الهاتف",
-      "phone2": "هاتف آخر",
-      "state": "الدولة",
-      "country": "البلد",
-      "city": "المدينة",
-      "street": "الشارع",
-      "postal": "الرمز البريدي"
-    },
-    "orderItems": {
-      "title": "عناصر الطلب",
-      "noOrder": "هذا الطلب غير موجود",
-      "noOrderText": "لم نعثر على هذا الطلب في حسابك.",
-      "myOrders": "عرض طلباتي"
-    },
-    "payment": {
-      "title": "تفاصيل الدفع",
-      "subtitle": "معلومات الدفع والمعاملة",
-      "method": "طريقة الدفع",
-      "status": "حالة الدفع",
-      "amountPaid": "المبلغ المدفوع",
-      "orderTotal": "إجمالي الطلب",
-      "online": "دفع إلكتروني",
-      "cod": "الدفع عند الاستلام",
-      "statuses": {
-        "completed": "مكتمل",
-        "pending": "في الانتظار",
-        "failed": "فشل",
-        "unknown": "غير معروف"
-      },
-      "transactionId": "رقم المعاملة",
-      "paymobOrderId": "رقم طلب Paymob",
-      "codNote": "سيتم تحصيل المبلغ عند استلام الطلب. يرجى تحضير المبلغ المطلوب.",
-      "secure": "جميع المعاملات آمنة ومحمية"
-    },
-    "addressSelection": {
-      "title": "اختر عنوان التوصيل",
-      "address": "العنوان {index}",
-      "select": "التوصيل هنا",
-      "selected": "تم الاختيار"
-    }
-  },
   "wishList": {
     "title": "قائمة الرغبات",
     "noSignIn": {
@@ -566,89 +500,6 @@
   },
   "loading": {
     "label": "جاري التحميل"
-  },
-  "userOrders": {
-    "title": "طلباتك",
-    "empty": "ليس لديك طلبات",
-    "details": {
-      "orderNumber": "رقم الطلب",
-      "numberOfItems": "عدد المنتجات",
-      "orderedOn": "تم الطلب يوم",
-      "arrivedOn": "موعد الوصول",
-      "totalPrice": "الإجمالي",
-      "items": "العناصر",
-      "actions": {
-        "seeDetails": "شاهد التفاصيل",
-        "trackOrder": "تتبع الطلب"
-      },
-      "order": "طلب رقم {number}",
-      "soon": "قريبًا"
-    },
-    "orderPage": {
-      "title": "الطلب",
-      "orderItems": "عناصر الطلب"
-    },
-    "trackOrderPage": {
-      "title": "تتبع الطلب",
-      "empty": {
-        "description": "لم نعثر على هذا الطلب",
-        "text": "تأكد من رقم الطلب، أو ابحث عنه في طلباتك.",
-        "action": "عرض طلباتي"
-      },
-      "recieved": {
-        "placed": "تم الطلب",
-        "confirm": "استلمنا طلبك.",
-        "address": "سيتم توصيله إلى"
-      },
-      "shipped": {
-        "way": "في الطريق",
-        "shipped": "تم شحن طلبك بنجاح",
-        "deliveredDate": "الموعد المتوقع",
-        "progress": "تقدم التوصيل",
-        "soon": "قريبًا",
-        "done": "تم",
-        "deliveredSuccess": "تم التسليم بنجاح",
-        "fewHours": "بضع ساعات متبقية",
-        "days": "أيام",
-        "daysLeft": "{count, plural, zero {أقل من يوم} one {يوم واحد متبقٍ} two {يومان متبقيان} few {# أيام متبقية} many {# يومًا متبقيًا} other {# يوم متبقٍ}}"
-      },
-      "paid": {
-        "arrived": "تم التسليم",
-        "receive": "ستدفع نقدًا عند وصول الطلب."
-      },
-      "status": {
-        "done": "تم",
-        "current": "جارٍ",
-        "upcoming": "التالي"
-      },
-      "orderNumber": "طلب رقم {number}",
-      "details": "تفاصيل الطلب"
-    },
-    "emptyText": "ستظهر طلباتك هنا عند إتمام أول طلب.",
-    "startShopping": "ابدأ التسوق",
-    "statuses": {
-      "placed": "تم الطلب",
-      "delivery": "في الطريق",
-      "arrived": "تم التسليم"
-    }
-  },
-  "trackOrderPage": {
-    "title": "تتبع الطلب",
-    "description": "أدخل رقم الطلب والبريد الإلكتروني الذي طلبت به. ستجد الرقم في رسالة تأكيد الطلب.",
-    "form": {
-      "labels": {
-        "orderNumber": "رقم الطلب",
-        "receiptEmail": "البريد الإلكتروني"
-      },
-      "placeholders": {
-        "orderNumber": "ستجده في رسالة تأكيد الطلب الخاصة بك",
-        "receiptEmail": "البريد الإلكتروني الذي استخدمته لإكمال الطلب"
-      },
-      "action": "تتبع الطلب",
-      "invalidInfo": "لم نعثر على طلب بهذا الرقم والبريد الإلكتروني.",
-      "required": "هذا الحقل مطلوب",
-      "heading": "ابحث عن طلبك"
-    }
   },
   "contactPage": {
     "title": "تواصل معنا",
@@ -875,15 +726,114 @@
       "text": "استلمنا طلبك رقم {number}. سنخبرك عند شحنه.",
       "track": "تتبع طلبك",
       "continue": "متابعة التسوق",
-      "details": "تفاصيل الطلب",
-      "number": "رقم الطلب",
-      "date": "تاريخ الطلب",
-      "payment": "الدفع",
-      "deliverTo": "التوصيل إلى",
-      "address": "العنوان",
-      "codNote": "يرجى تجهيز المبلغ المطلوب لمندوب التوصيل.",
       "notFound": "لم نعثر على هذا الطلب",
       "myOrders": "عرض طلباتي"
+    }
+  },
+  "orders": {
+    "title": "طلباتك",
+    "order": "الطلب رقم {number}",
+    "status": {
+      "awaiting_payment": "بانتظار الدفع",
+      "placed": "تم الطلب",
+      "out_for_delivery": "خرج للتوصيل",
+      "delivered": "تم التوصيل",
+      "cancelled": "ملغي",
+      "refunded": "مسترد",
+      "failed": "فشل الدفع"
+    },
+    "payment": {
+      "cod": "الدفع عند الاستلام",
+      "card": "بطاقة",
+      "other": "أخرى"
+    },
+    "list": {
+      "orderedOn": "تاريخ الطلب",
+      "items": "المنتجات",
+      "total": "الإجمالي",
+      "itemCount": "{count, plural, one {منتج واحد} two {منتجان} few {# منتجات} many {# منتجًا} other {# منتج}}",
+      "details": "عرض التفاصيل",
+      "track": "تتبع الطلب",
+      "pagination": "صفحات الطلبات"
+    },
+    "empty": {
+      "title": "ليس لديك طلبات بعد",
+      "text": "عندما تطلب، سيظهر طلبك هنا.",
+      "action": "ابدأ التسوق"
+    },
+    "states": {
+      "unavailable": "تعذّر تحميل طلباتك. حاول مرة أخرى.",
+      "retry": "إعادة المحاولة",
+      "notFound": "لم نجد هذا الطلب",
+      "notFoundText": "تأكد من رقم الطلب، أو ابحث عنه في طلباتك.",
+      "myOrders": "عرض طلباتي",
+      "signIn": "سجّل الدخول لرؤية طلباتك",
+      "signInAction": "تسجيل الدخول"
+    },
+    "details": {
+      "title": "تفاصيل الطلب",
+      "number": "رقم الطلب",
+      "date": "تاريخ الطلب",
+      "status": "الحالة",
+      "payment": "الدفع",
+      "deliverTo": "التوصيل إلى",
+      "phone": "رقم الموبايل",
+      "address": "العنوان",
+      "note": "ملاحظة على الطلب",
+      "codNote": "يرجى تجهيز المبلغ المطلوب لمندوب التوصيل.",
+      "deliveredOn": "تاريخ التوصيل",
+      "track": "تتبع الطلب",
+      "back": "كل الطلبات",
+      "separator": "، "
+    },
+    "summary": {
+      "title": "ملخص الطلب",
+      "items": "المنتجات",
+      "shipping": "الشحن",
+      "free": "مجاني",
+      "discount": "الخصم",
+      "total": "الإجمالي"
+    },
+    "tracking": {
+      "title": "تتبع الطلب",
+      "details": "تفاصيل الطلب",
+      "stepState": {
+        "done": "تم",
+        "current": "الآن",
+        "upcoming": "التالي"
+      },
+      "placed": {
+        "title": "تم الطلب",
+        "text": "استلمنا طلبك في {date}.",
+        "address": "سيتم التوصيل إلى"
+      },
+      "out_for_delivery": {
+        "title": "خرج للتوصيل",
+        "current": "المندوب في الطريق إليك.",
+        "upcoming": "سنخبرك عندما يخرج طلبك من المتجر."
+      },
+      "delivered": {
+        "title": "تم التوصيل",
+        "done": "تم التوصيل في {date}.",
+        "doneNoDate": "تم توصيل طلبك.",
+        "cod": "ستدفع نقدًا عند استلام الطلب."
+      },
+      "stopped": {
+        "awaiting_payment": "هذا الطلب بانتظار الدفع.",
+        "cancelled": "تم إلغاء هذا الطلب.",
+        "refunded": "تم استرداد قيمة هذا الطلب.",
+        "failed": "فشل الدفع لهذا الطلب."
+      },
+      "help": "لديك سؤال عن طلبك؟ تواصل معنا."
+    },
+    "lookup": {
+      "heading": "ابحث عن طلبك",
+      "text": "أدخل رقم الطلب الموجود في رسالة التأكيد، مثل 298.",
+      "label": "رقم الطلب",
+      "placeholder": "مثال: 298",
+      "invalid": "أدخل رقم الطلب بالأرقام فقط.",
+      "action": "تتبع الطلب",
+      "all": "أو اعرض كل طلباتك"
     }
   }
 }

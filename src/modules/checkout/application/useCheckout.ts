@@ -64,10 +64,3 @@ export const useCheckout = () => {
     placeOrder,
   };
 };
-
-/** One of the signed-in customer's orders (confirmation page). */
-export const usePlacedOrder = (id: string | null) => {
-  const { status } = useSession();
-  const q = checkoutApi.useGetOrderQuery(id ?? "", { skip: !id || status !== "signedIn" });
-  return { order: q.data ?? null, loading: status === "loading" || q.isLoading, notFound: q.isError };
-};

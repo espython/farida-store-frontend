@@ -2,9 +2,9 @@ import { AppError } from "@/shared/kernel/AppError";
 import { wooFetch } from "@/shared/infrastructure/wooClient.server";
 import { cartFromStoreApi, type CartCaller, type StoreCart } from "@/modules/cart/index.server";
 import type { Address } from "../domain/Address";
-import type { Checkout, PaymentMethod, PlacedOrder } from "../domain/Checkout";
-import { packageOfRate, toCheckout, toPlacedOrder, toStoreAddress } from "./checkoutMapper";
-import type { StoreCheckoutCart, StoreCheckoutResult, WooOrder } from "./storeCheckoutDto";
+import type { Checkout, PaymentMethod } from "../domain/Checkout";
+import { packageOfRate, toCheckout, toStoreAddress } from "./checkoutMapper";
+import type { StoreCheckoutCart, StoreCheckoutResult } from "./storeCheckoutDto";
 
 export interface CheckoutResult {
   checkout: Checkout;
@@ -104,11 +104,4 @@ export async function placeOrder(
     customer_note: input.note,
   });
   return { orderId: String(data.order_id), status: data.status, cartToken };
-}
-
-/** An order of this customer (server keys + ownership check); someone else's is "not found". */
-export async function getOrder(orderId: string, customerId: string): Promise<PlacedOrder> {
-  const { data } = await wooFetch<WooOrder>({ path: `/wc/v3/orders/${orderId}`, auth: "keys" });
-  if (String(data.customer_id) !== customerId) throw new AppError("not_found", "Not found", 404);
-  return toPlacedOrder(data);
 }

@@ -5,7 +5,6 @@ import { resetCheckoutGuard } from "@/modules/checkout/infrastructure/checkoutGu
 import * as orderRoute from "./order/route";
 import * as addressRoute from "./address/route";
 import * as couponRoute from "./coupon/route";
-import * as ordersRoute from "../orders/[id]/route";
 
 const b64 = (o: unknown) => Buffer.from(JSON.stringify(o)).toString("base64url");
 const jwt = (id: number) => `${b64({ alg: "HS256" })}.${b64({ iss: "wp", iat: 1, exp: Math.floor(Date.now() / 1000) + 3600, data: { user: { id } } })}.sig`;
@@ -77,36 +76,18 @@ describe("checkout routes", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("serves only the customer's own order", async () => {
-    const order = { id: 300, status: "processing", customer_id: 10, date_created: "2026-10-31", payment_method: "cod", customer_note: "", total: "1.00", shipping_total: "0", discount_total: "0", currency: "EGP", shipping: addr, billing: addr, line_items: [] };
-    fetchMock.mockImplementation(async (url: string) => (isMe(url) ? me() : respond(order)));
-    const get = (id: string) => ordersRoute.GET(new NextRequest(new URL(`/api/shop/orders/${id}`, "http://localhost"), { headers: { cookie } }), { params: { id } });
-    expect((await get("300")).status).toBe(404);
-    expect((await get("abc")).status).toBe(404);
-  });
-
   // The cookie's claims are only decoded: a hand-made token naming customer 10
-  // must not read customer 10's order with the server keys, nor place orders.
-  it("refuses a forged session before any read with the server keys", async () => {
+  // must not place orders as customer 10 (the replay cache is keyed by the id).
+  it("refuses a forged session before placing an order", async () => {
     const forged = `credentials=${jwt(10)}`;
-    const order = { id: 300, status: "processing", customer_id: 10, date_created: "2026-10-31", payment_method: "cod", customer_note: "", total: "1.00", shipping_total: "0", discount_total: "0", currency: "EGP", shipping: addr, billing: addr, line_items: [] };
     fetchMock.mockImplementation(async (url: string) =>
-      isMe(url) ? respond({ code: "jwt_auth_invalid_token", message: "Signature verification failed" }, 403) : respond(order)
+      isMe(url) ? respond({ code: "jwt_auth_invalid_token", message: "Signature verification failed" }, 403) : respond(storeCart)
     );
-    const read = await ordersRoute.GET(new NextRequest(new URL("/api/shop/orders/300", "http://localhost"), { headers: { cookie: forged } }), { params: { id: "300" } });
-    expect(read.status).toBe(401);
     const place = await orderRoute.POST(
       new NextRequest(new URL("/api/shop/checkout/order", "http://localhost"), { method: "POST", headers: { cookie: forged, "Idempotency-Key": "10_abcdef12" }, body: JSON.stringify({ paymentMethod: "cod" }) }),
       {}
     );
     expect(place.status).toBe(401);
-    expect(fetchMock.mock.calls.every(([u]) => isMe(u))).toBe(true);
-  });
-
-  it("refuses a valid token whose claims name someone else", async () => {
-    fetchMock.mockImplementation(async (url: string) => (isMe(url) ? me(9) : respond({})));
-    const res = await ordersRoute.GET(new NextRequest(new URL("/api/shop/orders/300", "http://localhost"), { headers: { cookie: `credentials=${jwt(10)}` } }), { params: { id: "300" } });
-    expect(res.status).toBe(401);
     expect(fetchMock.mock.calls.every(([u]) => isMe(u))).toBe(true);
   });
 });

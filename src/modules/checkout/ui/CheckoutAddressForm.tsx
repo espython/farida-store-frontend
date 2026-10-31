@@ -6,7 +6,7 @@ import { Spinner } from "@nextui-org/react";
 import TextField from "@/shared/ui/TextField";
 import Button from "@/shared/ui/Button";
 import { validateAddress, type Address } from "../domain/Address";
-import { GOVERNORATES } from "../domain/governorates";
+import { GOVERNORATES } from "@/shared/kernel/Governorate";
 import type { CheckoutFailure } from "../application/checkoutFailure";
 
 interface Props {

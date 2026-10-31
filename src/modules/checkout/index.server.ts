@@ -2,7 +2,6 @@
 export {
   applyCoupon,
   getCheckout,
-  getOrder,
   placeOrder,
   removeCoupon,
   selectShippingRate,

@@ -9,7 +9,7 @@ import Button, { buttonClass } from "@/shared/ui/Button";
 import TextField from "@/shared/ui/TextField";
 import { isAddressComplete } from "../domain/Address";
 import { canPlaceOrder, selectedRate, type PaymentMethod } from "../domain/Checkout";
-import { governorateName } from "../domain/governorates";
+import { governorateName } from "@/shared/kernel/Governorate";
 import { useCheckout } from "../application/useCheckout";
 import CheckoutSummary, { summaryLines } from "./CheckoutSummary";
 import ChoiceCards from "./ChoiceCards";

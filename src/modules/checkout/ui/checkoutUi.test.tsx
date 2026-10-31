@@ -16,7 +16,7 @@ vi.mock("@/navigation", () => ({
   ),
 }));
 const hook = vi.hoisted(() => ({ value: {} as Record<string, unknown> }));
-vi.mock("../application/useCheckout", () => ({ useCheckout: () => hook.value, usePlacedOrder: () => ({}) }));
+vi.mock("../application/useCheckout", () => ({ useCheckout: () => hook.value }));
 
 import CheckoutAddressForm from "./CheckoutAddressForm";
 import PaymentStep from "./PaymentStep";

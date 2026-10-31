@@ -2,8 +2,8 @@ import { AppError } from "@/shared/kernel/AppError";
 import { Money } from "@/shared/kernel/Money";
 import type { CartLine } from "@/modules/cart";
 import { emptyAddress, type Address } from "../domain/Address";
-import type { Checkout, PaymentMethod, PlacedOrder } from "../domain/Checkout";
-import type { StoreAddress, StoreCheckoutCart, WooOrder } from "./storeCheckoutDto";
+import type { Checkout, PaymentMethod } from "../domain/Checkout";
+import type { StoreAddress, StoreCheckoutCart } from "./storeCheckoutDto";
 
 const minor = (value: string | null | undefined, unit: number): Money => {
   if (unit !== 2) throw new AppError("invalid_money", "Unsupported currency precision", 502);
@@ -70,25 +70,3 @@ export const toCheckout = (dto: StoreCheckoutCart, lines: CartLine[]): Checkout 
 /** The shipping package the selected rate belongs to (Woo needs it to switch rates). */
 export const packageOfRate = (dto: StoreCheckoutCart, rateId: string): string | number | null =>
   (dto.shipping_rates ?? []).find((p) => p.shipping_rates.some((r) => r.rate_id === rateId))?.package_id ?? null;
-
-/** REST order → PlacedOrder (decimal strings, unlike the Store API). */
-export const toPlacedOrder = (o: WooOrder): PlacedOrder => {
-  if (o.currency !== "EGP") throw new AppError("invalid_money", "Unsupported currency", 502);
-  const dec = (v: string) => Money.fromDecimal(v || "0");
-  const shipping = toAddress(o.shipping);
-  return {
-    id: String(o.id),
-    status: o.status,
-    paymentMethod: o.payment_method,
-    createdAt: o.date_created,
-    lines: o.line_items.map((l) => ({ title: l.name, quantity: l.quantity, total: dec(l.subtotal ?? l.total), image: l.image?.src || null, slug: null })),
-    address: { ...shipping, phone: shipping.phone || o.billing?.phone || "" },
-    note: o.customer_note ?? "",
-    totals: {
-      items: Money.subtract(Money.add(dec(o.total), dec(o.discount_total)), dec(o.shipping_total)),
-      shipping: dec(o.shipping_total),
-      discount: dec(o.discount_total),
-      total: dec(o.total),
-    },
-  };
-};

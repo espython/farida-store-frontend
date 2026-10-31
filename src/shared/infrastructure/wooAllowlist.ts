@@ -22,9 +22,11 @@ export const WOO_ALLOWLIST: readonly AllowedWooRoute[] = [
   { method: "GET", pattern: /^\/wc\/store\/v1\/cart$/ },
   { method: "POST", pattern: /^\/wc\/store\/v1\/cart\/(add-item|update-item|remove-item)$/ },
   { method: "DELETE", pattern: /^\/wc\/store\/v1\/cart\/items$/ },
-  // Checkout (C3): address, shipping rate, coupons, place order; read an owned order.
+  // Checkout (C3): address, shipping rate, coupons, place order.
   { method: "POST", pattern: /^\/wc\/store\/v1\/cart\/(update-customer|select-shipping-rate|apply-coupon|remove-coupon)$/ },
   { method: "POST", pattern: /^\/wc\/store\/v1\/checkout$/ },
+  // Orders (O1): the customer's list (always filtered by customer) and one order.
+  { method: "GET", pattern: /^\/wc\/v3\/orders$/ },
   { method: "GET", pattern: /^\/wc\/v3\/orders\/\d+$/ },
 ];
 

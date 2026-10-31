@@ -35,7 +35,8 @@ describe("wooFetch", () => {
   it("rejects routes that are not allowlisted before any request", async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
-    await expect(wooFetch({ path: "/wc/v3/orders" })).rejects.toBeInstanceOf(AppError);
+    await expect(wooFetch({ method: "POST", path: "/wc/v3/orders" })).rejects.toBeInstanceOf(AppError);
+    await expect(wooFetch({ path: "/wc/v3/customers" })).rejects.toBeInstanceOf(AppError);
     await expect(
       wooFetch({ method: "POST", path: "/wc/store/v1/products" })
     ).rejects.toBeInstanceOf(AppError);

@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { LuCheck } from "react-icons/lu";
-
-export type StepState = "done" | "current" | "upcoming";
+import type { StepState } from "../domain/Order";
 
 /** One step of the vertical order timeline: marker, connecting line, title, body. */
 const TrackStep = ({

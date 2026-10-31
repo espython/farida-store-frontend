@@ -1,4 +1,4 @@
-import { isGovernorate } from "./governorates";
+import { isGovernorate } from "@/shared/kernel/Governorate";
 
 /** Delivery address. Egypt only (the shop ships nowhere else). */
 export interface Address {
