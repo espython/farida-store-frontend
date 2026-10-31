@@ -108,7 +108,7 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [~] `AddressesSelections`, `UserAddressSelection`, `AddressSelectionModal` — Swiper replaced by a scrollable list of address cards, selected one marked, labels translated (were hard-coded English); NOT browser-checked (needs login)
 
 ### Payment callback `/payment-callback`
-- [ ] Success / failure / pending states
+- [~] Success / failure / pending states — one white status card (icon, display heading, actions, transaction details), 20 inline en/ar strings moved to `paymentCallback`; "View my orders" went to `/profile/orders`, which does not exist — now `/userorders`. Failed and pending checked in the browser (en/ar, desktop and phone); success needs a logged-in cart, NOT checked
 
 ### Login `/login`, Register `/register`
 - [ ] `LoginForm`, `RegisterForm` (fields, errors, Google button, links)

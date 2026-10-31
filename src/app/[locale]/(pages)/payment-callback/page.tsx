@@ -2,23 +2,34 @@
 import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "@/contexts/StoreContext";
 import { observer } from "mobx-react-lite";
-import { useRouter } from "@/navigation";
+import { Link, useRouter } from "@/navigation";
 import { useSearchParams } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
-import { Button, Card, CardBody, Spinner } from "@nextui-org/react";
-import { FaCheckCircle, FaTimesCircle, FaClock } from "react-icons/fa";
+import { useTranslations } from "next-intl";
+import { Spinner } from "@nextui-org/react";
+import { LuCheck, LuClock, LuX } from "react-icons/lu";
 import { toast } from "react-toastify";
 import { clearCheckoutIdempotencyKey } from "@/functions/checkoutIdempotency";
+import PageContainer from "@/shared/ui/PageContainer";
+import { buttonClass } from "@/shared/ui/Button";
+import { formatAmount } from "@/shared/lib/price";
+
+type Status = "success" | "failed" | "pending";
+
+const STATUS_ICON: Record<Status, { icon: React.ReactNode; className: string }> = {
+  success: { icon: <LuCheck />, className: "bg-garden text-cream" },
+  pending: { icon: <LuClock />, className: "bg-[#fbe9c4] text-saffron-ink" },
+  failed: { icon: <LuX />, className: "bg-[#fde8e6] text-[#b42318]" },
+};
 
 const PaymentCallbackPage = () => {
   const { payment, cart, user } = useContext(StoreContext);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const locale = useLocale();
   const t = useTranslations("paymentCallback");
+  const currency = useTranslations("currency");
 
   const [isProcessing, setIsProcessing] = useState(true);
-  const [paymentStatus, setPaymentStatus] = useState<"success" | "failed" | "pending" | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<Status | null>(null);
   const [orderCreated, setOrderCreated] = useState(false);
 
   useEffect(() => {
@@ -26,7 +37,7 @@ const PaymentCallbackPage = () => {
       try {
         // Get payment result from URL parameters
         const result = payment.handlePaymentCallback(searchParams);
-        
+
         if (result.success) {
           setPaymentStatus("success");
 
@@ -45,201 +56,111 @@ const PaymentCallbackPage = () => {
 
           setOrderCreated(true);
 
-          toast.success(locale === "ar" ? "تم الدفع بنجاح" : "Payment successful");
+          toast.success(t("toastSuccess"));
 
           // Redirect to confirmation page after 3 seconds
           setTimeout(() => {
             if (orderId) {
               router.push(`/cart/confirmation?order_number=${orderId}`);
             } else {
-              router.push("/profile/orders");
+              router.push("/userorders");
             }
           }, 3000);
         } else if (result.message?.includes("pending")) {
           setPaymentStatus("pending");
         } else {
           setPaymentStatus("failed");
-          toast.error(locale === "ar" ? "فشل الدفع" : "Payment failed");
+          toast.error(t("toastFailed"));
         }
       } catch (error) {
         console.error("Payment callback processing error:", error);
         setPaymentStatus("failed");
-        toast.error(locale === "ar" ? "حدث خطأ في معالجة الدفع" : "Error processing payment");
+        toast.error(t("toastError"));
       } finally {
         setIsProcessing(false);
       }
     };
 
     processPaymentCallback();
-  }, [searchParams, payment, cart, user, locale, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, payment, cart, user, router]);
 
-  const handleRetryPayment = () => {
-    router.push("/cart/payment");
-  };
-
-  const handleGoHome = () => {
-    router.push("/");
-  };
-
-  const handleGoToOrders = () => {
-    router.push("/profile/orders");
-  };
-
-  if (isProcessing) {
+  if (isProcessing || !paymentStatus) {
     return (
-      <div className={`min-h-screen bg-gray-50 flex items-center justify-center ${locale === "ar" ? "rtl" : "ltr"}`}>
-        <Card className="w-full max-w-md">
-          <CardBody className="text-center py-12">
-            <Spinner size="lg" className="mb-6" />
-            <h2 className="text-xl font-semibold mb-2">
-              {locale === "ar" ? "جاري معالجة الدفع..." : "Processing Payment..."}
-            </h2>
-            <p className="text-gray-600">
-              {locale === "ar" 
-                ? "يرجى الانتظار بينما نتحقق من حالة الدفع"
-                : "Please wait while we verify your payment status"
-              }
-            </p>
-          </CardBody>
-        </Card>
-      </div>
+      <PageContainer className="py-12 md:py-16">
+        <div role="status" className="max-w-md mx-auto flex flex-col items-center text-center gap-3 px-6 py-12 bg-white rounded-3xl">
+          <Spinner size="lg" />
+          <h1 className="font-display text-xl md:text-2xl">{t("processing")}</h1>
+          <p className="text-garden-muted">{t("processingText")}</p>
+        </div>
+      </PageContainer>
     );
   }
 
+  const text =
+    paymentStatus === "success"
+      ? orderCreated
+        ? t("successText")
+        : t("successCreating")
+      : paymentStatus === "pending"
+      ? t("pendingText")
+      : t("failedText");
+
+  const showActions = paymentStatus !== "success" || orderCreated;
+
   return (
-    <div className={`min-h-screen bg-gray-50 flex items-center justify-center p-4 ${locale === "ar" ? "rtl" : "ltr"}`}>
-      <Card className="w-full max-w-md">
-        <CardBody className="text-center py-12">
-          {paymentStatus === "success" && (
-            <>
-              <FaCheckCircle className="text-6xl text-green-500 mx-auto mb-6" />
-              <h2 className="text-2xl font-bold text-green-700 mb-4">
-                {locale === "ar" ? "تم الدفع بنجاح!" : "Payment Successful!"}
-              </h2>
-              <p className="text-gray-600 mb-6">
-                {orderCreated 
-                  ? (locale === "ar" 
-                      ? "تم إنشاء طلبك بنجاح. سيتم توجيهك إلى صفحة التأكيد قريباً."
-                      : "Your order has been created successfully. You will be redirected to the confirmation page shortly."
-                    )
-                  : (locale === "ar"
-                      ? "تم الدفع بنجاح. جاري إنشاء طلبك..."
-                      : "Payment successful. Creating your order..."
-                    )
-                }
-              </p>
-              {orderCreated && (
-                <div className="space-y-3">
-                  <Button
-                    color="primary"
-                    className="w-full"
-                    onClick={handleGoToOrders}
-                  >
-                    {locale === "ar" ? "عرض طلباتي" : "View My Orders"}
-                  </Button>
-                  <Button
-                    variant="bordered"
-                    className="w-full"
-                    onClick={handleGoHome}
-                  >
-                    {locale === "ar" ? "العودة للرئيسية" : "Go to Home"}
-                  </Button>
-                </div>
-              )}
-            </>
-          )}
+    <PageContainer className="py-12 md:py-16">
+      <section
+        role={paymentStatus === "failed" ? "alert" : "status"}
+        className="max-w-md mx-auto flex flex-col items-center text-center gap-3 px-6 py-10 md:py-12 bg-white rounded-3xl"
+      >
+        <span
+          aria-hidden="true"
+          className={`w-16 h-16 grid place-items-center rounded-full text-3xl ${STATUS_ICON[paymentStatus].className}`}
+        >
+          {STATUS_ICON[paymentStatus].icon}
+        </span>
+        <h1 className="font-display text-2xl md:text-[2rem] leading-tight">{t(paymentStatus)}</h1>
+        <p className="text-garden-muted">{text}</p>
 
-          {paymentStatus === "pending" && (
-            <>
-              <FaClock className="text-6xl text-yellow-500 mx-auto mb-6" />
-              <h2 className="text-2xl font-bold text-yellow-700 mb-4">
-                {locale === "ar" ? "الدفع قيد المراجعة" : "Payment Pending"}
-              </h2>
-              <p className="text-gray-600 mb-6">
-                {locale === "ar" 
-                  ? "دفعتك قيد المراجعة. سنقوم بإشعارك عند تأكيد الدفع."
-                  : "Your payment is being reviewed. We'll notify you once it's confirmed."
-                }
-              </p>
-              <div className="space-y-3">
-                <Button
-                  color="primary"
-                  className="w-full"
-                  onClick={handleGoToOrders}
-                >
-                  {locale === "ar" ? "عرض طلباتي" : "View My Orders"}
-                </Button>
-                <Button
-                  variant="bordered"
-                  className="w-full"
-                  onClick={handleGoHome}
-                >
-                  {locale === "ar" ? "العودة للرئيسية" : "Go to Home"}
-                </Button>
-              </div>
-            </>
-          )}
+        {showActions && (
+          <div className="w-full flex flex-col gap-3 mt-3">
+            {paymentStatus === "failed" ? (
+              <Link href="/cart/payment" className={buttonClass({ full: true })}>
+                {t("tryAgain")}
+              </Link>
+            ) : (
+              <Link href="/userorders" className={buttonClass({ full: true })}>
+                {t("myOrders")}
+              </Link>
+            )}
+            <Link href="/" className={buttonClass({ variant: "outline", full: true })}>
+              {t("home")}
+            </Link>
+          </div>
+        )}
 
-          {paymentStatus === "failed" && (
-            <>
-              <FaTimesCircle className="text-6xl text-red-500 mx-auto mb-6" />
-              <h2 className="text-2xl font-bold text-red-700 mb-4">
-                {locale === "ar" ? "فشل الدفع" : "Payment Failed"}
-              </h2>
-              <p className="text-gray-600 mb-6">
-                {locale === "ar" 
-                  ? "لم نتمكن من معالجة دفعتك. يرجى المحاولة مرة أخرى."
-                  : "We couldn't process your payment. Please try again."
-                }
-              </p>
-              <div className="space-y-3">
-                <Button
-                  color="primary"
-                  className="w-full"
-                  onClick={handleRetryPayment}
-                >
-                  {locale === "ar" ? "إعادة المحاولة" : "Try Again"}
-                </Button>
-                <Button
-                  variant="bordered"
-                  className="w-full"
-                  onClick={handleGoHome}
-                >
-                  {locale === "ar" ? "العودة للرئيسية" : "Go to Home"}
-                </Button>
+        {/* Transaction details */}
+        {(payment.paymentResult?.transactionId || payment.paymentResult?.amount) && (
+          <dl aria-label={t("transactionDetails")} className="w-full mt-4 rounded-2xl bg-cream p-4 flex flex-col gap-2 text-sm text-start">
+            {payment.paymentResult.transactionId && (
+              <div className="flex justify-between gap-4">
+                <dt className="text-garden-muted">{t("transactionId")}</dt>
+                <dd className="font-mono" dir="ltr">{payment.paymentResult.transactionId}</dd>
               </div>
-            </>
-          )}
-
-          {/* Transaction Details */}
-          {payment.paymentResult && (
-            <div className="mt-8 p-4 bg-gray-50 rounded-lg text-left">
-              <h3 className="font-semibold mb-2">
-                {locale === "ar" ? "تفاصيل المعاملة" : "Transaction Details"}
-              </h3>
-              <div className="text-sm space-y-1">
-                {payment.paymentResult.transactionId && (
-                  <p>
-                    <span className="font-medium">
-                      {locale === "ar" ? "رقم المعاملة:" : "Transaction ID:"}
-                    </span>{" "}
-                    {payment.paymentResult.transactionId}
-                  </p>
-                )}
-                {payment.paymentResult.amount && (
-                  <p>
-                    <span className="font-medium">
-                      {locale === "ar" ? "المبلغ:" : "Amount:"}
-                    </span>{" "}
-                    {payment.paymentResult.amount} EGP
-                  </p>
-                )}
+            )}
+            {payment.paymentResult.amount && (
+              <div className="flex justify-between gap-4">
+                <dt className="text-garden-muted">{t("amount")}</dt>
+                <dd className="font-semibold">
+                  {formatAmount(payment.paymentResult.amount)} <span className="text-xs">{currency("currency")}</span>
+                </dd>
               </div>
-            </div>
-          )}
-        </CardBody>
-      </Card>
-    </div>
+            )}
+          </dl>
+        )}
+      </section>
+    </PageContainer>
   );
 };
 

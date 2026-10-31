@@ -693,9 +693,23 @@
     }
   },
   "paymentCallback": {
-    "processing": "Processing Payment...",
-    "success": "Payment Successful!",
-    "failed": "Payment Failed",
-    "pending": "Payment Pending"
+    "processing": "Processing payment…",
+    "success": "Payment successful!",
+    "failed": "Payment failed",
+    "pending": "Payment pending",
+    "processingText": "Please wait while we verify your payment.",
+    "successText": "Your order is confirmed. Taking you to the confirmation page…",
+    "successCreating": "Payment successful. Finishing your order…",
+    "pendingText": "Your payment is being reviewed. We'll let you know once it's confirmed.",
+    "failedText": "We couldn't process your payment. Please try again.",
+    "tryAgain": "Try again",
+    "myOrders": "View my orders",
+    "home": "Back to home",
+    "transactionDetails": "Transaction details",
+    "transactionId": "Transaction ID",
+    "amount": "Amount",
+    "toastSuccess": "Payment successful",
+    "toastFailed": "Payment failed",
+    "toastError": "Error processing payment"
   }
 }
