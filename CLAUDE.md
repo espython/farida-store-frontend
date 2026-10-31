@@ -20,6 +20,7 @@ Next.js 13 (App Router), React 18, TypeScript, Tailwind + NextUI, framer-motion,
 - `src/app/api/` – Next route handlers:
   - `strapi/[...path]` – proxy to Strapi; adds the user's JWT (from the `credentials` cookie) or falls back to `STRAPI_API_TOKEN`. Client code should call `STRAPI_ENDPOINT` (`/api/strapi`, see `src/api/config.ts`), not Strapi directly.
   - `auth/session` – sets/clears the httpOnly `credentials` JWT cookie and a readable `logged_in` cookie.
+  - `auth/login`, `auth/register`, `auth/logout`, `auth/me` – WooCommerce customer auth (A1, `modules/customer`): WordPress JWT in the same `credentials` cookie (Max-Age = token expiry), registration through `wc/v3/customers` with the server keys, `me` verifies the token with WordPress and clears bad cookies. Not wired to the forms yet (A2).
   - `contact` – contact form (uses `CONTACT_SHARED_SECRET`).
   - `revalidate` – WooCommerce product webhook target; checks the `X-WC-Webhook-Signature` HMAC (`WC_WEBHOOK_SECRET`) and clears the `catalog` fetch-cache tag.
 - `src/store/` – Redux Toolkit root composition (`makeStore`, typed hooks, `StoreProvider`). `baseApi` lives in `src/shared/infrastructure/`. New code follows `doc/woocommerce-rtk-migration-plan.md` and the architecture rules below.

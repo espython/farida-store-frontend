@@ -13,6 +13,11 @@ wp rewrite structure '/%postname%/'
 wp plugin install woocommerce --activate
 wp plugin install polylang --activate
 wp plugin install jwt-authentication-for-wp-rest-api --activate
+# The JWT plugin issues no tokens without a signing secret (A1). Random per
+# staging install, kept in wp-config only; --quiet so it is not echoed.
+if ! wp config has JWT_AUTH_SECRET_KEY 2>/dev/null; then
+  wp config set JWT_AUTH_SECRET_KEY "$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')" --type=constant --quiet
+fi
 
 # Paymob: try the wp.org plugin; the spike records whether it fits our account.
 wp plugin install paymob-for-woocommerce --activate || echo "WARN: Paymob plugin not installed from wp.org; install manually and record it."
