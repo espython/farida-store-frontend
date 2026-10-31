@@ -586,37 +586,40 @@
       "orderItems": "order items"
     },
     "trackOrderPage": {
-      "title": "track order",
+      "title": "Track order",
       "empty": {
-        "description": "no order with this number",
-        "action": "make an order"
+        "description": "We couldn't find this order",
+        "text": "Check the order number, or find it in your orders.",
+        "action": "View my orders"
       },
       "recieved": {
-        "placed": "order placed",
-        "confirm": "congratiulations your order was received successfully",
-        "address": "your order will be shipped soon to"
+        "placed": "Order placed",
+        "confirm": "We received your order.",
+        "address": "It will be delivered to"
       },
       "shipped": {
-        "way": "order on the way",
+        "way": "On the way",
         "shipped": "your order was shipped successfully",
-        "deliveredDate": "it should be delivered at",
-        "progress": "progress of the order",
+        "deliveredDate": "Expected",
+        "progress": "Delivery progress",
         "soon": "soon",
         "done": "done",
-        "deliveredSuccess": "delivered successfully",
-        "fewHours": "few hours left",
+        "deliveredSuccess": "Delivered successfully",
+        "fewHours": "A few hours left",
         "days": "days",
-        "daysLeft": "days left"
+        "daysLeft": "{count, plural, one {# day left} other {# days left}}"
       },
       "paid": {
-        "arrived": "order arrived",
-        "receive": "you will pay for your items after you receive them"
+        "arrived": "Delivered",
+        "receive": "You'll pay in cash when the order arrives."
       },
       "status": {
-        "completed": "completed",
-        "progress": "in progress",
-        "hold": "on hold"
-      }
+        "done": "Done",
+        "current": "In progress",
+        "upcoming": "Next"
+      },
+      "orderNumber": "Order #{number}",
+      "details": "Order details"
     },
     "emptyText": "When you place an order, it will show up here.",
     "startShopping": "Start shopping",
@@ -627,8 +630,8 @@
     }
   },
   "trackOrderPage": {
-    "title": "track order",
-    "description": "Please enter your order number in the box below and press the “Track Order” button to view its status. You can find the order number in the mail sent to you containing the order confirmation Receipt.",
+    "title": "Track order",
+    "description": "Enter your order number and the email you ordered with. You'll find the number in your order confirmation.",
     "form": {
       "labels": {
         "orderNumber": "Order number",
@@ -638,8 +641,10 @@
         "orderNumber": "You will find it in your order confirmation message",
         "receiptEmail": "The email you used to complete the order"
       },
-      "action": "track order",
-      "invalidInfo": "invalid information"
+      "action": "Track order",
+      "invalidInfo": "We couldn't find an order with that number and email.",
+      "required": "This field is required",
+      "heading": "Find your order"
     }
   },
   "contactPage": {

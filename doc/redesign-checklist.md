@@ -127,11 +127,11 @@ Tick an item only when it meets **all** of the definition of done. `[~]` = colou
 - [x] `UserOrdersPageContainer`, `OrderCardsContainer`, `OrderCard`, `OrderCardInfo`, `EmptyOrders`, `loading.tsx` — order cards with a status badge (placed / on the way / delivered), links instead of router buttons, skeleton until the first fetch (no flash of "no orders"), EmptyState with a shop link
 
 ### Order lookup `/order`, Order detail `/order/[id]`
-- [ ] `OrderForm`
-- [ ] `PageContainer` (order), `OrderItemsContainer`, `OrderItem` (`OrderItem`/`OrderItemsContainer` restyled with the confirmation step; page shell still old)
+- [x] `OrderForm` — lookup card on `TextField` with required checks; redirect was the relative `trackorder/…` (resolved under /order), now absolute; a failed request no longer leaves the button spinning
+- [x] `PageContainer` (order), `OrderItemsContainer`, `OrderItem` — same 7/5 layout as the confirmation step plus a track link
 
 ### Track order `/trackorder`, `/trackorder/[id]`
-- [ ] `TrackOrderContainer`, `OrderReceived`, `OrderPaid`, `OrderShipped` (status timeline), `EmptyOrderTrack`
+- [x] `TrackOrderContainer`, `OrderReceived`, `OrderPaid`, `OrderShipped` (status timeline), `EmptyOrderTrack` — one vertical timeline (`TrackStep`) replaces the three cards and their PNGs; `/trackorder` without an id was blank, now redirects to `/order`. Ownership check moved to `useOwnedOrder`: both pages compared two undefined ids before loading and rendered an empty order or a timeline for orders that don't exist
 
 ### Wishlist `/wishlist`
 - [ ] `WishlistContent`, `WishListContainer`, `WishListSections`, `WishListItem` (reuse the product card look), `WishListFliters`, `FiltersDropMenu`, `WishListIsEmpty`, `LoginWarning`, `loading.tsx`

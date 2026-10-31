@@ -3,6 +3,7 @@ import React from "react";
 import OrderForm from "./components/OrderForm";
 import { unstable_setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
+import PageContainer from "@/shared/ui/PageContainer";
 
 interface OrderPageProps {
   params: {
@@ -16,13 +17,12 @@ const OrderPage = ({ params: { locale } }: OrderPageProps) => {
   const t = useTranslations("trackOrderPage");
 
   return (
-    <div
-      className="flex flex-col gap-10 justify-center items-center "
-      dir={locale === "en" ? "ltr" : "rtl"}
-    >
+    <>
       <PageTitle title={t("title")} />
-      <OrderForm />
-    </div>
+      <PageContainer className="pt-6 pb-8">
+        <OrderForm />
+      </PageContainer>
+    </>
   );
 };
 
