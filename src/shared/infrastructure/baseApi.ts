@@ -15,6 +15,7 @@ export const tagTypes = [
   "Product",
   "Category",
   "Cart",
+  "Checkout",
   "Order",
   "Account",
   "Address",

@@ -75,9 +75,6 @@ const userAddressesInstance = new UserAddressesStore();
 
 const addressModalInstance = new AddressModalStore();
 
-// selection address modal store
-
-const selectionAddressModalInstance = new AddressModalStore();
 
 // edit profile modal store
 
@@ -112,7 +109,6 @@ export const store = {
   userOrders: userOrdersInstance,
   userAddresses: userAddressesInstance,
   addressModal: addressModalInstance,
-  selectionAddressModal: selectionAddressModalInstance,
   profileModal: editProfileModalInstance,
   fastAds: fastAdsInstance,
   payment: paymentInstance,
