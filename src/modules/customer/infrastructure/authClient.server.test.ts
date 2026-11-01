@@ -90,6 +90,10 @@ describe("customer auth client", () => {
 
     fetchMock.mockResolvedValueOnce(respond(200, { id: 8, name: "Other", email: "o@x.io" }));
     expect(await getSession(token(7))).toBeNull();
+
+    // A deleted customer's token: WordPress answers users/me with 404.
+    fetchMock.mockResolvedValueOnce(respond(404, { code: "rest_user_invalid_id" }));
+    expect(await getSession(token(7))).toBeNull();
   });
 
   it("shows the customer's name, not the random internal username", async () => {

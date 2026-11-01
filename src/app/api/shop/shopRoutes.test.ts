@@ -51,6 +51,20 @@ describe("/api/shop routes", () => {
     expect(u.searchParams.get("lang")).toBe("ar");
   });
 
+  it("GET /products?ids= returns those products in that order (a wishlist), ignoring other filters", async () => {
+    const res = await products.GET(req("/api/shop/products?ids=9,7,9&category=pans&locale=ar"), {});
+    expect(res.status).toBe(200);
+    const u = new URL(fetchMock.mock.calls[0][0]);
+    expect(u.searchParams.get("include")).toBe("9,7");
+    expect(u.searchParams.get("orderby")).toBe("include");
+    expect(u.searchParams.get("per_page")).toBe("2");
+    expect(u.searchParams.get("category")).toBeNull();
+    expect(u.searchParams.get("lang")).toBe("ar");
+    for (const bad of ["ids=", "ids=0", "ids=1,,2", "ids=1;2", `ids=${Array.from({ length: 51 }, (_, i) => i + 1).join(",")}`]) {
+      expect((await products.GET(req(`/api/shop/products?${bad}`), {})).status).toBe(400);
+    }
+  });
+
   it("rejects invalid filters with the shared 400 shape", async () => {
     for (const q of ["?page=0", "?sort=bogus", "?locale=fr", "?minPrice=500&maxPrice=100", "?maxPrice=0", "?perPage=500"]) {
       const res = await products.GET(req(`/api/shop/products${q}`), {});

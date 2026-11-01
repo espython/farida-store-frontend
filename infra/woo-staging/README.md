@@ -50,6 +50,15 @@ Versions: WordPress 7.1.3, WooCommerce 11.2.1, Polylang 3.8.11, JWT Auth 1.5.0, 
 | `wp/v2/users` anonymous | **200: lists users. Must be locked down before launch** (security basics) |
 | Polylang languages en + ar | Created. Free Polylang has no WP-CLI; `lang` param on the Store API is not yet verified with translated products. Needs Polylang for WooCommerce (paid) or an alternative: decision pending |
 
+### Wishlist checks (2026-11-01, O4 #255)
+
+| Check | Result |
+|---|---|
+| `wc/store/v1/products?include=<ids>&orderby=include` | Returns those products in the given order; unknown ids are left out |
+| `wc/store/v1/products/<unknown id>` | 404 (the BFF refuses to save it) |
+| Wishlist in customer meta `farida_wishlist` (same mechanism as the address book, see the account checks) | Not on anonymous `wp/v2/users/<id>`; other meta keys untouched |
+| No wishlist plugin | Not needed: ids on the customer, products read from the Store API |
+
 ### Customer account checks (`spike-account.mjs`, 2026-11-01, A4 #245)
 
 | Check | Result |

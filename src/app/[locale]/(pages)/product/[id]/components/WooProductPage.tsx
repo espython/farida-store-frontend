@@ -11,6 +11,7 @@ import {
 } from "@/modules/catalog";
 import type { Product } from "@/modules/catalog";
 import { AddToCartButton, toProductRef } from "@/modules/cart";
+import { WishlistButton } from "@/modules/wishlist";
 import type { Locale } from "@/shared/kernel/Locale";
 import Breads from "./Breads";
 import PageContainer from "@/shared/ui/PageContainer";
@@ -77,7 +78,12 @@ const WooProductPage = ({ slug, initialProduct }: Props) => {
               <ProductDetails
                 product={product}
                 showDescription={false}
-                actions={<AddToCartButton product={toProductRef(product)} variant="full" />}
+                actions={
+                  <>
+                    <AddToCartButton product={toProductRef(product)} variant="full" />
+                    <WishlistButton productId={product.id} title={product.title} variant="full" />
+                  </>
+                }
                 footer={<TrustList />}
               />
             </div>
@@ -97,7 +103,11 @@ const WooProductPage = ({ slug, initialProduct }: Props) => {
           <SectionHeading>
             <span className="capitalize">{details("bestSeller")}</span>
           </SectionHeading>
-          <BestSellers excludeId={product.id} renderActions={(p) => <AddToCartButton product={toProductRef(p)} />} />
+          <BestSellers
+            excludeId={product.id}
+            renderActions={(p) => <AddToCartButton product={toProductRef(p)} />}
+            renderOverlay={(p) => <WishlistButton productId={p.id} title={p.title} />}
+          />
         </section>
       </PageContainer>
     </div>

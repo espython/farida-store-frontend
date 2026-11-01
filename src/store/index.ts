@@ -2,6 +2,7 @@ import { configureStore, createListenerMiddleware } from "@reduxjs/toolkit";
 import { baseApi } from "@/shared/infrastructure/baseApi";
 import { CATALOG_FILTERS_KEY, catalogFiltersReducer } from "@/modules/catalog";
 import { CART_KEY, cartReducer, startCartPersistence } from "@/modules/cart";
+import { WISHLIST_KEY, startWishlistPersistence, wishlistReducer } from "@/modules/wishlist";
 import { AUTH_API_KEY, authApi } from "@/modules/customer";
 
 // Created per request/provider instance. Never export a module-level store:
@@ -10,12 +11,14 @@ import { AUTH_API_KEY, authApi } from "@/modules/customer";
 export const makeStore = () => {
   const listener = createListenerMiddleware();
   startCartPersistence(listener);
+  startWishlistPersistence(listener);
 
   return configureStore({
     reducer: {
       [baseApi.reducerPath]: baseApi.reducer,
       [CATALOG_FILTERS_KEY]: catalogFiltersReducer,
       [CART_KEY]: cartReducer,
+      [WISHLIST_KEY]: wishlistReducer,
       [AUTH_API_KEY]: authApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>

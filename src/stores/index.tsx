@@ -9,9 +9,7 @@ import { CartSidebarStore } from "./cartSidebarStore";
 import { FilterSidebarStore } from "./filterSidebarStore";
 import { ProductsView } from "./productsViewStore";
 import { SearchBoxStore } from "./searchBoxStore";
-import { WishListStore } from "./wishListStore";
 import { AdsSliderStore } from "./adsStore";
-import { userWishListStore } from "./userWishlist";
 import { FastAdsStore } from "./fastAdsStore";
 import PaymentStore from "./paymentStore";
 
@@ -47,17 +45,9 @@ const searchBoxInstance = new SearchBoxStore();
 
 const productsViewStyle = new ProductsView();
 
-// wish list  store
-
-const wishlistProducts = new WishListStore();
-
 // slider ads  store
 
 const adsInstance = new AdsSliderStore();
-
-// user wishlist store
-
-const userWishlistInstance = new userWishListStore();
 
 // fast ads store
 
@@ -82,9 +72,7 @@ export const store = {
   filter: filterSidebarInstance,
   viewStyle: productsViewStyle,
   searchBox: searchBoxInstance,
-  wishlist: wishlistProducts,
   ads: adsInstance,
-  userWishlist: userWishlistInstance,
   fastAds: fastAdsInstance,
   payment: paymentInstance,
 };

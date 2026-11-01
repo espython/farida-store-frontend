@@ -15,9 +15,11 @@ interface Props {
   onFiltersChange?: () => void;
   /** Per-card controls (add to cart), injected by the page so the catalog does not depend on the cart. */
   renderActions?: (product: Product) => ReactNode;
+  /** Control on each card image (the wishlist heart). */
+  renderOverlay?: (product: Product) => ReactNode;
 }
 
-const CatalogListing = ({ view, onFiltersChange, renderActions }: Props) => {
+const CatalogListing = ({ view, onFiltersChange, renderActions, renderOverlay }: Props) => {
   const locale = useLocale() as Locale;
   const t = useTranslations("errorPage");
   const loading = useTranslations("loading");
@@ -78,7 +80,7 @@ const CatalogListing = ({ view, onFiltersChange, renderActions }: Props) => {
           aria-busy={isFetching}
         >
           {data.items.map((product) => (
-            <CatalogProductCard key={product.id} product={product} row={view === "row"} actions={renderActions?.(product)} />
+            <CatalogProductCard key={product.id} product={product} row={view === "row"} actions={renderActions?.(product)} overlay={renderOverlay?.(product)} />
           ))}
         </div>
       )}

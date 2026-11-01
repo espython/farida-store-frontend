@@ -16,6 +16,8 @@ export interface ProductsArgs {
   maxPrice?: number | null;
   onSale?: boolean;
   search?: string | null;
+  /** Comma-separated product ids: only these, in this order. */
+  ids?: string | null;
 }
 
 export interface SearchArgs {
