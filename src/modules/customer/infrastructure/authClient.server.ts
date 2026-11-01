@@ -86,8 +86,9 @@ export async function getSession(token: string): Promise<Session | null> {
       path: "/wp/v2/users/me",
       query: { context: "edit", _fields: "id,name,email,first_name,last_name" },
       headers: { Authorization: `Bearer ${token}` },
+      // 404: the token's user was deleted (WordPress still accepts the signature).
       mapError: (status) =>
-        status === 401 || status === 403 ? authError("unauthenticated", "Session expired") : undefined,
+        status === 401 || status === 403 || status === 404 ? authError("unauthenticated", "Session expired") : undefined,
     }));
   } catch (err) {
     if (err instanceof AppError && err.code === "unauthenticated") return null;
