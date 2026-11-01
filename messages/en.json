@@ -436,55 +436,6 @@
       "count": "{count, plural, one {# saved item} other {# saved items}}"
     }
   },
-  "userAdderesses": {
-    "title": "Your addresses",
-    "address": {
-      "address": "Address",
-      "notFound": "Not found",
-      "phone1": "Phone",
-      "phone2": "Second phone",
-      "state": "State",
-      "country": "Country",
-      "city": "City",
-      "street": "Street",
-      "postal": "Postal code",
-      "delete": "Delete",
-      "title": "Address {index}",
-      "confirm": "Delete this address?",
-      "cancel": "Cancel"
-    },
-    "new": "Add a new address",
-    "empty": {
-      "description": "You have no saved addresses",
-      "text": "Save an address to check out faster."
-    },
-    "form": {
-      "new": "New address",
-      "labels": {
-        "phone1": "Phone",
-        "phone2": "Second phone",
-        "state": "State",
-        "country": "Country",
-        "city": "City",
-        "street": "Street",
-        "postal": "Postal code"
-      },
-      "placeholders": {
-        "phone1": "Phone number",
-        "phone2": "Another phone number",
-        "state": "Pick your state",
-        "country": "Your country",
-        "city": "Your city",
-        "street": "Your street",
-        "postal": "Postal code of your address"
-      },
-      "action": {
-        "submit": "Save address"
-      },
-      "required": "This field is required",
-      "optional": "Optional"
-    }
-  },
   "notFound": {
     "title": "Page Not Found",
     "description": "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.",
@@ -529,23 +480,6 @@
       "error": "Failed to send your message. Please try again.",
       "required": "This field is required",
       "invalidEmail": "Enter a valid email address"
-    }
-  },
-  "userProfilePage": {
-    "title": "Your profile",
-    "userDetails": {
-      "email": "Email",
-      "username": "Username",
-      "firstName": "First name",
-      "lastName": "Last name"
-    },
-    "actions": {
-      "main": "Edit profile",
-      "modal": "Save"
-    },
-    "messages": {
-      "success": "Profile updated",
-      "failed": "Couldn't update your profile"
     }
   },
   "activeFilters": {
@@ -642,28 +576,6 @@
     "unavailable": "We couldn't reach the shop. Please try again."
   },
   "checkout": {
-    "fields": {
-      "firstName": "First name",
-      "lastName": "Last name",
-      "phone": "Mobile number",
-      "phoneHint": "For the courier, e.g. 010 1234 5678",
-      "governorate": "Governorate",
-      "chooseGovernorate": "Choose a governorate",
-      "city": "City or district",
-      "address1": "Street and building",
-      "address1Placeholder": "e.g. 12 El Nasr St, building 4",
-      "address2": "Apartment, floor, landmark",
-      "postcode": "Postal code",
-      "optional": "Optional",
-      "postcodeHint": "5 digits, e.g. 12611 for Dokki"
-    },
-    "addressErrors": {
-      "required": "This field is required",
-      "too_long": "Use 100 characters or fewer",
-      "governorate_invalid": "Choose a governorate",
-      "phone_invalid": "Enter an Egyptian mobile number (11 digits, starting 010, 011, 012 or 015)",
-      "postcode_invalid": "Postal codes have 5 digits"
-    },
     "errors": {
       "invalid_address": "Check the delivery address",
       "coupon_invalid": "That coupon can't be used",
@@ -834,6 +746,78 @@
       "invalid": "Enter the order number, digits only.",
       "action": "Track order",
       "all": "Or see all your orders"
+    }
+  },
+  "addressForm": {
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "phone": "Mobile number",
+      "phoneHint": "For the courier, e.g. 010 1234 5678",
+      "governorate": "Governorate",
+      "chooseGovernorate": "Choose a governorate",
+      "city": "City or district",
+      "address1": "Street and building",
+      "address1Placeholder": "e.g. 12 El Nasr St, building 4",
+      "address2": "Apartment, floor, landmark",
+      "postcode": "Postal code",
+      "optional": "Optional",
+      "postcodeHint": "5 digits, e.g. 12611 for Dokki"
+    },
+    "errors": {
+      "required": "This field is required",
+      "too_long": "Use 100 characters or fewer",
+      "governorate_invalid": "Choose a governorate",
+      "phone_invalid": "Enter an Egyptian mobile number (11 digits, starting 010, 011, 012 or 015)",
+      "postcode_invalid": "Postal codes have 5 digits"
+    }
+  },
+  "account": {
+    "profile": {
+      "title": "Your profile",
+      "edit": "Edit name",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saved": "Profile updated",
+      "failed": "We couldn't save your profile. Please try again.",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "emailHint": "You sign in with this email.",
+      "errors": {
+        "required": "This field is required",
+        "too_long": "Use 50 characters or fewer"
+      }
+    },
+    "addresses": {
+      "title": "Your addresses",
+      "add": "Add an address",
+      "newTitle": "New address",
+      "editTitle": "Edit address",
+      "save": "Save address",
+      "cancel": "Cancel",
+      "useAsDefault": "Use as my default address",
+      "defaultHint": "Checkout starts with your default address.",
+      "cardTitle": "Address {index}",
+      "default": "Default",
+      "makeDefault": "Make default",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Delete this address?",
+      "empty": "You have no saved addresses",
+      "emptyText": "Save an address to check out faster.",
+      "full": "You have {limit} saved addresses, the most you can keep. Delete one to add another.",
+      "errors": {
+        "book_full": "You can keep up to 10 addresses. Delete one to add another.",
+        "not_found": "That address was already removed. Refresh the page.",
+        "unavailable": "We couldn't reach the shop. Please try again."
+      }
+    },
+    "states": {
+      "unavailable": "We couldn't load your account. Please try again.",
+      "retry": "Try again",
+      "signIn": "Sign in to see your account",
+      "signInAction": "Sign in"
     }
   }
 }

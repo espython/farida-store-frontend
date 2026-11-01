@@ -19,8 +19,8 @@ export class userStore {
   }
 
   // The signed-in customer now comes from WordPress (useSession in
-  // modules/customer). strapiUserdata stays empty; the account pages that
-  // still read it move to Woo in A4 / O1 / C3.
+  // modules/customer). strapiUserdata stays empty; the profile, addresses,
+  // orders and checkout pages already read Woo.
 
   // user products methods
 
@@ -155,30 +155,6 @@ export class userStore {
     this.userReviewRating = 0;
   }
 
-  updateUserData = async (newUserData: {
-    username: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-  }) => {
-    const response = await fetch(
-      `${STRAPI_ENDPOINT}/users/${this.strapiUserdata.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: newUserData.username,
-          email: newUserData.email,
-          first_name: newUserData.firstName,
-          last_name: newUserData.lastName,
-        }),
-      }
-    );
-
-    return response.ok;
-  };
 
   // setting states of the class
 

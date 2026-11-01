@@ -1,6 +1,6 @@
 import type { Money } from "@/shared/kernel/Money";
 import type { CartLine } from "@/modules/cart";
-import type { Address } from "./Address";
+import type { Address } from "@/shared/kernel/Address";
 
 export type PaymentMethod = "cod" | "card";
 

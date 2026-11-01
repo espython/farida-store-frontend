@@ -9,5 +9,5 @@ export {
 } from "./infrastructure/checkoutClient.server";
 export type { CheckoutResult } from "./infrastructure/checkoutClient.server";
 export { placeOnce } from "./infrastructure/checkoutGuard.server";
-export { cleanAddress, validateAddress } from "./domain/Address";
+export { cleanAddress, validateAddress } from "@/shared/kernel/Address";
 export { isIdempotencyKey } from "./domain/idempotency";

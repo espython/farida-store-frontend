@@ -1,7 +1,7 @@
 import { AppError } from "@/shared/kernel/AppError";
 import { wooFetch } from "@/shared/infrastructure/wooClient.server";
 import { cartFromStoreApi, type CartCaller, type StoreCart } from "@/modules/cart/index.server";
-import type { Address } from "../domain/Address";
+import type { Address } from "@/shared/kernel/Address";
 import type { Checkout, PaymentMethod } from "../domain/Checkout";
 import { packageOfRate, toCheckout, toStoreAddress } from "./checkoutMapper";
 import type { StoreCheckoutCart, StoreCheckoutResult } from "./storeCheckoutDto";

@@ -7,7 +7,7 @@ import { Link, useRouter } from "@/navigation";
 import { Money } from "@/shared/kernel/Money";
 import Button, { buttonClass } from "@/shared/ui/Button";
 import TextField from "@/shared/ui/TextField";
-import { isAddressComplete } from "../domain/Address";
+import { isAddressComplete } from "@/shared/kernel/Address";
 import { canPlaceOrder, selectedRate, type PaymentMethod } from "../domain/Checkout";
 import { governorateName } from "@/shared/kernel/Governorate";
 import { useCheckout } from "../application/useCheckout";

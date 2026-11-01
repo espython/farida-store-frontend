@@ -1,6 +1,6 @@
 "use client";
 import { baseApi } from "@/shared/infrastructure/baseApi";
-import type { Address } from "../domain/Address";
+import type { Address } from "@/shared/kernel/Address";
 import type { Checkout, PaymentMethod } from "../domain/Checkout";
 
 type Body = { checkout: Checkout };

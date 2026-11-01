@@ -108,12 +108,14 @@ describe("wooFetch", () => {
     });
   });
 
-  it("allows only the auth routes A1 needs, not wider WordPress or Woo admin paths", async () => {
+  it("allows only the customer routes A1/A4 need, not wider WordPress or Woo admin paths", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(ok({})));
     for (const [method, path] of [
       ["GET", "/wp/v2/users"],
       ["GET", "/wc/v3/customers"],
-      ["GET", "/wc/v3/customers/4"],
+      ["DELETE", "/wc/v3/customers/4"],
+      ["POST", "/wc/v3/customers/4"],
+      ["GET", "/wc/v3/customers/4/downloads"],
       ["POST", "/jwt-auth/v1/admin/settings"],
     ] as const) {
       await expect(wooFetch({ method, path })).rejects.toMatchObject({ status: 500 });

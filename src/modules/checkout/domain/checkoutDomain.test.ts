@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Money } from "@/shared/kernel/Money";
-import { cleanAddress, emptyAddress, isAddressComplete, normalisePhone, validateAddress, type Address } from "./Address";
+import { cleanAddress, emptyAddress, isAddressComplete, normalisePhone, validateAddress, type Address } from "@/shared/kernel/Address";
 import { canPlaceOrder, selectedRate, type Checkout } from "./Checkout";
 import { governorateName, GOVERNORATES, isGovernorate } from "@/shared/kernel/Governorate";
 import { fingerprintOf, isIdempotencyKey, keyFor } from "./idempotency";

@@ -4,20 +4,9 @@ import { defineRoute, parseJson } from "@/shared/infrastructure/bff";
 import { cleanAddress, setAddress, validateAddress } from "@/modules/checkout/index.server";
 import { cartCaller } from "../../cart/cartRoute";
 import { checkoutResponse } from "../checkoutRoute";
+import { addressSchema } from "../../addressSchema";
 
-const field = z.string().max(200);
-const body = z.object({
-  address: z.object({
-    firstName: field,
-    lastName: field,
-    address1: field,
-    address2: field,
-    city: field,
-    state: z.string().max(10),
-    postcode: z.string().max(10),
-    phone: z.string().max(30),
-  }),
-});
+const body = z.object({ address: addressSchema });
 
 export const { GET, POST, PUT, PATCH, DELETE, OPTIONS } = defineRoute({
   PUT: async (req) => {

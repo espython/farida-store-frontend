@@ -1,7 +1,7 @@
 "use client";
 import { useCallback } from "react";
 import { useSession } from "@/modules/customer";
-import type { Address } from "../domain/Address";
+import type { Address } from "@/shared/kernel/Address";
 import type { PaymentMethod } from "../domain/Checkout";
 import { clearIntentKey, intentKey } from "../infrastructure/intentKeyStore";
 import { checkoutApi } from "./checkoutApi";

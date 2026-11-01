@@ -2,7 +2,7 @@
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/navigation";
 import { useCheckout } from "../application/useCheckout";
-import CheckoutAddressForm from "./CheckoutAddressForm";
+import AddressForm from "@/shared/ui/AddressForm";
 import CheckoutSummary, { summaryLines } from "./CheckoutSummary";
 import { CheckoutEmpty, CheckoutLoading, CheckoutSignIn, CheckoutUnavailable } from "./CheckoutStates";
 
@@ -23,14 +23,18 @@ const ShippingStep = () => {
         <h2 id="delivery-title" className="font-display text-2xl md:text-[2rem]">
           {t("delivery.title")}
         </h2>
-        <CheckoutAddressForm
+        <AddressForm
           initial={c.checkout.address}
           busy={c.busy}
           submitLabel={t("delivery.continue")}
           onSubmit={async (address) => {
             const r = await c.saveAddress(address);
-            if (r.ok) router.push("/cart/payment");
-            return r;
+            if (r.ok) {
+              router.push("/cart/payment");
+              return r;
+            }
+            const { code, fields } = r.failure;
+            return { ok: false, fields, message: code === "invalid_address" ? undefined : t(`errors.${code}`) };
           }}
         />
       </section>

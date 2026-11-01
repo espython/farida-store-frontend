@@ -12,10 +12,6 @@ import { SearchBoxStore } from "./searchBoxStore";
 import { WishListStore } from "./wishListStore";
 import { AdsSliderStore } from "./adsStore";
 import { userWishListStore } from "./userWishlist";
-import { OrdersStore } from "./ordersStore";
-import { UserAddressesStore } from "./userAddressesStore";
-import { AddressModalStore } from "./addressModalStore";
-import { EditProfileModalStore } from "./editProfileModalStore";
 import { FastAdsStore } from "./fastAdsStore";
 import PaymentStore from "./paymentStore";
 
@@ -63,23 +59,6 @@ const adsInstance = new AdsSliderStore();
 
 const userWishlistInstance = new userWishListStore();
 
-// user orders store
-
-const userOrdersInstance = new OrdersStore();
-
-// user addresses store
-
-const userAddressesInstance = new UserAddressesStore();
-
-// address modal store
-
-const addressModalInstance = new AddressModalStore();
-
-
-// edit profile modal store
-
-const editProfileModalInstance = new EditProfileModalStore();
-
 // fast ads store
 
 const fastAdsInstance = new FastAdsStore();
@@ -106,10 +85,6 @@ export const store = {
   wishlist: wishlistProducts,
   ads: adsInstance,
   userWishlist: userWishlistInstance,
-  userOrders: userOrdersInstance,
-  userAddresses: userAddressesInstance,
-  addressModal: addressModalInstance,
-  profileModal: editProfileModalInstance,
   fastAds: fastAdsInstance,
   payment: paymentInstance,
 };

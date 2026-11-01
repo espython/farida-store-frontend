@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import en from "../../../../messages/en.json";
 import { Money } from "@/shared/kernel/Money";
-import { emptyAddress, type Address } from "../domain/Address";
+import { emptyAddress, type Address } from "@/shared/kernel/Address";
 import type { Checkout } from "../domain/Checkout";
 
 const push = vi.hoisted(() => vi.fn());
@@ -18,7 +18,7 @@ vi.mock("@/navigation", () => ({
 const hook = vi.hoisted(() => ({ value: {} as Record<string, unknown> }));
 vi.mock("../application/useCheckout", () => ({ useCheckout: () => hook.value }));
 
-import CheckoutAddressForm from "./CheckoutAddressForm";
+import AddressForm from "@/shared/ui/AddressForm";
 import PaymentStep from "./PaymentStep";
 
 const address: Address = { firstName: "Mona", lastName: "Ali", address1: "12 El Nasr St", address2: "", city: "Nasr City", state: "EGC", postcode: "11765", phone: "01001234567" };
@@ -53,10 +53,10 @@ beforeEach(() => {
   };
 });
 
-describe("CheckoutAddressForm", () => {
+describe("AddressForm", () => {
   it("shows the domain errors and does not submit", async () => {
     const onSubmit = vi.fn();
-    wrap(<CheckoutAddressForm initial={emptyAddress()} busy={false} submitLabel="Continue" onSubmit={onSubmit} />);
+    wrap(<AddressForm initial={emptyAddress()} busy={false} submitLabel="Continue" onSubmit={onSubmit} />);
     fireEvent.change(screen.getByLabelText("Mobile number"), { target: { value: "0223456789" } });
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
     expect(await screen.findByText(/Enter an Egyptian mobile number/)).toBeInTheDocument();
@@ -65,8 +65,8 @@ describe("CheckoutAddressForm", () => {
   });
 
   it("submits a valid address and puts server field errors on their fields", async () => {
-    const onSubmit = vi.fn().mockResolvedValue({ ok: false, failure: { code: "invalid_address", fields: { city: "too_long" } } });
-    wrap(<CheckoutAddressForm initial={address} busy={false} submitLabel="Continue" onSubmit={onSubmit} />);
+    const onSubmit = vi.fn().mockResolvedValue({ ok: false, fields: { city: "too_long" } });
+    wrap(<AddressForm initial={address} busy={false} submitLabel="Continue" onSubmit={onSubmit} />);
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
     await waitFor(() => expect(onSubmit).toHaveBeenCalledWith(address));
     expect(await screen.findByText("Use 100 characters or fewer")).toBeInTheDocument();

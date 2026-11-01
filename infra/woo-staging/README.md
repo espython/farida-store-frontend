@@ -50,6 +50,19 @@ Versions: WordPress 7.1.3, WooCommerce 11.2.1, Polylang 3.8.11, JWT Auth 1.5.0, 
 | `wp/v2/users` anonymous | **200: lists users. Must be locked down before launch** (security basics) |
 | Polylang languages en + ar | Created. Free Polylang has no WP-CLI; `lang` param on the Store API is not yet verified with translated products. Needs Polylang for WooCommerce (paid) or an alternative: decision pending |
 
+### Customer account checks (`spike-account.mjs`, 2026-11-01, A4 #245)
+
+| Check | Result |
+|---|---|
+| `wc/v3/customers/<id>` read and update with the server keys (names, `shipping`, `billing`, `meta_data`) | Pass |
+| `meta_data` with the same key | Replaces the value (one row) |
+| Address book meta (`farida_address_book`) on anonymous `wp/v2/users/<id>` | Not exposed (404 for customers without posts) |
+| A customer's JWT on `wc/v3/customers/<id>` | 403: only the BFF with the server keys can read it |
+| `shipping` saved on the customer → Store API cart `shipping_address` | Prefilled: checkout starts from the default address |
+| Name change → `wp/v2/users/me` `first_name`/`last_name` | Updated; WP `name` stays the random username (the session prefers first + last name) |
+| Email change to an address in use | 400 `woocommerce_rest_customer_invalid_email`. Email is not editable in A4 (needs a password re-check) |
+| Registration leaves `billing.email` empty | The address book fills it with the account email when it writes billing |
+
 ### Customer orders checks (2026-11-01, O1 #252)
 
 | Check | Result |
