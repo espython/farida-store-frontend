@@ -22,7 +22,17 @@ export type { SessionStatus } from "./application/useSession";
 export { useAuthActions } from "./application/useAuthActions";
 export type { AuthFailure } from "./application/authFailure";
 
+// Account (A4): profile and address book on the Woo customer.
+export type { Profile, ProfileInput, ProfileError } from "./domain/Profile";
+export type { AddressBookView, SavedAddress } from "./domain/AddressBook";
+export { MAX_ADDRESSES } from "./domain/AddressBook";
+export { accountApi } from "./application/accountApi";
+export { useAddressBook, useProfile } from "./application/useAccount";
+export type { AccountFailure, AccountFailureCode, AccountResult } from "./application/accountFailure";
+
 // UI
 export { default as SignInForm } from "./ui/SignInForm";
 export { default as RegisterForm } from "./ui/RegisterForm";
 export { default as AccountMenu } from "./ui/AccountMenu";
+export { default as ProfileCard } from "./ui/ProfileCard";
+export { default as AddressBook } from "./ui/AddressBook";

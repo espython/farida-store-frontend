@@ -1,24 +1,33 @@
 "use client";
-import { useId } from "react";
+import { useId, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { useLocale, useTranslations } from "next-intl";
 import { Spinner } from "@nextui-org/react";
 import TextField from "@/shared/ui/TextField";
 import Button from "@/shared/ui/Button";
-import { validateAddress, type Address } from "../domain/Address";
+import { validateAddress, type Address, type AddressError } from "@/shared/kernel/Address";
 import { GOVERNORATES } from "@/shared/kernel/Governorate";
-import type { CheckoutFailure } from "../application/checkoutFailure";
+
+/** What the caller's save answered: field codes go on their fields, `message` (translated) above the button. */
+export type AddressFormResult = { ok: true } | { ok: false; fields?: Partial<Record<string, AddressError>>; message?: string };
 
 interface Props {
   initial: Address;
   busy: boolean;
-  onSubmit: (address: Address) => Promise<{ ok: true } | { ok: false; failure: CheckoutFailure }>;
+  onSubmit: (address: Address) => Promise<AddressFormResult>;
   submitLabel: string;
+  /** Extra controls above the submit button (e.g. "make default"). */
+  children?: ReactNode;
+  /** A second action next to the submit button (e.g. cancel). */
+  secondary?: ReactNode;
 }
 
-/** Delivery address; Egypt only. Rules from the checkout domain, checked again by the BFF. */
-const CheckoutAddressForm = ({ initial, busy, onSubmit, submitLabel }: Props) => {
-  const t = useTranslations("checkout");
+/**
+ * An Egyptian delivery address (checkout, address book). The rules come from
+ * shared/kernel/Address and are checked again by the BFF.
+ */
+const AddressForm = ({ initial, busy, onSubmit, submitLabel, children, secondary }: Props) => {
+  const t = useTranslations("addressForm");
   const locale = useLocale() as "en" | "ar";
   const stateId = useId();
   const {
@@ -31,19 +40,25 @@ const CheckoutAddressForm = ({ initial, busy, onSubmit, submitLabel }: Props) =>
 
   const rule = (field: keyof Address) => (value: string) => {
     const code = validateAddress({ ...getValues(), [field]: value })[field];
-    return code ? t(`addressErrors.${code}`) : true;
+    return code ? t(`errors.${code}`) : true;
   };
   const err = (f: keyof Address) => errors[f]?.message;
 
   const submit = handleSubmit(async (address) => {
     const result = await onSubmit(address);
-    if (!result.ok) {
-      for (const [field, code] of Object.entries(result.failure.fields)) {
-        if (code) setError(field as keyof Address, { message: t(`addressErrors.${code}`) });
-      }
-      if (result.failure.code !== "invalid_address") setError("root", { message: t(`errors.${result.failure.code}`) });
+    if (result.ok) return;
+    for (const [field, code] of Object.entries(result.fields ?? {})) {
+      if (code) setError(field as keyof Address, { message: t(`errors.${code}`) });
     }
+    if (result.message) setError("root", { message: result.message });
   });
+
+  const button = (
+    <Button type="submit" size="lg" full={!secondary} disabled={busy} aria-busy={busy}>
+      {busy && <Spinner size="sm" color="current" />}
+      {submitLabel}
+    </Button>
+  );
 
   return (
     <form noValidate onSubmit={submit} className="flex flex-col gap-4">
@@ -96,17 +111,22 @@ const CheckoutAddressForm = ({ initial, busy, onSubmit, submitLabel }: Props) =>
         <TextField {...register("address2", { validate: rule("address2") })} autoComplete="address-line2" label={t("fields.address2")} hint={t("fields.optional")} error={err("address2")} />
         <TextField {...register("postcode", { validate: rule("postcode") })} inputMode="numeric" autoComplete="postal-code" label={t("fields.postcode")} hint={t("fields.postcodeHint")} error={err("postcode")} />
       </div>
+      {children}
       {errors.root && (
         <p role="alert" className="p-4 rounded-2xl bg-[#fde8e6] text-[#b42318] text-sm">
           {errors.root.message}
         </p>
       )}
-      <Button type="submit" size="lg" full disabled={busy} aria-busy={busy}>
-        {busy && <Spinner size="sm" color="current" />}
-        {submitLabel}
-      </Button>
+      {secondary ? (
+        <div className="flex flex-wrap items-center gap-3">
+          {button}
+          {secondary}
+        </div>
+      ) : (
+        button
+      )}
     </form>
   );
 };
 
-export default CheckoutAddressForm;
+export default AddressForm;

@@ -12,3 +12,16 @@ export {
 
 // Domain rules the routes apply (server-safe; the client index also has hooks).
 export { validateLogin, validateRegistration, PASSWORD_MAX_LENGTH } from "./domain/credentials";
+
+// Account (A4): profile and address book on the Woo customer, server keys.
+export {
+  addAddress,
+  getAddressBook,
+  getProfile,
+  removeAddress,
+  setDefaultAddress,
+  updateAddress,
+  updateProfile,
+} from "./infrastructure/accountClient.server";
+export { cleanProfile, validateProfile } from "./domain/Profile";
+export { isEntryId } from "./domain/AddressBook";

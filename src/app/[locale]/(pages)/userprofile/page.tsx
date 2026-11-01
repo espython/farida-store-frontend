@@ -1,22 +1,22 @@
 import React from "react";
-import UserInformation from "./components/UserInformation";
-import PageTitle from "@/components/PageTitle";
-import { unstable_setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
+import { unstable_setRequestLocale } from "next-intl/server";
+import PageTitle from "@/components/PageTitle";
 import PageContainer from "@/shared/ui/PageContainer";
+import { ProfileCard } from "@/modules/customer";
 
-interface ContactPageProps {
+interface UserProfilePageProps {
   params: { locale: string };
 }
 
-const UserProfilePage = ({ params: { locale } }: ContactPageProps) => {
+const UserProfilePage = ({ params: { locale } }: UserProfilePageProps) => {
   unstable_setRequestLocale(locale);
-  const t = useTranslations("userProfilePage");
+  const t = useTranslations("account.profile");
   return (
     <>
       <PageTitle title={t("title")} />
       <PageContainer className="pt-6 pb-8">
-        <UserInformation />
+        <ProfileCard />
       </PageContainer>
     </>
   );

@@ -1,7 +1,7 @@
 import { AppError } from "@/shared/kernel/AppError";
 import { Money } from "@/shared/kernel/Money";
 import type { CartLine } from "@/modules/cart";
-import { emptyAddress, type Address } from "../domain/Address";
+import { emptyAddress, type Address } from "@/shared/kernel/Address";
 import type { Checkout, PaymentMethod } from "../domain/Checkout";
 import type { StoreAddress, StoreCheckoutCart } from "./storeCheckoutDto";
 

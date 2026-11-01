@@ -1,4 +1,4 @@
-import type { AddressError } from "../domain/Address";
+import type { AddressError } from "@/shared/kernel/Address";
 
 /** What the checkout UI tells the shopper. */
 export type CheckoutFailureCode =
