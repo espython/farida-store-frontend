@@ -31,6 +31,10 @@ export const WOO_ALLOWLIST: readonly AllowedWooRoute[] = [
   // Account (A4): the signed-in customer's own profile and address book.
   { method: "GET", pattern: /^\/wc\/v3\/customers\/\d+$/ },
   { method: "PUT", pattern: /^\/wc\/v3\/customers\/\d+$/ },
+  // Reviews (O3): the public list, and the customer's own review (held for approval).
+  { method: "GET", pattern: /^\/wc\/store\/v1\/products\/reviews$/ },
+  { method: "GET", pattern: /^\/wc\/v3\/products\/reviews$/ },
+  { method: "POST", pattern: /^\/wc\/v3\/products\/reviews$/ },
 ];
 
 export function isWooRouteAllowed(

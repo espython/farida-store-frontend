@@ -12,6 +12,7 @@ import {
 import type { Product } from "@/modules/catalog";
 import { AddToCartButton, toProductRef } from "@/modules/cart";
 import { WishlistButton } from "@/modules/wishlist";
+import { ProductReviews } from "@/modules/reviews";
 import type { Locale } from "@/shared/kernel/Locale";
 import Breads from "./Breads";
 import PageContainer from "@/shared/ui/PageContainer";
@@ -31,7 +32,7 @@ interface Props {
 
 /**
  * Product page. The route segment is the product slug (cards link by slug). The page
- * composes catalog and cart (the catalog never imports the cart). Reviews come with O3.
+ * composes catalog, cart, wishlist and reviews (the catalog imports none of them).
  */
 const WooProductPage = ({ slug, initialProduct }: Props) => {
   const locale = useLocale() as Locale;
@@ -98,6 +99,8 @@ const WooProductPage = ({ slug, initialProduct }: Props) => {
             <p className="lg:col-span-8 whitespace-pre-line leading-relaxed">{description}</p>
           </section>
         )}
+
+        <ProductReviews productId={product.id} rating={product.rating} />
 
         <section className="flex flex-col gap-4 md:gap-6">
           <SectionHeading>

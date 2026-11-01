@@ -338,7 +338,7 @@ Note: `selectionAddressModal` is currently `new AddressModalStore()`; it becomes
 - [ ] Phase 3: BFF and catalog (B1–B7). B1–B3 done; B4 code done (#293, #295–#298), Lighthouse SEO ≥ 90 on a deployed Woo build still to run; B5 waits on W7; B6 (#303) and B7 (#304) open
 - [ ] Phase 4: accounts (A1–A5). A1 BFF built (branch `feat/a1-customer-auth`); A5 (#302) removes Strapi auth
 - [ ] Phase 5: cart and checkout (C1–C4). C1 and C2 done; C3 cash-on-delivery checkout in review; card payment after launch (#326)
-- [ ] Phase 6: orders and wishlist (O1–O4). O1 orders on Woo in review
+- [ ] Phase 6: orders and wishlist (O1–O4). O1 and O4 done; O3 reviews in review
 - [x] Phase 7: data migration (M1–M4): dropped 2026-10-31, no real data
 - [ ] Phase 8: UI state and cleanup (U1–U3)
 - [ ] Phase 9: launch and Strapi removal (X1, X2, X4; X3 dropped)

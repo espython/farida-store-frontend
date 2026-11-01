@@ -108,9 +108,20 @@ describe("wooFetch", () => {
     });
   });
 
-  it("allows only the customer routes A1/A4 need, not wider WordPress or Woo admin paths", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(ok({})));
+  it("allows only the customer routes A1/A4/O3 need, not wider WordPress or Woo admin paths", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(async () => ok({})));
     for (const [method, path] of [
+      ["GET", "/wc/v3/products/reviews"],
+      ["POST", "/wc/v3/products/reviews"],
+      ["GET", "/wc/store/v1/products/reviews"],
+    ] as const) {
+      await expect(wooFetch({ method, path, auth: "none" })).resolves.toBeDefined();
+    }
+    for (const [method, path] of [
+      ["PUT", "/wc/v3/products/reviews/5"],
+      ["DELETE", "/wc/v3/products/reviews/5"],
+      ["POST", "/wc/v3/products/reviews/batch"],
+      ["GET", "/wp/v2/comments"],
       ["GET", "/wp/v2/users"],
       ["GET", "/wc/v3/customers"],
       ["DELETE", "/wc/v3/customers/4"],

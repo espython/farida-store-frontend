@@ -280,12 +280,7 @@
       "inStock": "in stock",
       "outStock": "out of stock",
       "categories": "categories",
-      "discount": "discount",
-      "reviews": "Reviews",
-      "addReview": "add your rating and review",
-      "rating": "your rating",
-      "review": "your review",
-      "submit": "submit"
+      "discount": "discount"
     },
     "information": {
       "elevate": "elevate your everyday",
@@ -297,9 +292,7 @@
     },
     "bestSeller": "best seller",
     "addToCart": "add to cart",
-    "addedToCart": "added to cart",
-    "successRating": "Your review has been sent successfully, your review is awaiting approval",
-    "reviewCondition": "you should login first to be enable to add your review for this product"
+    "addedToCart": "added to cart"
   },
   "cartPage": {
     "title": "cart",
@@ -810,5 +803,46 @@
     "merged": "{count, plural, one {# saved product is} other {# saved products are}} now in your account",
     "mergeSkipped": "{count, plural, one {# product didn't fit} other {# products didn't fit}}: your wishlist is full",
     "mergeFailed": "We couldn't move your saved products to your account. We'll try again."
+  },
+  "reviews": {
+    "title": "Reviews",
+    "summary": "{count, plural, one {Based on # review} other {Based on # reviews}}",
+    "none": "No reviews yet",
+    "stars": "{rating} out of 5 stars",
+    "verified": "Verified buyer",
+    "emptyTitle": "No reviews yet",
+    "emptyText": "Bought this? Tell other shoppers what you think.",
+    "error": "We couldn’t load the reviews.",
+    "retry": "Try again",
+    "more": "Show more reviews",
+    "loading": "Loading…",
+    "signIn": {
+      "text": "Sign in to write a review.",
+      "action": "Sign in"
+    },
+    "mine": {
+      "pendingTitle": "Thanks for your review",
+      "approvedTitle": "Your review",
+      "pending": "Awaiting approval",
+      "approved": "Published",
+      "pendingText": "It will appear on this page once the shop approves it."
+    },
+    "form": {
+      "title": "Write a review",
+      "rating": "Your rating",
+      "ratingOption": "{count, plural, one {# star} other {# stars}}",
+      "text": "Your review",
+      "hint": "At least {min} characters",
+      "submit": "Submit review",
+      "submitting": "Sending…",
+      "sent": "Thanks! Your review will appear once it’s approved.",
+      "errors": {
+        "rating_required": "Choose a rating from 1 to 5 stars.",
+        "text_too_short": "Write at least {min} characters.",
+        "text_too_long": "Keep your review under {max} characters.",
+        "already_reviewed": "You’ve already reviewed this product.",
+        "unavailable": "We couldn’t send your review. Please try again."
+      }
+    }
   }
 }
