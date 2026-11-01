@@ -10,7 +10,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCart } from "@/modules/cart";
 
 const CartFloatingButton = () => {
-  const { cartSidebar, cart, sidebar, searchBox } = useContext(StoreContext);
+  const { cartSidebar, sidebar, searchBox } = useContext(StoreContext);
   const locale = useLocale();
   const t = useTranslations("header");
   const { totals, hydrated } = useCart();
@@ -25,7 +25,7 @@ const CartFloatingButton = () => {
   return (
     <AnimatePresence mode="wait">
       {!cartSidebar.showCartSideBar &&
-        !cart.isCartMenuDisplayed &&
+        !cartSidebar.isCartMenuDisplayed &&
         !sidebar.showSideBar &&
         !searchBox.showSearchBox && (
           <motion.div

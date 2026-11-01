@@ -1,9 +1,7 @@
 "use client";
-import { CartStore } from "./cartStore";
 import { UserDropStore } from "./userDropStore";
 
 import React, { createContext } from "react";
-import { userStore } from "./userStore";
 import { SideBarStore } from "./sidebarStore";
 import { CartSidebarStore } from "./cartSidebarStore";
 import { FilterSidebarStore } from "./filterSidebarStore";
@@ -13,17 +11,9 @@ import { AdsSliderStore } from "./adsStore";
 import { FastAdsStore } from "./fastAdsStore";
 import PaymentStore from "./paymentStore";
 
-// cart store instance
-
-const cartProducts = new CartStore();
-
 // userDrop store instance
 
 const userDropInstance = new UserDropStore();
-
-// user information store
-
-const userStoreInstance = new userStore();
 
 // sidebar state store
 
@@ -64,9 +54,7 @@ const paymentInstance = new PaymentStore();
 // this object is for all stores that will for all states
 
 export const store = {
-  cart: cartProducts,
   userDrop: userDropInstance,
-  user: userStoreInstance,
   sidebar: sidebarInstance,
   cartSidebar: cartSidebarInstance,
   filter: filterSidebarInstance,

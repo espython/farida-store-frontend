@@ -14,13 +14,13 @@ import { useTranslations } from "next-intl";
 import { useCart } from "@/modules/cart";
 
 const FullCartIcon = () => {
-  const { cart } = useContext(StoreContext);
+  const { cartSidebar } = useContext(StoreContext);
   const t = useTranslations("header");
   const { totals, hydrated } = useCart();
   const count = hydrated ? totals.itemCount : 0;
 
   return (
-    <div className="relative" onMouseOver={cart.displayCartMenu} onMouseLeave={cart.hideCartMenu}>
+    <div className="relative" onMouseOver={cartSidebar.displayCartMenu} onMouseLeave={cartSidebar.hideCartMenu}>
       <Link href={"/cart"} aria-label={`${t("cart")} (${count})`}>
         <Icon
           icon={<AiOutlineShoppingCart />}

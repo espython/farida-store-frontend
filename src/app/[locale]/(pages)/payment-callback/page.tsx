@@ -22,7 +22,7 @@ const STATUS_ICON: Record<Status, { icon: React.ReactNode; className: string }> 
 };
 
 const PaymentCallbackPage = () => {
-  const { payment, cart, user } = useContext(StoreContext);
+  const { payment } = useContext(StoreContext);
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("paymentCallback");
@@ -50,7 +50,6 @@ const PaymentCallbackPage = () => {
             searchParams.get("order") ??
             searchParams.get("merchant_order_id");
 
-          await user.clearUserCart(cart.userCartItems);
           clearCheckoutIdempotencyKey();
           localStorage.removeItem("shippingAddressId");
 
@@ -83,7 +82,7 @@ const PaymentCallbackPage = () => {
 
     processPaymentCallback();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, payment, cart, user, router]);
+  }, [searchParams, payment, router]);
 
   if (isProcessing || !paymentStatus) {
     return (
