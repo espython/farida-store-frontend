@@ -27,6 +27,8 @@ export interface ProductQuery {
   color?: string;
   onSale?: boolean;
   search?: string;
+  /** Product ids: only these, in this order (e.g. a wishlist); other filters are ignored. */
+  ids?: string[];
 }
 
 const SORT: Record<ProductSort, { orderby: string; order: "asc" | "desc" }> = {
@@ -82,6 +84,7 @@ export async function listColors(locale: Locale): Promise<Color[]> {
 }
 
 export async function listProducts(q: ProductQuery): Promise<ProductPage> {
+  if (q.ids) return listProductsByIds(q.ids, q.locale);
   const sort = SORT[q.sort];
   const query: Record<string, string | number | undefined> = {
     page: q.page,
@@ -116,6 +119,17 @@ export async function listProducts(q: ProductQuery): Promise<ProductPage> {
     total: intHeader(res.headers, "x-wp-total", res.data.length),
     totalPages: intHeader(res.headers, "x-wp-totalpages", 1),
   };
+}
+
+/** These products in the given order; unknown or hidden ids are left out (Store API `orderby=include`). */
+async function listProductsByIds(ids: string[], locale: Locale): Promise<ProductPage> {
+  if (ids.length === 0) return { items: [], page: 1, total: 0, totalPages: 1 };
+  const res = await wooFetch<WooStoreProduct[]>({
+    path: "/wc/store/v1/products",
+    query: { include: ids.join(","), orderby: "include", order: "asc", per_page: ids.length, catalog_visibility: "catalog", lang: locale },
+    next: CATALOG_CACHE,
+  });
+  return { items: res.data.map((p) => toProduct(p, locale)), page: 1, total: res.data.length, totalPages: 1 };
 }
 
 export async function getProductBySlug(slug: string, locale: Locale): Promise<Product> {

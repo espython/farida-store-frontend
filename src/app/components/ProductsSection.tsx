@@ -8,6 +8,7 @@ import FilterSidebarContents from "@/app/components/FilterSidebarContents";
 import { useLocale, useTranslations } from "next-intl";
 import { CatalogListing } from "@/modules/catalog";
 import { AddToCartButton, toProductRef } from "@/modules/cart";
+import { WishlistButton } from "@/modules/wishlist";
 
 const ProductsSection = () => {
   const { viewStyle, filter } = useContext(StoreContext);
@@ -26,11 +27,12 @@ const ProductsSection = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      {/* The page composes catalog and cart: the catalog never imports the cart. */}
+      {/* The page composes catalog, cart and wishlist: the catalog imports neither. */}
       <CatalogListing
         view={viewStyle.gridView ? "grid" : "row"}
         onFiltersChange={filter.hideWholeFilterSidebar}
         renderActions={(product) => <AddToCartButton product={toProductRef(product)} />}
+        renderOverlay={(product) => <WishlistButton productId={product.id} title={product.title} />}
       />
 
       <AnimatePresence mode="wait">

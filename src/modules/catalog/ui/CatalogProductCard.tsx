@@ -11,12 +11,14 @@ interface Props {
   product: Product;
   /** Row layout for the list view. */
   row?: boolean;
-  /** Cart and wishlist controls are injected by the cart module; none until it exists. */
+  /** Cart controls, injected by the page (the catalog never imports the cart). */
   actions?: ReactNode;
+  /** A control on the image's top corner (the wishlist heart), injected the same way. */
+  overlay?: ReactNode;
 }
 
 /** Kitchen Garden product card: 1:1 image, 2-line title, price first, rating beside it. */
-const CatalogProductCard = ({ product, row = false, actions }: Props) => {
+const CatalogProductCard = ({ product, row = false, actions, overlay }: Props) => {
   const locale = useLocale();
   const t = useTranslations("product");
   const currency = useTranslations("currency");
@@ -41,6 +43,7 @@ const CatalogProductCard = ({ product, row = false, actions }: Props) => {
             className="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.03]"
           />
         </Link>
+        {overlay && <div className="absolute z-20 top-2 end-2">{overlay}</div>}
         <div className="absolute z-20 top-3 start-3 flex flex-col items-start gap-1.5 pointer-events-none">
           {pct > 0 && (
             <span className="px-3 py-0.5 rounded-full bg-saffron text-garden text-[0.8125rem] font-bold">

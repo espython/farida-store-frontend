@@ -4,8 +4,14 @@ import { listProducts } from "@/modules/catalog/index.server";
 import { NextResponse } from "next/server";
 import { catalogFilterBase, priceRangeIssue, priceRangeValid } from "../catalogSchemas";
 
+// ids: up to 50 product ids, comma separated (a wishlist); the other filters are then ignored.
+const idList = z
+  .string()
+  .regex(/^[1-9]\d{0,9}(,[1-9]\d{0,9}){0,49}$/, "Invalid ids")
+  .transform((v) => v.split(",").filter((id, i, all) => all.indexOf(id) === i));
+
 const schema = catalogFilterBase
-  .extend({ search: z.string().trim().min(1).max(100).optional() })
+  .extend({ search: z.string().trim().min(1).max(100).optional(), ids: idList.optional() })
   .refine(priceRangeValid, priceRangeIssue);
 
 export const { GET, POST, PUT, PATCH, DELETE, OPTIONS } = defineRoute({

@@ -1,12 +1,10 @@
 "use client";
 import { Link } from "@/navigation";
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import { FaRegHeart } from "react-icons/fa";
-import Icon from "./Icon";
-import { observer } from "mobx-react-lite";
-import { StoreContext } from "@/contexts/StoreContext";
-import { useAuth } from "@/hooks/useAuth";
 import { useTranslations } from "next-intl";
+import { useWishlist } from "@/modules/wishlist";
+import Icon from "./Icon";
 
 interface fullWishlistIconProps {
   className?: string;
@@ -15,27 +13,10 @@ interface fullWishlistIconProps {
   showPop?: boolean;
 }
 
-const FullWishlistIcon = ({
-  className,
-  hasBorder = true,
-  hasBorderHover = true,
-  showPop = true,
-}: fullWishlistIconProps) => {
-  const { userWishlist } = useContext(StoreContext);
-  const { isLoggedIn } = useAuth();
+/** Header link to the wishlist with the number of saved products (guest or account). */
+const FullWishlistIcon = ({ className, hasBorder = true, hasBorderHover = true, showPop = true }: fullWishlistIconProps) => {
   const t = useTranslations("header");
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      userWishlist.getUserWishlistItems();
-    } else {
-      userWishlist.resetAllStates();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    isLoggedIn,
-    userWishlist.userWishlistProductsCount,
-  ]);
+  const { count, hydrated } = useWishlist();
 
   return (
     <div>
@@ -45,12 +26,11 @@ const FullWishlistIcon = ({
           hasBorder={hasBorder}
           hasBorderHover={hasBorderHover}
           showPop={showPop}
-          // count={userWishlist.userWishlistProductsCount}
-          count={userWishlist.userWishlistProductsCount}
+          count={hydrated ? count : 0}
         />
       </Link>
     </div>
   );
 };
 
-export default observer(FullWishlistIcon);
+export default FullWishlistIcon;

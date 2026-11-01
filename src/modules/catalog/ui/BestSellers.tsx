@@ -13,10 +13,12 @@ interface Props {
   count?: number;
   /** Per-card controls (add to cart), injected by the page. */
   renderActions?: (product: Product) => ReactNode;
+  /** Control on each card image (the wishlist heart). */
+  renderOverlay?: (product: Product) => ReactNode;
 }
 
 /** Row of the most popular products (Woo total_sales). Renders nothing on error. */
-const BestSellers = ({ excludeId, count = 4, renderActions }: Props) => {
+const BestSellers = ({ excludeId, count = 4, renderActions, renderOverlay }: Props) => {
   const locale = useLocale() as Locale;
   // One extra so the list stays full after dropping the current product.
   const { data, isLoading } = useGetProductsQuery({ locale, sort: "popularity", perPage: count + 1 });
@@ -37,7 +39,7 @@ const BestSellers = ({ excludeId, count = 4, renderActions }: Props) => {
     <ul className="grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-4 md:gap-6" data-testid="best-sellers">
       {items.map((p) => (
         <li key={p.id} className="flex">
-          <CatalogProductCard product={p} actions={renderActions?.(p)} />
+          <CatalogProductCard product={p} actions={renderActions?.(p)} overlay={renderOverlay?.(p)} />
         </li>
       ))}
     </ul>

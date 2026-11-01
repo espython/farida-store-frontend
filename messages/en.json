@@ -406,36 +406,6 @@
       }
     }
   },
-  "wishList": {
-    "title": "Wishlist",
-    "noSignIn": {
-      "descritpion": "Sign in to see your wishlist",
-      "action": "Sign in"
-    },
-    "content": {
-      "items": "wish list items",
-      "emptyWishlist": {
-        "empty": "Your wishlist is empty",
-        "text": "Tap the heart on any product to save it here.",
-        "action": "Browse products"
-      },
-      "item": {
-        "addToCart": "Add to cart",
-        "addedToCart": "In your cart",
-        "delete": "Remove",
-        "remove": "Remove {title} from wishlist"
-      },
-      "filters": {
-        "rating": "Rating",
-        "pricesUp": "Price: low to high",
-        "pricesDown": "Price: high to low",
-        "AZ": "Name: A–Z",
-        "sortBy": "Sort by",
-        "choose": "Choose"
-      },
-      "count": "{count, plural, one {# saved item} other {# saved items}}"
-    }
-  },
   "notFound": {
     "title": "Page Not Found",
     "description": "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.",
@@ -819,5 +789,26 @@
       "signIn": "Sign in to see your account",
       "signInAction": "Sign in"
     }
+  },
+  "wishlist": {
+    "title": "Your wishlist",
+    "saveNamed": "Save {title} to your wishlist",
+    "removeNamed": "Remove {title} from your wishlist",
+    "saveLabel": "Save",
+    "savedLabel": "Saved",
+    "saved": "Saved {title} to your wishlist",
+    "removed": "Removed {title} from your wishlist",
+    "full": "Your wishlist is full ({max} products). Remove one to save another.",
+    "failed": "We couldn't update your wishlist. Please try again.",
+    "empty": "Your wishlist is empty",
+    "emptyText": "Tap the heart on a product to save it for later.",
+    "browse": "Browse products",
+    "count": "{count, plural, one {# product} other {# products}}",
+    "guestNote": "Saved on this device. <link>Sign in</link> to keep it on all your devices.",
+    "unavailable": "We couldn't load your wishlist. Please try again.",
+    "retry": "Try again",
+    "merged": "{count, plural, one {# saved product is} other {# saved products are}} now in your account",
+    "mergeSkipped": "{count, plural, one {# product didn't fit} other {# products didn't fit}}: your wishlist is full",
+    "mergeFailed": "We couldn't move your saved products to your account. We'll try again."
   }
 }

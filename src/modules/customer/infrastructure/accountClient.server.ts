@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { AppError } from "@/shared/kernel/AppError";
 import { wooFetch } from "@/shared/infrastructure/wooClient.server";
+import { serializedPerKey } from "@/shared/infrastructure/perKeyQueue.server";
 import type { Address } from "@/shared/kernel/Address";
 import {
   addEntry,
@@ -50,19 +51,8 @@ async function writeCustomer(customerId: string, body: WcCustomerUpdate): Promis
 }
 
 // The book is one meta value: changes are read-modify-write, so they run one
-// at a time per customer. In-memory, like the checkout guard: one Node
-// instance (W1 hosting).
-const queues = new Map<string, Promise<unknown>>();
-async function serialized<T>(customerId: string, fn: () => Promise<T>): Promise<T> {
-  const run = (queues.get(customerId) ?? Promise.resolve()).catch(() => undefined).then(fn);
-  const tail = run.catch(() => undefined);
-  queues.set(customerId, tail);
-  try {
-    return await run;
-  } finally {
-    if (queues.get(customerId) === tail) queues.delete(customerId);
-  }
-}
+// at a time per customer (in memory: one Node instance, W1 hosting).
+const serialized = <T>(customerId: string, fn: () => Promise<T>) => serializedPerKey(`account:${customerId}`, fn);
 
 const view = (dto: WcCustomerAccount): AddressBookView => ({
   addresses: toSavedAddresses(toAddressBook(dto), toDefaultAddress(dto)),
