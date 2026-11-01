@@ -16,6 +16,7 @@ vi.mock("@/modules/catalog", async (importOriginal) => ({
   BestSellers: () => null,
   ProductGallery: () => null,
 }));
+vi.mock("@/modules/reviews", () => ({ ProductReviews: () => <section aria-label="reviews" /> }));
 vi.mock("./Breads", () => ({ default: ({ title }: { title: string }) => <nav>{title}</nav> }));
 vi.mock("next/navigation", () => ({
   notFound: () => {

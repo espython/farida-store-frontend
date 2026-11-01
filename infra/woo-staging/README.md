@@ -50,6 +50,18 @@ Versions: WordPress 7.1.3, WooCommerce 11.2.1, Polylang 3.8.11, JWT Auth 1.5.0, 
 | `wp/v2/users` anonymous | **200: lists users. Must be locked down before launch** (security basics) |
 | Polylang languages en + ar | Created. Free Polylang has no WP-CLI; `lang` param on the Store API is not yet verified with translated products. Needs Polylang for WooCommerce (paid) or an alternative: decision pending |
 
+### Review checks (`spike-reviews.mjs`, 2026-11-02, O3 #254)
+
+| Check | Result |
+|---|---|
+| `POST wc/v3/products/reviews` with `status: "hold"` (server keys) | 201, held; not in the public list until approved |
+| `verified` | Set by Woo: true when the reviewer email has a completed order for the product, false otherwise |
+| Rating 0 or 9 | **Accepted by Woo**: the BFF checks 1–5 itself |
+| Same text twice from one author | 409 `woocommerce_rest_comment_duplicate` (mapped to `already_reviewed`) |
+| `GET wc/v3/products/reviews?product=&reviewer_email=&status=all` | Finds the customer's own review, held or approved (the default is approved only) |
+| `GET wc/store/v1/products/reviews?product_id=` | Approved only, newest first, `X-WP-Total`/`X-WP-TotalPages`; no email; `review` is filtered HTML in `<p>` (the BFF sends plain text); past the last page or an unknown product: `[]` with 200 |
+| Rating aggregate (`average_rating`, `review_count`) | Updates as soon as a review is approved or unapproved; the storefront shows it after its 60 s catalog cache |
+
 ### Wishlist checks (2026-11-01, O4 #255)
 
 | Check | Result |
