@@ -1,6 +1,7 @@
 import React from "react";
-import ShippingContent from "./components/ShippingContent";
 import { unstable_setRequestLocale } from "next-intl/server";
+import { ShippingStep } from "@/modules/checkout";
+import PageContainer from "@/shared/ui/PageContainer";
 
 interface ShippingPageProps {
   params: { locale: string };
@@ -9,9 +10,9 @@ interface ShippingPageProps {
 const ShippingPage = ({ params: { locale } }: ShippingPageProps) => {
   unstable_setRequestLocale(locale);
   return (
-    <div>
-      <ShippingContent />
-    </div>
+    <PageContainer className="pb-8">
+      <ShippingStep />
+    </PageContainer>
   );
 };
 

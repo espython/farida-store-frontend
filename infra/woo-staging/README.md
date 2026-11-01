@@ -45,6 +45,21 @@ Versions: WordPress 7.1.3, WooCommerce 11.2.1, Polylang 3.8.11, JWT Auth 1.5.0, 
 | `wp/v2/users` anonymous | **200: lists users. Must be locked down before launch** (security basics) |
 | Polylang languages en + ar | Created. Free Polylang has no WP-CLI; `lang` param on the Store API is not yet verified with translated products. Needs Polylang for WooCommerce (paid) or an alternative: decision pending |
 
+### Signed-in checkout checks (`spike-checkout.mjs`, 2026-10-31, C3 #249)
+
+Run: `node --env-file=.env.local spike-checkout.mjs`. Creates its own customer, product and coupon.
+
+| Check | Result |
+|---|---|
+| Egypt governorates | `wc/v3/data/countries/eg`: 27 states with codes (`EGC` Cairo, `EGGZ` Giza, …) |
+| Address → shipping | `cart/update-customer` returns rates (staging: one flat rate, 50 EGP); `select-shipping-rate` puts it in the totals |
+| Coupons | Unknown code: 400 `woocommerce_rest_cart_coupon_error`; valid percent coupon shows in `total_discount` |
+| Payment methods | Staging offers only `cod` (Paymob needs sandbox keys, W3) |
+| COD checkout | Order `processing`, note/shipping/coupon recorded, belongs to the customer; cart emptied; address saved to the customer |
+| **Concurrent checkouts of one cart** | **Two orders.** The Store API does not dedupe; the BFF serializes per customer and replays per idempotency key. That lock is in-memory: one Next instance only (see W1) |
+| Stock gone before checkout | 409 `woocommerce_rest_product_out_of_stock`, no order |
+| Order read-back | `wc/v3/orders/{id}` with keys + ownership check; Store API `order/{id}?key&billing_email` also works |
+
 ### Customer cart checks (`spike-cart.mjs`, 2026-10-31, C2 #248)
 
 Run: `node --env-file=.env.local spike-cart.mjs`. Creates its own customer.

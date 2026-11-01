@@ -18,6 +18,7 @@ This is the single complete plan. It replaces the Strapi-specific parts of `rtk-
 | 2026-10-14 | ~~`backend-admin` (Strapi) is **not deleted** until after cutover and a stable period~~ | ~~Needed for the data export and for rollback.~~ Superseded 2026-10-31. |
 | 2026-10-14 | Adopt **DDD-lite**: bounded-context modules (`src/modules/<context>`) with domain / infrastructure / application / ui layers, a shared kernel, and an anti-corruption layer for Woo | Keeps Woo and RTK specifics out of components and makes pricing, coupon, cancellation and status rules pure and testable. See `ddd-architecture.md`. |
 | 2026-10-31 | **No data migration and no Strapi fallback.** Strapi holds only test data (no real customers, products or orders). Each feature replaces Strapi directly when it moves to Woo and deletes its Strapi code in the same change; no `*_SOURCE` switches, no import, no rollback. Phase 7 is dropped (M1–M4 closed) and Phase 9 becomes a launch. | Owner decision. The fallback and migration work protected data that does not exist. The only constraint left is that a feature works on Woo before its Strapi code is deleted. |
+| 2026-10-31 | **Launch with cash on delivery only; card payment (Paymob) after launch** (#326) | Most orders are COD; the Paymob sandbox keys are not available yet and the card flow is the riskiest part of checkout. Checkout already maps the Paymob gateway to `card`, so it appears once the gateway is enabled. |
 | 2026-10-31 | **After launch, move to a feature-based, full DDD architecture** (`src/features/<feature>`, aggregates/value objects/domain events, ports and adapters, integration events). Until launch, DDD-lite stays the rule. | DDD-lite was right for the migration's speed; after launch the growing codebase needs enforced invariants, ports for testable use cases and a deliberate event model. Plan: `ddd-feature-architecture-plan.md`. |
 | 2026-10-29 | Keep **NextUI** through the migration; after launch, move to **HeroUI** (option 1) rather than shadcn/ui | NextUI is used in ~100 files and the migration should not double as a redesign. NextUI was renamed HeroUI and `@nextui-org/*` no longer gets updates; HeroUI is the same library under a new name, so the move is mostly a package rename. A gradual move to shadcn/ui stays possible later. |
 
@@ -191,10 +192,10 @@ Estimates are rough, for one developer, and exclude waiting time on hosting and 
 **C2. Server cart via Store API**
 - `/api/shop/cart` routes handle the `Cart-Token` (stored in an httpOnly cookie); add/update/remove items; coupons.
 - `useCart()` hides guest vs server; guest → user merge (keep the `ConfirmMergeCart` UX).
-**C3. Checkout**
-- Shipping address and method with cost; COD and card selector; order notes; idempotency key (reuse `checkoutIdempotency`).
-- `POST /api/shop/checkout` → Woo order; Paymob redirect/iframe through the Woo gateway; stock and coupon errors mapped to localized messages.
-- `payment-callback` page polls order status from the BFF; reuse `orderPaymentState`.
+**C3. Checkout** (cash on delivery)
+- Shipping address (Egypt: governorates, mobile, postcode) and method with cost; coupons; COD; order notes; idempotency key (the BFF serializes per customer and replays per key: Woo creates two orders for concurrent checkouts).
+- `POST /api/shop/checkout/order` → Woo order; confirmation read from Woo (owned order only); stock, coupon and address errors mapped to localized messages.
+- Card payment (Paymob through the Woo gateway, payment return page): #326, after launch.
 **C4. Parity tests**
 - Double-submit creates one order; last-unit race; coupon limit; totals match the Woo order.
 - Delete `cartStore`, `ordersStore`, `paymentStore`, `paymobService` where replaced.
@@ -336,7 +337,7 @@ Note: `selectionAddressModal` is currently `new AddressModalStore()`; it becomes
 - [ ] Phase 2: Woo platform (W1–W9). W0 staging spike done on local Docker; W1–W9 not started. Open: Polylang add-on, Paymob sandbox keys, hosting
 - [ ] Phase 3: BFF and catalog (B1–B7). B1–B3 done; B4 code done (#293, #295–#298), Lighthouse SEO ≥ 90 on a deployed Woo build still to run; B5 waits on W7; B6 (#303) and B7 (#304) open
 - [ ] Phase 4: accounts (A1–A5). A1 BFF built (branch `feat/a1-customer-auth`); A5 (#302) removes Strapi auth
-- [ ] Phase 5: cart and checkout (C1–C4). C1 cart context in PR #301
+- [ ] Phase 5: cart and checkout (C1–C4). C1 and C2 done; C3 cash-on-delivery checkout in review; card payment after launch (#326)
 - [ ] Phase 6: orders and wishlist (O1–O4)
 - [x] Phase 7: data migration (M1–M4): dropped 2026-10-31, no real data
 - [ ] Phase 8: UI state and cleanup (U1–U3)

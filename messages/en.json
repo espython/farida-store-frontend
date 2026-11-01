@@ -789,5 +789,101 @@
     "invalid_input": "Check the highlighted fields",
     "unauthenticated": "Your session has ended. Please sign in again.",
     "unavailable": "We couldn't reach the shop. Please try again."
+  },
+  "checkout": {
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "phone": "Mobile number",
+      "phoneHint": "For the courier, e.g. 010 1234 5678",
+      "governorate": "Governorate",
+      "chooseGovernorate": "Choose a governorate",
+      "city": "City or district",
+      "address1": "Street and building",
+      "address1Placeholder": "e.g. 12 El Nasr St, building 4",
+      "address2": "Apartment, floor, landmark",
+      "postcode": "Postal code",
+      "optional": "Optional",
+      "postcodeHint": "5 digits, e.g. 12611 for Dokki"
+    },
+    "addressErrors": {
+      "required": "This field is required",
+      "too_long": "Use 100 characters or fewer",
+      "governorate_invalid": "Choose a governorate",
+      "phone_invalid": "Enter an Egyptian mobile number (11 digits, starting 010, 011, 012 or 015)",
+      "postcode_invalid": "Postal codes have 5 digits"
+    },
+    "errors": {
+      "invalid_address": "Check the delivery address",
+      "coupon_invalid": "That coupon can't be used",
+      "out_of_stock": "Some items are no longer in stock in that quantity.",
+      "cart_empty": "Your cart is empty. If you just placed an order, check your orders.",
+      "payment_unavailable": "That payment method isn't available right now",
+      "unavailable": "We couldn't reach the shop. Please try again."
+    },
+    "states": {
+      "signInTitle": "Sign in to check out",
+      "signInText": "Your cart is saved to your account, so you can finish on any device.",
+      "signIn": "Sign in",
+      "emptyTitle": "Your cart is empty",
+      "shop": "Start shopping",
+      "retry": "Try again"
+    },
+    "delivery": {
+      "title": "Delivery details",
+      "continue": "Continue to payment"
+    },
+    "payment": {
+      "deliverTo": "Deliver to",
+      "change": "Change",
+      "needAddress": "Your delivery address is incomplete.",
+      "addAddress": "Complete address",
+      "shipping": "Shipping",
+      "noShipping": "We don't deliver to this address yet.",
+      "free": "Free",
+      "method": "Payment",
+      "methods": {
+        "cod": {
+          "title": "Cash on delivery",
+          "text": "Pay the courier when your order arrives"
+        },
+        "card": {
+          "title": "Credit or debit card",
+          "text": "Pay securely online"
+        }
+      },
+      "note": "Order note",
+      "noteHint": "Anything the courier should know (optional)",
+      "place": "Place order · {total}",
+      "reviewCart": "Review your cart"
+    },
+    "coupon": {
+      "label": "Coupon code",
+      "apply": "Apply",
+      "remove": "Remove coupon {code}"
+    },
+    "summary": {
+      "title": "Order summary",
+      "items": "Items",
+      "shipping": "Shipping",
+      "shippingTbd": "Next step",
+      "discount": "Discount",
+      "total": "Total"
+    },
+    "confirmation": {
+      "thanks": "Thank you!",
+      "text": "We received your order #{number}. We'll let you know when it ships.",
+      "track": "Track your order",
+      "continue": "Continue shopping",
+      "details": "Order details",
+      "number": "Order number",
+      "date": "Ordered on",
+      "payment": "Payment",
+      "deliverTo": "Deliver to",
+      "address": "Address",
+      "codNote": "Please have the exact amount ready for the courier.",
+      "notFound": "We couldn't find this order",
+      "myOrders": "View my orders"
+    }
   }
 }

@@ -6,8 +6,6 @@ import { UserOrderDetails } from "./specificTypes/userOrderDetailsType";
 import { STRAPI_ENDPOINT } from "@/api/config";
 
 export class OrdersStore {
-  isCreatingOrderLoading: boolean = false;
-
   orderDetails: OrderDetail = {} as OrderDetail;
   orderItems: OrderItems = {} as OrderItems;
   userOrders: UserOrderDetails[] = [];
@@ -54,74 +52,6 @@ export class OrdersStore {
       let data = await response.json();
 
       return data;
-    } else {
-      return null;
-    }
-  };
-
-  addNewUserPaymentMethod = async () => {};
-
-  // Persist the shipping address server-side (owner-scoped). Only the
-  // returned record id is kept client-side; personal data stays on the server.
-  saveUserAddress = async (data: {
-    street: string;
-    state: string;
-    city: string;
-    country: string;
-    postal_code: string;
-    phone: string;
-    second_phone: string;
-    userId: string;
-  }) => {
-    const response = await fetch(`${STRAPI_ENDPOINT}/user-addresses`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        data: {
-          street: data.street,
-          state: data.state,
-          city: data.city,
-          country: data.country,
-          postal_code: data.postal_code,
-          phone: data.phone,
-          second_phone: data.second_phone,
-          user: data.userId,
-        },
-      }),
-    });
-
-    if (response.ok) {
-      return await response.json();
-    }
-    return null;
-  };
-
-  // Server-owned checkout: the backend derives the user from the JWT,
-  // recomputes prices and totals from the database and writes the order
-  // with its items atomically. The client only sends product ids and
-  // quantities plus a reference to a server-stored address — never
-  // totalPrice, userId or personal shipping data. A server-created Paymob
-  // order/payment key comes back for paymentMethod "card".
-  checkout = async (data: {
-    items: Array<{ id: number | string; quantity: number }>;
-    addressId: number | string;
-    orderNotes: string;
-    paymentMethod?: "card" | "cod";
-    idempotencyKey?: string;
-  }) => {
-    let response = await fetch(`${STRAPI_ENDPOINT}/order-details/checkout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (response.ok) {
-      let responseData = await response.json();
-      return responseData;
     } else {
       return null;
     }
@@ -183,35 +113,6 @@ export class OrdersStore {
     }
   };
 
-  isOrderInUserOrdersList = async (
-    orderId: string | number,
-    userId: string | number
-  ) => {
-    let response = await fetch(
-      `${STRAPI_ENDPOINT}/order-details/${orderId}?populate=*`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (response.ok) {
-      let data = await response.json();
-
-      if (data) {
-        if (data?.data?.attributes?.user?.data?.id == userId) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-  };
-
   getUserOrders = async () => {
     let response = await fetch(
       `${STRAPI_ENDPOINT}/users/me?[populate][order_details][populate][order_items][populate]=*`,
@@ -248,10 +149,6 @@ export class OrdersStore {
       return false;
     }
   };
-
-  set setIsCreatingOrderLoading(val: boolean) {
-    this.isCreatingOrderLoading = val;
-  }
 
   set setIsAddressLoading(val: boolean) {
     this.isAddressLoading = val;
