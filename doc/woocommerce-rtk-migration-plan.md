@@ -202,7 +202,7 @@ Estimates are rough, for one developer, and exclude waiting time on hosting and 
 - Accept: COD and card orders succeed on staging in en and ar; refund and cancel from the Woo admin reflect on the storefront.
 
 ### Phase 6 – Orders and wishlist · P1/P2 · ~1.5 weeks
-- O1. Order list/detail/tracking from Woo statuses (incl. custom out-for-delivery status); invoice link.
+- O1. Order list/detail/tracking from Woo statuses (incl. custom out-for-delivery status, a WordPress mu-plugin). Invoice link left out: Woo has no customer invoice without a PDF-invoice plugin (owner decision).
 - O2. Customer cancel for cancellable orders; return-request form.
 - O3. Reviews: `reviewsApi` (list, add) with moderation; verified-buyer badge.
 - O4. Wishlist: decide plugin (with API) or user-meta endpoint; `wishlistSlice` for guests; delete `wishListStore`, `userWishlist`.
@@ -338,7 +338,7 @@ Note: `selectionAddressModal` is currently `new AddressModalStore()`; it becomes
 - [ ] Phase 3: BFF and catalog (B1–B7). B1–B3 done; B4 code done (#293, #295–#298), Lighthouse SEO ≥ 90 on a deployed Woo build still to run; B5 waits on W7; B6 (#303) and B7 (#304) open
 - [ ] Phase 4: accounts (A1–A5). A1 BFF built (branch `feat/a1-customer-auth`); A5 (#302) removes Strapi auth
 - [ ] Phase 5: cart and checkout (C1–C4). C1 and C2 done; C3 cash-on-delivery checkout in review; card payment after launch (#326)
-- [ ] Phase 6: orders and wishlist (O1–O4)
+- [ ] Phase 6: orders and wishlist (O1–O4). O1 orders on Woo in review
 - [x] Phase 7: data migration (M1–M4): dropped 2026-10-31, no real data
 - [ ] Phase 8: UI state and cleanup (U1–U3)
 - [ ] Phase 9: launch and Strapi removal (X1, X2, X4; X3 dropped)

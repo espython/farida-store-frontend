@@ -31,6 +31,11 @@ Production: do NOT install `local-webhooks.php`. Set `WC_WEBHOOK_SECRET` on the 
 
 `setup.sh` installs WooCommerce, Polylang, JWT Authentication for WP REST API and Paymob for WooCommerce; sets EGP / Egypt / 2 decimals / post-name permalinks; enables COD; creates English and Arabic languages and 5 sample products.
 
+It also writes two must-use plugins that **production WordPress needs too** (copy them to `wp-content/mu-plugins/`):
+
+- `farida-hardening.php`: hides `wp/v2/users` from anonymous visitors.
+- `farida-order-statuses.php` (O1): an **Out for delivery** order status between Processing and Completed, with a bulk action on the orders list. The owner sets it when the courier leaves; the storefront's tracking shows it (REST status `out-for-delivery`).
+
 ## Spike findings so far (2026-10-14)
 
 Versions: WordPress 7.1.3, WooCommerce 11.2.1, Polylang 3.8.11, JWT Auth 1.5.0, Paymob for WooCommerce 4.1.15 (wp.org), PHP 8.2.
@@ -44,6 +49,17 @@ Versions: WordPress 7.1.3, WooCommerce 11.2.1, Polylang 3.8.11, JWT Auth 1.5.0, 
 | `wc/v3` orders/products anonymous | 401 as expected |
 | `wp/v2/users` anonymous | **200: lists users. Must be locked down before launch** (security basics) |
 | Polylang languages en + ar | Created. Free Polylang has no WP-CLI; `lang` param on the Store API is not yet verified with translated products. Needs Polylang for WooCommerce (paid) or an alternative: decision pending |
+
+### Customer orders checks (2026-11-01, O1 #252)
+
+| Check | Result |
+|---|---|
+| `wc/v3/orders?customer=<id>` lists only that customer's orders, `X-WP-Total`/`X-WP-TotalPages` set | Pass |
+| `customer=0` | **Returns guest orders.** The BFF refuses any id that is not a positive integer |
+| Checkout drafts (`checkout-draft`, created by the Store API) in the default listing | Not listed |
+| Custom status `out-for-delivery` (mu-plugin) settable over REST and included in the default listing | Pass |
+| Unknown order id | 404 |
+| Line items carry no product slug | Slugs come from `wc/store/v1/products?include=…` (cached); links are dropped if that fails |
 
 ### Signed-in checkout checks (`spike-checkout.mjs`, 2026-10-31, C3 #249)
 

@@ -44,15 +44,3 @@ export const selectedRate = (c: Checkout): ShippingRate | null => c.shippingRate
 /** Ready to place: items, a complete address and a chosen shipping rate. */
 export const canPlaceOrder = (c: Checkout, addressComplete: boolean): boolean =>
   c.lines.length > 0 && addressComplete && selectedRate(c) !== null && c.paymentMethods.length > 0;
-
-/** An order Woo accepted. */
-export interface PlacedOrder {
-  id: string;
-  status: string;
-  paymentMethod: string;
-  createdAt: string;
-  lines: { title: string; quantity: number; total: Money; image: string | null; slug: string | null }[];
-  address: Address;
-  note: string;
-  totals: CheckoutTotals;
-}

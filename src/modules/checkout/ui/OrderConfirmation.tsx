@@ -1,22 +1,19 @@
 "use client";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { LuCheck, LuPackageX } from "react-icons/lu";
 import { Link } from "@/navigation";
 import { buttonClass } from "@/shared/ui/Button";
 import EmptyState from "@/shared/ui/EmptyState";
-import { governorateName } from "../domain/governorates";
-import { usePlacedOrder } from "../application/useCheckout";
-import CheckoutSummary from "./CheckoutSummary";
-import { CheckoutLoading } from "./CheckoutStates";
+import { OrderLoading, OrderOverview, OrdersUnavailable, useOrder } from "@/modules/orders";
 
-/** Step 4: the order Woo accepted, read back from Woo (owner only). */
+/** Step 4: the order Woo accepted, read back from Woo (owner only) through the orders context. */
 const OrderConfirmation = ({ orderId }: { orderId: string | null }) => {
   const t = useTranslations("checkout");
-  const locale = useLocale() as "en" | "ar";
-  const { order, loading, notFound } = usePlacedOrder(orderId);
+  const { order, loading, notFound, failed, retry } = useOrder(orderId);
 
-  if (orderId && loading) return <CheckoutLoading />;
-  if (!orderId || notFound || !order) {
+  if (loading) return <OrderLoading tall />;
+  if (failed) return <OrdersUnavailable retry={retry} />;
+  if (notFound || !order) {
     return (
       <EmptyState
         role="status"
@@ -30,9 +27,6 @@ const OrderConfirmation = ({ orderId }: { orderId: string | null }) => {
       />
     );
   }
-
-  const a = order.address;
-  const date = new Date(order.createdAt).toLocaleDateString(locale, { day: "numeric", month: "short", year: "numeric" });
 
   return (
     <div className="flex flex-col gap-6 lg:gap-8">
@@ -53,42 +47,7 @@ const OrderConfirmation = ({ orderId }: { orderId: string | null }) => {
           </Link>
         </div>
       </section>
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-        <div className="lg:col-span-7 flex flex-col gap-6">
-          <section aria-labelledby="order-details" className="bg-white rounded-3xl p-5 md:p-6 flex flex-col gap-4">
-            <h2 id="order-details" className="font-display text-xl md:text-2xl">
-              {t("confirmation.details")}
-            </h2>
-            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                [t("confirmation.number"), `#${order.id}`],
-                [t("confirmation.date"), date],
-                [t("confirmation.payment"), t(order.paymentMethod === "cod" ? "payment.methods.cod.title" : "payment.methods.card.title")],
-                [t("confirmation.deliverTo"), `${a.firstName} ${a.lastName}`],
-                [t("fields.phone"), a.phone],
-                [t("confirmation.address"), `${[a.address1, a.address2, a.city].filter(Boolean).join(", ")} — ${governorateName(a.state, locale)}`],
-                ...(order.note ? [[t("payment.note"), order.note]] : []),
-              ].map(([label, value]) => (
-                <div key={label} className="flex flex-col gap-0.5 min-w-0">
-                  <dt className="text-sm text-garden-muted">{label}</dt>
-                  <dd className="font-semibold break-words">
-                    <bdi>{value}</bdi>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-            {order.paymentMethod === "cod" && (
-              <p className="rounded-2xl bg-[#fbe9c4] text-saffron-ink p-4 text-sm">{t("confirmation.codNote")}</p>
-            )}
-          </section>
-        </div>
-        <div className="lg:col-span-5 lg:sticky lg:top-24">
-          <CheckoutSummary
-            lines={order.lines.map((l, i) => ({ key: `${i}`, title: l.title, quantity: l.quantity, total: l.total, image: l.image }))}
-            totals={order.totals}
-          />
-        </div>
-      </div>
+      <OrderOverview order={order} showStatus={false} />
     </div>
   );
 };

@@ -1,10 +1,10 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Money } from "@/shared/kernel/Money";
-import { applyCoupon, getOrder, placeOrder, selectShippingRate, setAddress } from "./checkoutClient.server";
+import { applyCoupon, placeOrder, selectShippingRate, setAddress } from "./checkoutClient.server";
 import { placeOnce, resetCheckoutGuard } from "./checkoutGuard.server";
-import { toCheckout, toPlacedOrder } from "./checkoutMapper";
-import type { StoreCheckoutCart, WooOrder } from "./storeCheckoutDto";
+import { toCheckout } from "./checkoutMapper";
+import type { StoreCheckoutCart } from "./storeCheckoutDto";
 
 const address = { first_name: "Mona", last_name: "Ali", address_1: "12 El Nasr St", address_2: "", city: "Nasr City", state: "EGC", postcode: "", country: "EG", phone: "01001234567" };
 const cart = (over: Partial<StoreCheckoutCart> = {}): StoreCheckoutCart => ({
@@ -45,29 +45,6 @@ describe("checkout mapper", () => {
     expect(c.address.phone).toBe("01001234567");
   });
 
-  it("maps a REST order for the confirmation", () => {
-    const order: WooOrder = {
-      id: 290,
-      status: "processing",
-      customer_id: 9,
-      date_created: "2026-10-31T16:00:00",
-      payment_method: "cod",
-      customer_note: "Call me",
-      total: "950.00",
-      shipping_total: "50.00",
-      discount_total: "100.00",
-      currency: "EGP",
-      shipping: address,
-      billing: { ...address, email: "m@x.io" },
-      line_items: [{ name: "Kettle", quantity: 2, subtotal: "1000.00", total: "900.00", image: { src: "https://shop.test/k.jpg" }, product_id: 1 }],
-    };
-    expect(toPlacedOrder(order)).toMatchObject({
-      id: "290",
-      note: "Call me",
-      lines: [{ title: "Kettle", quantity: 2, total: Money.of(100000), image: "https://shop.test/k.jpg" }],
-      totals: { items: Money.of(100000), shipping: Money.of(5000), discount: Money.of(10000), total: Money.of(95000) },
-    });
-  });
 });
 
 describe("checkout client", () => {
@@ -133,15 +110,6 @@ describe("checkout client", () => {
   it("passes Woo's stock code through when an item ran out", async () => {
     fetchMock.mockResolvedValueOnce(respond(cart())).mockResolvedValueOnce(respond({ code: "woocommerce_rest_product_out_of_stock", message: "x" }, 409));
     await expect(placeOrder(caller, { paymentMethod: "cod", note: "" })).rejects.toMatchObject({ code: "woocommerce_rest_product_out_of_stock" });
-  });
-
-  it("reads only the customer's own order", async () => {
-    const order = { id: 290, status: "processing", customer_id: 9, date_created: "2026-10-31", payment_method: "cod", customer_note: "", total: "10.00", shipping_total: "0", discount_total: "0", currency: "EGP", shipping: address, billing: address, line_items: [] };
-    fetchMock.mockResolvedValueOnce(respond(order));
-    expect((await getOrder("290", "9")).id).toBe("290");
-    expect(sent(0).init.headers.Authorization).toMatch(/^Basic /);
-    fetchMock.mockResolvedValueOnce(respond(order));
-    await expect(getOrder("290", "10")).rejects.toMatchObject({ status: 404 });
   });
 });
 

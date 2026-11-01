@@ -406,72 +406,6 @@
       }
     }
   },
-  "confirmationPage": {
-    "thanks": {
-      "thank": "Thank you!",
-      "message": "Your order was received successfully. We'll let you know when it ships.",
-      "track": "Track your order",
-      "continue": "Continue shopping"
-    },
-    "orderInfo": {
-      "date": {
-        "soon": "Soon"
-      },
-      "information": {
-        "title": "Order information",
-        "orderFor": "Order for",
-        "orderNumber": "Order number",
-        "orderOn": "Ordered on",
-        "arrivedOn": "Arrived on",
-        "totalPrice": "Total price",
-        "payment": "Payment method",
-        "cash": "Cash",
-        "notes": "Order notes"
-      }
-    },
-    "orderAddress": {
-      "title": "Order address",
-      "state": "State",
-      "country": "Country",
-      "city": "City",
-      "street": "Street",
-      "postal": "Postal code",
-      "phone1": "Phone",
-      "phone2": "Second phone"
-    },
-    "orderItems": {
-      "title": "order items",
-      "noOrder": "No order found",
-      "noOrderText": "We couldn't find this order in your account.",
-      "myOrders": "View my orders"
-    },
-    "payment": {
-      "title": "Payment details",
-      "subtitle": "Payment and transaction information",
-      "method": "Payment method",
-      "status": "Payment status",
-      "amountPaid": "Amount paid",
-      "orderTotal": "Order total",
-      "online": "Online payment",
-      "cod": "Cash on delivery",
-      "statuses": {
-        "completed": "Completed",
-        "pending": "Pending",
-        "failed": "Failed",
-        "unknown": "Unknown"
-      },
-      "transactionId": "Transaction ID",
-      "paymobOrderId": "Paymob order ID",
-      "codNote": "Payment is collected on delivery. Please have the exact amount ready.",
-      "secure": "All transactions are secure and protected"
-    },
-    "addressSelection": {
-      "title": "Choose a delivery address",
-      "address": "Address {index}",
-      "select": "Deliver here",
-      "selected": "Selected"
-    }
-  },
   "wishList": {
     "title": "Wishlist",
     "noSignIn": {
@@ -566,89 +500,6 @@
   },
   "loading": {
     "label": "Loading"
-  },
-  "userOrders": {
-    "title": "Your orders",
-    "empty": "You have no orders yet",
-    "details": {
-      "orderNumber": "Order number",
-      "numberOfItems": "Items",
-      "orderedOn": "Ordered on",
-      "arrivedOn": "Arrives on",
-      "totalPrice": "Total",
-      "items": "items",
-      "actions": {
-        "seeDetails": "View details",
-        "trackOrder": "Track order"
-      },
-      "order": "Order #{number}",
-      "soon": "Soon"
-    },
-    "orderPage": {
-      "title": "order",
-      "orderItems": "order items"
-    },
-    "trackOrderPage": {
-      "title": "Track order",
-      "empty": {
-        "description": "We couldn't find this order",
-        "text": "Check the order number, or find it in your orders.",
-        "action": "View my orders"
-      },
-      "recieved": {
-        "placed": "Order placed",
-        "confirm": "We received your order.",
-        "address": "It will be delivered to"
-      },
-      "shipped": {
-        "way": "On the way",
-        "shipped": "your order was shipped successfully",
-        "deliveredDate": "Expected",
-        "progress": "Delivery progress",
-        "soon": "soon",
-        "done": "done",
-        "deliveredSuccess": "Delivered successfully",
-        "fewHours": "A few hours left",
-        "days": "days",
-        "daysLeft": "{count, plural, one {# day left} other {# days left}}"
-      },
-      "paid": {
-        "arrived": "Delivered",
-        "receive": "You'll pay in cash when the order arrives."
-      },
-      "status": {
-        "done": "Done",
-        "current": "In progress",
-        "upcoming": "Next"
-      },
-      "orderNumber": "Order #{number}",
-      "details": "Order details"
-    },
-    "emptyText": "When you place an order, it will show up here.",
-    "startShopping": "Start shopping",
-    "statuses": {
-      "placed": "Placed",
-      "delivery": "On the way",
-      "arrived": "Delivered"
-    }
-  },
-  "trackOrderPage": {
-    "title": "Track order",
-    "description": "Enter your order number and the email you ordered with. You'll find the number in your order confirmation.",
-    "form": {
-      "labels": {
-        "orderNumber": "Order number",
-        "receiptEmail": "Receipt email"
-      },
-      "placeholders": {
-        "orderNumber": "You will find it in your order confirmation message",
-        "receiptEmail": "The email you used to complete the order"
-      },
-      "action": "Track order",
-      "invalidInfo": "We couldn't find an order with that number and email.",
-      "required": "This field is required",
-      "heading": "Find your order"
-    }
   },
   "contactPage": {
     "title": "Contact us",
@@ -875,15 +726,114 @@
       "text": "We received your order #{number}. We'll let you know when it ships.",
       "track": "Track your order",
       "continue": "Continue shopping",
-      "details": "Order details",
-      "number": "Order number",
-      "date": "Ordered on",
-      "payment": "Payment",
-      "deliverTo": "Deliver to",
-      "address": "Address",
-      "codNote": "Please have the exact amount ready for the courier.",
       "notFound": "We couldn't find this order",
       "myOrders": "View my orders"
+    }
+  },
+  "orders": {
+    "title": "Your orders",
+    "order": "Order #{number}",
+    "status": {
+      "awaiting_payment": "Awaiting payment",
+      "placed": "Placed",
+      "out_for_delivery": "Out for delivery",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded",
+      "failed": "Payment failed"
+    },
+    "payment": {
+      "cod": "Cash on delivery",
+      "card": "Card",
+      "other": "Other"
+    },
+    "list": {
+      "orderedOn": "Ordered on",
+      "items": "Items",
+      "total": "Total",
+      "itemCount": "{count, plural, one {# item} other {# items}}",
+      "details": "View details",
+      "track": "Track order",
+      "pagination": "Order pages"
+    },
+    "empty": {
+      "title": "You have no orders yet",
+      "text": "When you place an order, it will show up here.",
+      "action": "Start shopping"
+    },
+    "states": {
+      "unavailable": "We couldn't load your orders. Please try again.",
+      "retry": "Try again",
+      "notFound": "We couldn't find this order",
+      "notFoundText": "Check the order number, or find it in your orders.",
+      "myOrders": "View my orders",
+      "signIn": "Sign in to see your orders",
+      "signInAction": "Sign in"
+    },
+    "details": {
+      "title": "Order details",
+      "number": "Order number",
+      "date": "Ordered on",
+      "status": "Status",
+      "payment": "Payment",
+      "deliverTo": "Deliver to",
+      "phone": "Mobile number",
+      "address": "Address",
+      "note": "Order note",
+      "codNote": "Please have the exact amount ready for the courier.",
+      "deliveredOn": "Delivered on",
+      "track": "Track order",
+      "back": "All orders",
+      "separator": ", "
+    },
+    "summary": {
+      "title": "Order summary",
+      "items": "Items",
+      "shipping": "Shipping",
+      "free": "Free",
+      "discount": "Discount",
+      "total": "Total"
+    },
+    "tracking": {
+      "title": "Track order",
+      "details": "Order details",
+      "stepState": {
+        "done": "Done",
+        "current": "Now",
+        "upcoming": "Next"
+      },
+      "placed": {
+        "title": "Order placed",
+        "text": "We received your order on {date}.",
+        "address": "It will be delivered to"
+      },
+      "out_for_delivery": {
+        "title": "Out for delivery",
+        "current": "The courier is on the way to you.",
+        "upcoming": "We'll let you know when it leaves our store."
+      },
+      "delivered": {
+        "title": "Delivered",
+        "done": "Delivered on {date}.",
+        "doneNoDate": "Your order was delivered.",
+        "cod": "You'll pay in cash when the order arrives."
+      },
+      "stopped": {
+        "awaiting_payment": "This order is waiting for payment.",
+        "cancelled": "This order was cancelled.",
+        "refunded": "This order was refunded.",
+        "failed": "The payment for this order failed."
+      },
+      "help": "Questions about your order? Contact us."
+    },
+    "lookup": {
+      "heading": "Find your order",
+      "text": "Enter the order number from your confirmation, for example 298.",
+      "label": "Order number",
+      "placeholder": "e.g. 298",
+      "invalid": "Enter the order number, digits only.",
+      "action": "Track order",
+      "all": "Or see all your orders"
     }
   }
 }

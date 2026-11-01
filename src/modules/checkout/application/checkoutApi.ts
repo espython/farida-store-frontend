@@ -1,11 +1,11 @@
 "use client";
 import { baseApi } from "@/shared/infrastructure/baseApi";
 import type { Address } from "../domain/Address";
-import type { Checkout, PaymentMethod, PlacedOrder } from "../domain/Checkout";
+import type { Checkout, PaymentMethod } from "../domain/Checkout";
 
 type Body = { checkout: Checkout };
 
-/** The signed-in customer's checkout (/api/shop/checkout) and their placed orders. */
+/** The signed-in customer's checkout (/api/shop/checkout). */
 export const checkoutApi = baseApi.injectEndpoints({
   endpoints: (build) => {
     // Every step answers with the whole checkout, which replaces the cached one.
@@ -47,13 +47,8 @@ export const checkoutApi = baseApi.injectEndpoints({
       }),
       placeOrder: build.mutation<{ orderId: string; status: string }, { paymentMethod: PaymentMethod; note: string; key: string }>({
         query: ({ key, ...body }) => ({ url: "checkout/order", method: "POST", body, headers: { "Idempotency-Key": key } }),
-        // The saved cart is empty now; refetch it and the checkout.
-        invalidatesTags: ["Cart", "Checkout"],
-      }),
-      getOrder: build.query<PlacedOrder, string>({
-        query: (id) => `orders/${encodeURIComponent(id)}`,
-        transformResponse: (b: { order: PlacedOrder }) => b.order,
-        providesTags: (_r, _e, id) => [{ type: "Order", id }],
+        // The saved cart is empty now and the order list has a new order.
+        invalidatesTags: ["Cart", "Checkout", { type: "Order", id: "LIST" }],
       }),
     };
   },

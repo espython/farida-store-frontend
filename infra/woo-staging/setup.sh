@@ -63,6 +63,45 @@ add_filter( 'rest_endpoints', function ( $endpoints ) {
 } );
 PHP
 
+# Must also ship to production (O1): an "Out for delivery" order status between
+# Processing and Completed, so the owner can mark it and the storefront's
+# tracking shows it. REST returns it as "out-for-delivery".
+cat > wp-content/mu-plugins/farida-order-statuses.php <<'PHP'
+<?php
+add_action( 'init', function () {
+	register_post_status( 'wc-out-for-delivery', array(
+		'label'                     => _x( 'Out for delivery', 'Order status', 'farida' ),
+		'public'                    => false,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		/* translators: %s: number of orders */
+		'label_count'               => _n_noop( 'Out for delivery <span class="count">(%s)</span>', 'Out for delivery <span class="count">(%s)</span>', 'farida' ),
+	) );
+} );
+add_filter( 'wc_order_statuses', function ( $statuses ) {
+	$out = array();
+	foreach ( $statuses as $key => $label ) {
+		$out[ $key ] = $label;
+		if ( 'wc-processing' === $key ) {
+			$out['wc-out-for-delivery'] = _x( 'Out for delivery', 'Order status', 'farida' );
+		}
+	}
+	return $out;
+} );
+// Bulk action on the orders list (classic and HPOS screens).
+foreach ( array( 'bulk_actions-edit-shop_order', 'bulk_actions-woocommerce_page_wc-orders' ) as $hook ) {
+	add_filter( $hook, function ( $actions ) {
+		$actions['mark_out-for-delivery'] = __( 'Change status to out for delivery', 'farida' );
+		return $actions;
+	} );
+}
+// Stock stays reduced and the order counts as paid-for-reporting like Processing.
+add_filter( 'woocommerce_reports_order_statuses', function ( $statuses ) {
+	return is_array( $statuses ) ? array_merge( $statuses, array( 'out-for-delivery' ) ) : $statuses;
+} );
+PHP
+
 wp option update woocommerce_currency EGP
 wp option update woocommerce_default_country EG
 wp option update woocommerce_price_num_decimals 2
