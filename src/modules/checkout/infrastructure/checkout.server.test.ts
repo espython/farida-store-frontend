@@ -107,9 +107,19 @@ describe("checkout client", () => {
     await expect(placeOrder(caller, { paymentMethod: "cod", note: "" })).rejects.toMatchObject({ code: "invalid_address", status: 400 });
   });
 
-  it("passes Woo's stock code through when an item ran out", async () => {
-    fetchMock.mockResolvedValueOnce(respond(cart())).mockResolvedValueOnce(respond({ code: "woocommerce_rest_product_out_of_stock", message: "x" }, 409));
-    await expect(placeOrder(caller, { paymentMethod: "cod", note: "" })).rejects.toMatchObject({ code: "woocommerce_rest_product_out_of_stock" });
+  it.each([
+    ["sold out before checkout", 409, "woocommerce_rest_product_out_of_stock"],
+    // The loser of a race for the last unit (parity-checkout.mjs): a 403 that is not about the session.
+    ["lost the race for the last unit", 403, "woocommerce_product_not_enough_stock"],
+    ["partly out of stock", 400, "woocommerce_rest_product_partially_out_of_stock"],
+  ])("reports %s as out_of_stock (409), never as a session problem", async (_case, status, code) => {
+    fetchMock.mockResolvedValueOnce(respond(cart())).mockResolvedValueOnce(respond({ code, message: "x" }, status));
+    await expect(placeOrder(caller, { paymentMethod: "cod", note: "" })).rejects.toMatchObject({ code: "out_of_stock", status: 409 });
+  });
+
+  it("still reads other 403s as an expired session", async () => {
+    fetchMock.mockResolvedValueOnce(respond(cart())).mockResolvedValueOnce(respond({ code: "jwt_auth_invalid_token", message: "x" }, 403));
+    await expect(placeOrder(caller, { paymentMethod: "cod", note: "" })).rejects.toMatchObject({ code: "unauthenticated", status: 401 });
   });
 });
 
