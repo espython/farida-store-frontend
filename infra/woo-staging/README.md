@@ -6,6 +6,8 @@ Throwaway WordPress + WooCommerce for `doc/woocommerce-spike-checklist.md`. Loca
 cd infra/woo-staging
 docker compose up -d
 docker compose --profile tools run --rm wpcli sh /setup.sh   # idempotent
+# With the contact secret from .env.local (B7), so the contact route accepts the storefront:
+set -a; . ./.env.local; set +a; docker compose --profile tools run --rm -e CONTACT_SHARED_SECRET wpcli sh /setup.sh
 ```
 
 - Admin: http://localhost:8080/wp-admin
@@ -49,6 +51,20 @@ Versions: WordPress 7.1.3, WooCommerce 11.2.1, Polylang 3.8.11, JWT Auth 1.5.0, 
 | `wc/v3` orders/products anonymous | 401 as expected |
 | `wp/v2/users` anonymous | **200: lists users. Must be locked down before launch** (security basics) |
 | Polylang languages en + ar | Created. Free Polylang has no WP-CLI; `lang` param on the Store API is not yet verified with translated products. Needs Polylang for WooCommerce (paid) or an alternative: decision pending |
+
+### Contact messages checks (`spike-contact.mjs`, 2026-11-02, B7 #304)
+
+Setup: `CONTACT_SHARED_SECRET` in `.env.local` (random, gitignored) and `setup.sh` run with it (above), which sets `FARIDA_CONTACT_SECRET` in wp-config. Run: `node --env-file=.env.local spike-contact.mjs` (11/11).
+
+| Check | Result |
+|---|---|
+| `POST farida/v1/contact` without or with a wrong `X-Farida-Contact-Secret` | 403 (no secret configured in WordPress: 503) |
+| Valid message | 201; a private `farida_contact` post with the message, name, email and language; shown under **Contact messages** in the admin (read-only view, mailto link) |
+| Invalid email, too long message | 400, the input is not echoed |
+| HTML in name or message | Stripped (`sanitize_text_field` / `sanitize_textarea_field`) |
+| Public access | Not on `wp/v2`, no public page; admins cannot create messages by hand |
+| Flood backstop | 200 messages per hour in WordPress, on top of the storefront's 5 per visitor per 15 minutes |
+| Owner email | Not yet: comes with the mail service (W6 #231) |
 
 ### Promotions checks (`spike-content.mjs`, 2026-11-02, W7 #232)
 

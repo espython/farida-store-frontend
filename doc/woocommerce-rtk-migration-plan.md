@@ -98,7 +98,7 @@ src/
 | `NEXT_PUBLIC_HOST` | `NEXT_PUBLIC_MEDIA_HOST` | image host for `next/image` `remotePatterns` |
 | `NEXT_PUBLIC_PAYMOB_API_TOKEN`, `NEXT_PUBLIC_PAYMOB_INTEGRATION_ID` | removed | Paymob secrets move into the Woo Paymob plugin. The code already says these must not be public. |
 | `NEXT_PUBLIC_PAYMOB_IFRAME_ID` | decided in E6 | Only needed if the iframe is rendered by the storefront; otherwise the Woo gateway handles it. |
-| `CONTACT_SHARED_SECRET` | unchanged | |
+| `CONTACT_SHARED_SECRET` | now checked by WordPress (`FARIDA_CONTACT_SECRET` in wp-config, B7) | |
 
 ## 5. Phases and work breakdown
 
@@ -335,7 +335,7 @@ Note: `selectionAddressModal` is currently `new AddressModalStore()`; it becomes
 - [x] Phase 0: commit docs, create issues and project board (#222–#276)
 - [ ] Phase 1: foundations (F1–F5). F1–F4 and D1 (module structure, boundary lint rules) done; F5 legal pages wait on owner content
 - [ ] Phase 2: Woo platform (W1–W9). W0 staging spike done on local Docker; W7 promotions content type done (`infra/wordpress/mu-plugins/farida-content.php`); the rest not started. Open: Polylang add-on, Paymob sandbox keys, hosting
-- [ ] Phase 3: BFF and catalog (B1–B7). B1–B3 done; B4 code done (#293, #295–#298), Lighthouse SEO ≥ 90 on a deployed Woo build still to run; B5 done (promotions from the W7 mu-plugin); B6 (#303) and B7 (#304) open
+- [ ] Phase 3: BFF and catalog (B1–B7). B1–B3 done; B4 code done (#293, #295–#298), Lighthouse SEO ≥ 90 on a deployed Woo build still to run; B5 done (promotions from the W7 mu-plugin); B6 (#303) done; B7 (#304) contact messages in WordPress admin done, owner email waits on W6 (#231)
 - [ ] Phase 4: accounts (A1–A5). A1 BFF built (branch `feat/a1-customer-auth`); A5 (#302) removes Strapi auth
 - [ ] Phase 5: cart and checkout (C1–C4). C1 and C2 done; C3 cash-on-delivery checkout in review; card payment after launch (#326)
 - [ ] Phase 6: orders and wishlist (O1–O4). O1, O3 and O4 done; O2 (cancel/return requests) open

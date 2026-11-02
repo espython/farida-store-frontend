@@ -1,5 +1,5 @@
 "use client";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -19,6 +19,7 @@ const ComplaintForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const t = useTranslations("contactPage");
+  const locale = useLocale();
 
   const submitcomplaint = async (data: ContactForm) => {
     setIsSubmitting(true);
@@ -26,7 +27,7 @@ const ComplaintForm = () => {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, locale }),
       });
       if (!res.ok) throw new Error("Failed to submit");
       toast.success(t("form.sended"));

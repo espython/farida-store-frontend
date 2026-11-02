@@ -37,6 +37,8 @@ export const WOO_ALLOWLIST: readonly AllowedWooRoute[] = [
   { method: "POST", pattern: /^\/wc\/v3\/products\/reviews$/ },
   // Promotions (B5): the farida-content mu-plugin's public list (infra/wordpress).
   { method: "GET", pattern: /^\/farida\/v1\/promos$/ },
+  // Contact form (B7): the farida-contact mu-plugin, with the shared secret.
+  { method: "POST", pattern: /^\/farida\/v1\/contact$/ },
 ];
 
 export function isWooRouteAllowed(

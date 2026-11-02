@@ -115,6 +115,7 @@ describe("wooFetch", () => {
       ["POST", "/wc/v3/products/reviews"],
       ["GET", "/wc/store/v1/products/reviews"],
       ["GET", "/farida/v1/promos"],
+      ["POST", "/farida/v1/contact"],
     ] as const) {
       await expect(wooFetch({ method, path, auth: "none" })).resolves.toBeDefined();
     }
@@ -125,6 +126,7 @@ describe("wooFetch", () => {
       ["GET", "/wp/v2/comments"],
       ["POST", "/farida/v1/promos"],
       ["GET", "/farida/v1/other"],
+      ["GET", "/farida/v1/contact"],
       ["GET", "/wp/v2/users"],
       ["GET", "/wc/v3/customers"],
       ["DELETE", "/wc/v3/customers/4"],
