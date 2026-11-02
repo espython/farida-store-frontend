@@ -102,6 +102,20 @@ add_filter( 'woocommerce_reports_order_statuses', function ( $statuses ) {
 } );
 PHP
 
+# Farida's own mu-plugins (also deployed to production): promotions content type (W7).
+cp /farida-mu-plugins/*.php wp-content/mu-plugins/
+
+# Local only: the seeded mock banners are SVG, which WordPress refuses by default.
+# Never on a real host (SVG can carry scripts); production banners are JPEG/PNG/WebP.
+cat > wp-content/mu-plugins/local-svg-uploads.php <<'PHP'
+<?php
+add_filter( 'upload_mimes', function ( $m ) { $m['svg'] = 'image/svg+xml'; return $m; } );
+add_filter( 'wp_check_filetype_and_ext', function ( $d, $file, $name ) {
+	if ( str_ends_with( strtolower( $name ), '.svg' ) ) { $d['ext'] = 'svg'; $d['type'] = 'image/svg+xml'; }
+	return $d;
+}, 10, 3 );
+PHP
+
 wp option update woocommerce_currency EGP
 wp option update woocommerce_default_country EG
 wp option update woocommerce_price_num_decimals 2
