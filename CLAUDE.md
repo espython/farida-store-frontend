@@ -32,14 +32,14 @@ Next.js 13 (App Router), React 18, TypeScript, Tailwind + NextUI, framer-motion,
 - `src/store/` – Redux Toolkit root composition (`makeStore`, typed hooks, `StoreProvider`). `baseApi` lives in `src/shared/infrastructure/`. New code follows `doc/woocommerce-rtk-migration-plan.md` and the architecture rules below.
 - `src/stores/` – MobX stores (being migrated to `src/store/`), instantiated and exposed through context in `src/stores/index.tsx`. Add new stores there.
 - `src/services/paymobService.ts` – Paymob payment integration.
-- `src/middleware.ts` – auth redirects (protects `/user*`, `/order`, `/trackorder`, `/shipping`, `/confirmation`; bounces logged-in users off login/register) then next-intl routing.
+- `src/middleware.ts` – page access, then next-intl routing. The rules are `modules/customer/domain/routeAccess` (whole path segments after the locale, never substrings): guests on the account pages (`/user*`, `/order`, `/trackorder`) and checkout (`/cart/shipping`, `/cart/payment`, `/cart/confirmation`) go to `/<locale>/login?next=<page>`, and sign-in returns them there (`safeNextPath`: our own localized pages only); signed-in customers on login/register go to `next` or `/user`. A session counts when the token cookie holds an unexpired token (decoded only; WordPress checks the signature in the BFF); a bad or expired one is cleared. The middleware imports modules only through `@/modules/<name>/index.edge` (edge runtime: no React, Redux or Node APIs; lint rule).
 - `messages/en.json`, `messages/ar.json` – translations. Locale prefix is always present (`/en/...`, `/ar/...`); use `Link`/`useRouter` from `src/navigation.ts`, not `next/link`.
 
 ## Architecture rules (DDD-lite, see `doc/ddd-architecture.md`)
 
 - New code goes in `src/modules/<context>/{domain,infrastructure,application,ui}` and `src/shared/{kernel,infrastructure,ui,lib}`. Legacy code moves only when a migration task touches it.
 - `domain` and `shared/kernel` import nothing from React, Redux, Next or other layers. `infrastructure` imports domain and shared only. `ui` never imports `infrastructure`.
-- Modules import each other only via `@/modules/<name>` (its `index.ts`); inside a module use relative imports. Server code is exposed through `@/modules/<name>/index.server`, for `app/api` only.
+- Modules import each other only via `@/modules/<name>` (its `index.ts`); inside a module use relative imports. Server code is exposed through `@/modules/<name>/index.server`, for `app/api` only; edge-safe code through `index.edge`, for `src/middleware.ts` only.
 - `*.server.ts` files are imported only from `app/api`, server components and `infrastructure`.
 - Enforced by `no-restricted-imports` overrides in `.eslintrc.json`. Money is integer minor units (`shared/kernel/Money`).
 

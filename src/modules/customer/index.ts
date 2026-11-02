@@ -23,6 +23,7 @@ export { useAuthActions } from "./application/useAuthActions";
 export { usePasswordReset } from "./application/usePasswordReset";
 export type { ResetLink } from "./domain/passwordReset";
 export { toResetLink } from "./domain/passwordReset";
+export { safeNextPath } from "./domain/routeAccess";
 export type { AuthFailure } from "./application/authFailure";
 
 // Account (A4): profile and address book on the Woo customer.
