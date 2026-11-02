@@ -28,6 +28,9 @@ export const WOO_ALLOWLIST: readonly AllowedWooRoute[] = [
   // Orders (O1): the customer's list (always filtered by customer) and one order.
   { method: "GET", pattern: /^\/wc\/v3\/orders$/ },
   { method: "GET", pattern: /^\/wc\/v3\/orders\/\d+$/ },
+  // Order changes (O2): the customer's cancellation or return request, and a private note.
+  { method: "PUT", pattern: /^\/wc\/v3\/orders\/\d+$/ },
+  { method: "POST", pattern: /^\/wc\/v3\/orders\/\d+\/notes$/ },
   // Account (A4): the signed-in customer's own profile and address book.
   { method: "GET", pattern: /^\/wc\/v3\/customers\/\d+$/ },
   { method: "PUT", pattern: /^\/wc\/v3\/customers\/\d+$/ },

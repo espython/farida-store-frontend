@@ -28,6 +28,8 @@ export interface WcOrder {
   currency: string;
   date_created: string;
   date_completed: string | null;
+  /** UTC, without a zone suffix ("2026-11-02T16:03:27"). */
+  date_completed_gmt?: string | null;
   payment_method: string;
   customer_note: string;
   total: string;

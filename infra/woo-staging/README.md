@@ -33,10 +33,7 @@ Production: do NOT install `local-webhooks.php`. Set `WC_WEBHOOK_SECRET` on the 
 
 `setup.sh` installs WooCommerce, Polylang, JWT Authentication for WP REST API and Paymob for WooCommerce; sets EGP / Egypt / 2 decimals / post-name permalinks; enables COD; creates English and Arabic languages and 5 sample products.
 
-It also writes two must-use plugins that **production WordPress needs too** (copy them to `wp-content/mu-plugins/`):
-
-- `farida-hardening.php`: hides `wp/v2/users` from anonymous visitors.
-- `farida-order-statuses.php` (O1): an **Out for delivery** order status between Processing and Completed, with a bulk action on the orders list. The owner sets it when the courier leaves; the storefront's tracking shows it (REST status `out-for-delivery`).
+It also writes `farida-hardening.php` (hides `wp/v2/users` from anonymous visitors), which **production WordPress needs too**, and copies Farida's own mu-plugins from `../wordpress/mu-plugins/` (order statuses, promotions, contact messages; see `../wordpress/README.md`).
 
 ## Spike findings so far (2026-10-14)
 
@@ -124,6 +121,20 @@ Setup: `setup.sh` copies `infra/wordpress/mu-plugins/` (see `infra/wordpress/REA
 | Custom status `out-for-delivery` (mu-plugin) settable over REST and included in the default listing | Pass |
 | Unknown order id | 404 |
 | Line items carry no product slug | Slugs come from `wc/store/v1/products?include=…` (cached); links are dropped if that fails |
+
+### Cancellation and return checks (`spike-orders.mjs`, 2026-11-02, O2 #253)
+
+Run: `node --env-file=.env.local spike-orders.mjs`. Creates its own product and orders, deletes them after.
+
+| Check | Result |
+|---|---|
+| `PUT wc/v3/orders/<id>` `{status: "cancelled"}` on a Processing COD order | Pass; stock restored |
+| Cancelling it a second time | No second restock (Woo's `_order_stock_reduced` flag) |
+| Cancelling a Pending order (stock never reduced) | Stock unchanged |
+| Private order note (`customer_note: false`) | Pass; shown to the owner only |
+| Custom status `return-requested` (mu-plugin) settable over REST, listed by default | Pass; completion date and stock kept |
+| Owner declines (back to Completed) | Pass; stock unchanged |
+| A status the owner adds later reads as "placed" | The BFF refuses to cancel any status it does not know |
 
 ### Signed-in checkout checks (`spike-checkout.mjs`, 2026-10-31, C3 #249)
 
