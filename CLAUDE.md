@@ -1,13 +1,13 @@
 # Farida Stores – Frontend
 
-Storefront for a kitchen-appliances ecommerce shop (Arabic + English). Talks to the Strapi backend in the sibling repo `../backend-admin`.
+Storefront for a kitchen-appliances ecommerce shop (Arabic + English). Headless WooCommerce (WordPress) backend, reached only through the Next route handlers in `src/app/api/` (the BFF). The old Strapi backend (`../backend-admin`) is retired.
 
 ## Commands
 
 - `npm run dev` – dev server (http://localhost:3000)
 - `npm run build` / `npm start` – production build / serve
 - `npm run lint` – next lint
-- No test suite is configured.
+- `npm test` – unit tests; `npm run verify:i18n` – translation key check
 
 ## Stack
 
@@ -18,7 +18,6 @@ Next.js 13 (App Router), React 18, TypeScript, Tailwind + NextUI, framer-motion,
 - `src/app/[locale]/` – all pages, under `(auth)` (login, register) and `(pages)` (cart, order, payment-callback, trackorder, user*, wishlist, search, categories/[name], contact). Page-specific components live in a `components/` folder next to the page.
 - `src/app/components/` and `src/components/` – shared UI (product cards, filters, sliders, pagination, cart sidebar). Two folders for historical reasons; the migration plan merges them.
 - `src/app/api/` – Next route handlers:
-  - `strapi/[...path]` – proxy to Strapi for features not yet on Woo; always uses `STRAPI_API_TOKEN` and refuses `auth`/`users` paths (Strapi has no users; the session is WordPress). Client code should call `STRAPI_ENDPOINT` (`/api/strapi`, see `src/api/config.ts`), not Strapi directly.
   - `auth/login`, `auth/register`, `auth/logout`, `auth/me` – customer auth on WooCommerce (`modules/customer`): WordPress JWT in the httpOnly `credentials` cookie plus a readable `logged_in` flag (both Max-Age = token expiry); registration through `wc/v3/customers` with the server keys; `me` verifies the token with WordPress and clears bad cookies. The UI uses `SignInForm`, `RegisterForm`, `AccountMenu`, `useSession()` and `useAuthActions()` from `@/modules/customer`.
   - `shop/cart`, `shop/cart/items`, `shop/cart/items/[productId]`, `shop/cart/merge` – a signed-in customer's saved cart on the Woo Store API (`modules/cart`), with their JWT and a `Cart-Token` kept in an httpOnly `cart_token` cookie bound to the customer id (the token reads the cart on its own). Guests' carts stay in the browser; `useCart()` switches by session and merges the guest cart after sign-in.
   - `shop/checkout` (+ `/address`, `/shipping-rate`, `/coupon`, `/order`) – signed-in checkout on the Store API (`modules/checkout`): Egyptian address (governorate codes, mobile format, 5-digit postcode Woo requires), Woo's shipping rates and totals, coupons, COD orders. `/order` needs an `Idempotency-Key`; orders are placed once per key and serialized per customer in memory (single Node instance; needs a shared store on multi-instance hosting). Where the customer id itself authorizes something (`/order`, and the orders routes, which read with the server keys) routes use `verifiedCaller`, which checks the session with WordPress; the cookie's claims are only decoded. Card/Paymob is #326 (after launch).
@@ -47,11 +46,11 @@ Next.js 13 (App Router), React 18, TypeScript, Tailwind + NextUI, framer-motion,
 
 - Every user-facing string goes in both `messages/en.json` and `messages/ar.json`. Mind RTL layout for Arabic.
 - Components using stores or hooks need `"use client"`.
-- Auth token is httpOnly; never read it from JS. Don't add Strapi tokens to client code.
+- Auth token is httpOnly; never read it from JS. WooCommerce keys and shared secrets are server-only (never `NEXT_PUBLIC_`).
 
 ## Environment variables
 
-`NEXT_PUBLIC_STRAPI_API_ENDPOINT`, `STRAPI_API_TOKEN`, `NEXT_PUBLIC_HOST` (media host, also used for `images.remotePatterns`), `CONTACT_SHARED_SECRET` (server-only; must equal `FARIDA_CONTACT_SECRET` in WordPress's wp-config), `WC_BASE_URL`, `WC_CONSUMER_KEY`, `WC_CONSUMER_SECRET` (server-only, WooCommerce BFF), `WC_WEBHOOK_SECRET` (server-only; secret of the Woo product webhooks that call `/api/revalidate`), `NEXT_PUBLIC_SITE_URL` (public origin for canonical URLs, Open Graph and JSON-LD; defaults to `http://localhost:3000`), `NEXT_PUBLIC_PAYMOB_API_TOKEN`, `NEXT_PUBLIC_PAYMOB_IFRAME_ID`, `NEXT_PUBLIC_PAYMOB_INTEGRATION_ID`. No `.env` is committed.
+`CONTACT_SHARED_SECRET` (server-only; must equal `FARIDA_CONTACT_SECRET` in WordPress's wp-config), `WC_BASE_URL`, `WC_CONSUMER_KEY`, `WC_CONSUMER_SECRET` (server-only, WooCommerce BFF; `WC_BASE_URL` is also the only `images.remotePatterns` host, read at build time), `WC_WEBHOOK_SECRET` (server-only; secret of the Woo product webhooks that call `/api/revalidate`), `NEXT_PUBLIC_SITE_URL` (public origin for canonical URLs, Open Graph and JSON-LD; defaults to `http://localhost:3000`), `NEXT_PUBLIC_PAYMOB_IFRAME_ID` (legacy card code, unused at launch; removed with #326). No `.env` is committed.
 
 ## Workflow
 

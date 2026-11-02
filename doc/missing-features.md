@@ -68,7 +68,7 @@ Gap analysis of the storefront against a typical ecommerce web app.
 
 ## Related findings (not features, from the architecture review)
 
-- The Strapi proxy (`src/app/api/strapi/[...path]/route.ts`) attaches `STRAPI_API_TOKEN` to any anonymous request on any path. Add a path/method allowlist.
+- ~~The Strapi proxy (`src/app/api/strapi/[...path]/route.ts`) attaches `STRAPI_API_TOKEN` to any anonymous request on any path.~~ Removed with Strapi (X4 #269).
 - Catalog pages are client-rendered through MobX stores; move catalog reads to server components with ISR.
 - `bash.exe.stackdump` is committed in the repo root.
 - CLAUDE.md lists `NEXT_PUBLIC_PAYMOB_API_TOKEN` and `NEXT_PUBLIC_PAYMOB_INTEGRATION_ID`, which the code says must not be public.

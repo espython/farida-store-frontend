@@ -181,22 +181,6 @@ class PaymentStore {
     }
   };
 
-  // Verify payment status server-side. Authority lives with the backend
-  // (the Paymob webhook validates the transaction and flips the order to
-  // paid), so anything else — trusting a callback URL or a bare transaction
-  // id — is refused (#180).
-  verifyPayment = async (orderId: number | string): Promise<boolean> => {
-    try {
-      const response = await fetch(`/api/strapi/order-details/${orderId}`);
-      if (!response.ok) return false;
-      const data = await response.json();
-      return data?.data?.attributes?.payment_status === "paid";
-    } catch (error) {
-      console.error("Payment verification error:", error);
-      return false;
-    }
-  };
-
   // Get payment status text for UI
   getPaymentStatusText = (locale: string = 'en'): string => {
     if (this.isInitiatingPayment) {
