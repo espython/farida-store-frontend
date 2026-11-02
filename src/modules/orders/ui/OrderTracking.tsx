@@ -71,7 +71,7 @@ const OrderTracking = ({ orderId }: { orderId: string }) => {
       ) : (
         <p role="status" className="flex items-start gap-3 rounded-2xl bg-sand p-4">
           <LuAlertCircle aria-hidden="true" className="mt-0.5 shrink-0 text-xl" />
-          <span>{tt(`stopped.${order.status as "awaiting_payment" | "cancelled" | "refunded" | "failed"}`)}</span>
+          <span>{tt(`stopped.${order.status as "awaiting_payment" | "return_requested" | "cancelled" | "refunded" | "failed"}`)}</span>
         </p>
       )}
 

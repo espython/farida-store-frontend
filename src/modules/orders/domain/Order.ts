@@ -10,6 +10,8 @@ export type OrderStatus =
   | "placed"
   | "out_for_delivery"
   | "delivered"
+  /** The customer asked to return a delivered order; the shop refunds or declines it. */
+  | "return_requested"
   | "cancelled"
   | "refunded"
   | "failed";
@@ -58,7 +60,7 @@ export interface OrderSummary {
 /** A whole order, read back from Woo. */
 export interface Order extends OrderSummary {
   payment: OrderPayment;
-  /** When it was delivered (Woo's completion date), if it was. */
+  /** When it was delivered (Woo's completion date, ISO UTC), if it was. */
   deliveredAt: string | null;
   lines: OrderLine[];
   address: DeliveryAddress;

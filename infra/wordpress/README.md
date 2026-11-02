@@ -4,9 +4,10 @@ Files here are deployed to **every** WordPress that serves the storefront (stagi
 
 | File | Install to | What it does |
 |---|---|---|
+| `mu-plugins/farida-order-statuses.php` | `wp-content/mu-plugins/` | **Order statuses** (O1 #252, O2 #253): **Out for delivery** (between Processing and Completed, with a bulk action; the owner sets it when the courier leaves, the storefront's tracking shows it) and **Return requested** (after Completed; set by the storefront when a customer asks to return a delivered order within 14 days, with the reason in a private order note). The owner refunds a return (Refunded; restock the items in the refund) or declines it (back to Completed). REST statuses `out-for-delivery`, `return-requested`. |
 | `mu-plugins/farida-content.php` | `wp-content/mu-plugins/` | **Promotions** (W7 #232): one admin list for the home hero banners, the announcement bar and the category mini-ads. Each promotion has a placement, a language (both / English / Arabic), an optional link (a storefront path or an `https://` address) and, for banners, a featured image (16:9, JPEG/PNG/WebP). Order = "Order" under Page Attributes. The storefront reads `GET /wp-json/farida/v1/promos?lang=en\|ar` (published only; not on `wp/v2`). |
 | `mu-plugins/farida-contact.php` | `wp-content/mu-plugins/` | **Contact messages** (B7 #304): the storefront's contact form messages, in the admin (read-only, newest first, with a mailto link). The storefront server posts them to `POST /wp-json/farida/v1/contact`. **Needs** `define( 'FARIDA_CONTACT_SECRET', '…' );` in `wp-config.php`, equal to the storefront's `CONTACT_SHARED_SECRET` (at least 16 characters); without it every message is refused. Email to the owner comes with the mail service (W6 #231). |
 
 Must-use plugins load automatically and cannot be switched off from the admin. No other plugin is needed (no ACF, no Polylang).
 
-Still in `../woo-staging/setup.sh` and needed on production too: the **Out for delivery** order status (`farida-order-statuses.php`) and `farida-hardening.php`. The `local-*` mu-plugins there are for the local stack only.
+Still in `../woo-staging/setup.sh` and needed on production too: `farida-hardening.php`. The `local-*` mu-plugins there are for the local stack only.

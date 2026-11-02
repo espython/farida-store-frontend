@@ -614,6 +614,7 @@
       "placed": "Placed",
       "out_for_delivery": "Out for delivery",
       "delivered": "Delivered",
+      "return_requested": "Return requested",
       "cancelled": "Cancelled",
       "refunded": "Refunded",
       "failed": "Payment failed"
@@ -662,6 +663,53 @@
       "back": "All orders",
       "separator": ", "
     },
+    "actions": {
+      "cancel": {
+        "title": "Cancel this order",
+        "text": "Changed your mind? You can cancel the order until it leaves our store.",
+        "action": "Cancel order",
+        "confirm": "Cancel order #{number}? This can't be undone.",
+        "yes": "Yes, cancel the order",
+        "keep": "Keep the order",
+        "cancelling": "Cancelling…",
+        "done": "Order #{number} was cancelled.",
+        "errors": {
+          "not_cancellable": "This order can no longer be cancelled: it may already be on its way. Contact us if you need help.",
+          "unavailable": "We couldn't cancel the order. Please try again."
+        }
+      },
+      "return": {
+        "title": "Return an item",
+        "text": "Something wrong with your order? You can request a return until {date}.",
+        "action": "Request a return",
+        "reason": "Why are you returning it?",
+        "reasons": {
+          "damaged": "It arrived damaged or doesn't work",
+          "wrong_item": "I received the wrong item",
+          "not_as_described": "It's not as described",
+          "changed_mind": "I changed my mind",
+          "other": "Another reason"
+        },
+        "details": "Details (optional)",
+        "detailsRequired": "Details",
+        "hint": "Which items, and what's wrong with them.",
+        "submit": "Send return request",
+        "submitting": "Sending…",
+        "back": "Back",
+        "done": "We received your return request.",
+        "errors": {
+          "reason_required": "Choose a reason.",
+          "details_required": "Tell us a little more (at least {min} characters).",
+          "details_too_long": "Keep it under {max} characters.",
+          "not_returnable": "The return period for this order has ended. Contact us if you need help.",
+          "unavailable": "We couldn't send your request. Please try again."
+        }
+      },
+      "returnRequested": {
+        "title": "Return requested",
+        "text": "We received your return request and will call you to arrange the pickup. Your refund follows once we receive the items."
+      }
+    },
     "summary": {
       "title": "Order summary",
       "items": "Items",
@@ -696,6 +744,7 @@
       },
       "stopped": {
         "awaiting_payment": "This order is waiting for payment.",
+        "return_requested": "You asked to return this order. We'll contact you to arrange the pickup.",
         "cancelled": "This order was cancelled.",
         "refunded": "This order was refunded.",
         "failed": "The payment for this order failed."

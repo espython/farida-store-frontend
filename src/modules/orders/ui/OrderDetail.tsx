@@ -4,6 +4,7 @@ import { LuArrowLeft } from "react-icons/lu";
 import { Link } from "@/navigation";
 import { buttonClass } from "@/shared/ui/Button";
 import { useOrder } from "../application/useOrders";
+import OrderActions from "./OrderActions";
 import OrderOverview from "./OrderOverview";
 import { OrderLoading, OrderNotFound, OrdersSignIn, OrdersUnavailable } from "./OrderStates";
 
@@ -29,6 +30,7 @@ const OrderDetail = ({ orderId }: { orderId: string }) => {
         </Link>
       </div>
       <OrderOverview order={order} />
+      <OrderActions order={order} />
     </div>
   );
 };

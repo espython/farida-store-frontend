@@ -8,6 +8,7 @@ const TONE = {
   placed: "muted",
   out_for_delivery: "dark",
   delivered: "success",
+  return_requested: "warning",
   cancelled: "danger",
   refunded: "muted",
   failed: "danger",

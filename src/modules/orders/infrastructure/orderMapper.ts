@@ -21,6 +21,10 @@ const toAddress = (a: Partial<WcAddress> | undefined): DeliveryAddress => ({
   phone: a?.phone ?? "",
 });
 
+/** Woo's GMT date (no zone suffix) as ISO UTC; falls back to the site-time date. */
+const utc = (gmt: string | null | undefined, local: string | null | undefined): string | null =>
+  gmt ? (/[zZ]|[+-]\d\d:?\d\d$/.test(gmt) ? gmt : `${gmt}Z`) : local || null;
+
 const countItems = (o: Pick<WcOrder, "line_items">) => (o.line_items ?? []).reduce((n, l) => n + l.quantity, 0);
 
 export const toOrderSummary = (o: WcOrderListItem): OrderSummary => {
@@ -46,7 +50,7 @@ export const toOrder = (o: WcOrder, slugs: Record<string, string> = {}): Order =
   return {
     ...toOrderSummary(o),
     payment: toOrderPayment(o.payment_method),
-    deliveredAt: o.date_completed || null,
+    deliveredAt: utc(o.date_completed_gmt, o.date_completed),
     lines: o.line_items.map((l) => ({
       productId: String(l.product_id),
       title: l.name,
