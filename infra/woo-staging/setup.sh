@@ -48,6 +48,21 @@ add_filter( 'http_allowed_safe_ports', function ( $ports ) {
 } );
 PHP
 
+# Local only: send WordPress mail to Mailpit (docker-compose service, UI on :8025). Production uses the
+# mail service (W6).
+cat > wp-content/mu-plugins/local-mailpit.php <<'PHP'
+<?php
+add_action( 'phpmailer_init', function ( $mailer ) {
+	$mailer->isSMTP();
+	$mailer->Host     = 'mailpit';
+	$mailer->Port     = 1025;
+	$mailer->SMTPAuth = false;
+} );
+add_filter( 'wp_mail_from', function () {
+	return 'shop@farida.test';
+} );
+PHP
+
 # Hardening that must also ship to production: hide the user list from anonymous visitors.
 cat > wp-content/mu-plugins/farida-hardening.php <<'PHP'
 <?php
@@ -64,7 +79,7 @@ add_filter( 'rest_endpoints', function ( $endpoints ) {
 PHP
 
 # Farida's own mu-plugins (also deployed to production): order statuses (O1, O2), promotions (W7),
-# contact messages (B7).
+# contact messages (B7), password reset (A2).
 cp /farida-mu-plugins/*.php wp-content/mu-plugins/
 # The contact route only accepts the storefront's shared secret (CONTACT_SHARED_SECRET in
 # .env.local): pass it with -e CONTACT_SHARED_SECRET=... ; --quiet so it is not echoed.

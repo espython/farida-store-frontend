@@ -154,6 +154,7 @@
       "email": "Enter a valid email address"
     },
     "submit": "Log in",
+    "forgot": "Forgot your password?",
     "noAccount": "Don't have an account?",
     "or": "or"
   },
@@ -184,6 +185,26 @@
     "submit": "Create account",
     "haveAccount": "Already have an account?",
     "or": "or"
+  },
+  "passwordReset": {
+    "forgotTitle": "Reset your password",
+    "forgotText": "Enter the email you use for your account and we'll send you a link to choose a new password.",
+    "email": "Email",
+    "send": "Send reset link",
+    "sent": "If there's an account for <email></email>, we've sent it a link to reset the password.",
+    "sentHint": "Check your inbox and spam folder. The link works for {hours, plural, one {one hour} other {# hours}}.",
+    "backToLogin": "Back to log in",
+    "tryAgain": "Use another email",
+    "resetTitle": "Choose a new password",
+    "resetText": "Choose a new password for your account. You'll be signed in afterwards, and signed out everywhere else.",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "rules": "At least 6 characters, with one uppercase letter and one number",
+    "mismatch": "Passwords don't match",
+    "save": "Save new password",
+    "newLink": "Get a new link",
+    "done": "Your password has been changed and you're signed in.",
+    "continue": "Continue shopping"
   },
   "userLoggedIn": {
     "orders": "your orders",
@@ -537,6 +558,8 @@
     "email_taken": "An account with this email already exists. Sign in instead.",
     "invalid_input": "Check the highlighted fields",
     "unauthenticated": "Your session has ended. Please sign in again.",
+    "invalid_reset_link": "This reset link is invalid or has expired. Ask for a new one.",
+    "rate_limited": "Too many attempts. Please wait a few minutes and try again.",
     "unavailable": "We couldn't reach the shop. Please try again."
   },
   "checkout": {

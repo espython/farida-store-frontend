@@ -1,6 +1,8 @@
 // Server entry of the customer context. Import only from app/api and server components.
 export { getSession, login, register } from "./infrastructure/authClient.server";
 export type { SignedIn } from "./infrastructure/authClient.server";
+export { requestPasswordReset, resetPassword } from "./infrastructure/passwordClient.server";
+export { toResetLink } from "./domain/passwordReset";
 export {
   clearSessionCookies,
   FLAG_COOKIE,
@@ -11,7 +13,7 @@ export {
 } from "./infrastructure/sessionCookie.server";
 
 // Domain rules the routes apply (server-safe; the client index also has hooks).
-export { validateLogin, validateRegistration, PASSWORD_MAX_LENGTH } from "./domain/credentials";
+export { emailError, normaliseEmail, passwordError, validateLogin, validateRegistration, PASSWORD_MAX_LENGTH } from "./domain/credentials";
 
 // Account (A4): profile and address book on the Woo customer, server keys.
 export {

@@ -2,6 +2,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { Session } from "../domain/Session";
 import type { RegistrationInput } from "../domain/credentials";
+import type { ResetLink } from "../domain/passwordReset";
 
 export const AUTH_API_KEY = "authApi" as const;
 
@@ -27,6 +28,14 @@ export const authApi = createApi({
     }),
     register: build.mutation<Session, RegistrationInput>({
       query: (body) => ({ url: "register", method: "POST", body }),
+      transformResponse: (body: { session: Session }) => body.session,
+      invalidatesTags: ["Session"],
+    }),
+    requestPasswordReset: build.mutation<void, { email: string; locale: "en" | "ar" }>({
+      query: (body) => ({ url: "password/forgot", method: "POST", body }),
+    }),
+    resetPassword: build.mutation<Session, ResetLink & { password: string }>({
+      query: (body) => ({ url: "password/reset", method: "POST", body }),
       transformResponse: (body: { session: Session }) => body.session,
       invalidatesTags: ["Session"],
     }),

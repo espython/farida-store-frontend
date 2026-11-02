@@ -34,6 +34,11 @@ describe("SignInForm", () => {
     expect(actions.signIn).not.toHaveBeenCalled();
   });
 
+  it("links to the forgot-password page", () => {
+    wrap(<SignInForm onSignedIn={vi.fn()} />);
+    expect(screen.getByRole("link", { name: "Forgot your password?" })).toHaveAttribute("href", expect.stringMatching(/\/forgot-password$/));
+  });
+
   it("signs in and reports the session", async () => {
     actions.signIn.mockResolvedValue({ ok: true, session });
     const onSignedIn = vi.fn();

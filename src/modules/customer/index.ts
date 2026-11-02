@@ -20,6 +20,9 @@ export { AUTH_API_KEY, authApi } from "./application/authApi";
 export { useSession } from "./application/useSession";
 export type { SessionStatus } from "./application/useSession";
 export { useAuthActions } from "./application/useAuthActions";
+export { usePasswordReset } from "./application/usePasswordReset";
+export type { ResetLink } from "./domain/passwordReset";
+export { toResetLink } from "./domain/passwordReset";
 export type { AuthFailure } from "./application/authFailure";
 
 // Account (A4): profile and address book on the Woo customer.
@@ -33,6 +36,8 @@ export type { AccountFailure, AccountFailureCode, AccountResult } from "./applic
 // UI
 export { default as SignInForm } from "./ui/SignInForm";
 export { default as RegisterForm } from "./ui/RegisterForm";
+export { default as ForgotPasswordForm } from "./ui/ForgotPasswordForm";
+export { default as ResetPasswordForm } from "./ui/ResetPasswordForm";
 export { default as AccountMenu } from "./ui/AccountMenu";
 export { default as ProfileCard } from "./ui/ProfileCard";
 export { default as AddressBook } from "./ui/AddressBook";
