@@ -2,8 +2,8 @@ import { emptyCart, type Cart } from "../domain/cart";
 import { toCart, toStoredCart } from "./storedCartMapper";
 
 /**
- * Guest cart in localStorage, separate from the legacy MobX cart's
- * sessionStorage "cart" so both can run side by side until cutover.
+ * Guest cart in localStorage. (The legacy MobX cart used sessionStorage
+ * "cart"; it is gone, and that key is never read.)
  */
 export const CART_STORAGE_KEY = "farida:cart:v1";
 

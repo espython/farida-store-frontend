@@ -5,7 +5,8 @@ export class CartSidebarStore {
 
   showCartSideBar: boolean = false;
 
-  isLocalCartHasItems: boolean = false;
+  /** The header cart dropdown (desktop hover). */
+  isCartMenuDisplayed: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -43,16 +44,11 @@ export class CartSidebarStore {
     }, 500);
   };
 
-  checkLocalCartHasItems() {
-    if (typeof window === 'undefined') return;
+  displayCartMenu = () => {
+    this.isCartMenuDisplayed = true;
+  };
 
-    if (
-      sessionStorage.getItem("cart")
-      // && JSON.parse(sessionStorage.getItem("cart") ?? "[]").length > 0
-    ) {
-      this.isLocalCartHasItems = true;
-    } else {
-      this.isLocalCartHasItems = false;
-    }
-  }
+  hideCartMenu = () => {
+    this.isCartMenuDisplayed = false;
+  };
 }

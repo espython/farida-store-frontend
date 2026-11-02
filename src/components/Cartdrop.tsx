@@ -12,7 +12,7 @@ import EmptyCartDrop from "./EmptyCartDrop";
 
 /** Hover dropdown under the header cart icon (desktop). */
 const CartDrop2 = () => {
-  const { cart: cartUi } = useContext(StoreContext);
+  const { cartSidebar: cartUi } = useContext(StoreContext);
   const { lines, totals } = useCart();
   const router = useRouter();
   const locale = useLocale();

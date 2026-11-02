@@ -1,14 +1,12 @@
 "use client";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import PageCard from "./PageCard";
 import { LuHeart, LuMapPin, LuPackage, LuShoppingCart, LuUserCog } from "react-icons/lu";
-import { StoreContext } from "@/contexts/StoreContext";
 import { useRouter } from "@/navigation";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/hooks/useAuth";
 
 const UserPagesMenu = () => {
-  const { user } = useContext(StoreContext);
   const { isLoggedIn } = useAuth();
   const t = useTranslations("userPage");
 
@@ -66,7 +64,7 @@ const UserPagesMenu = () => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoggedIn, user.isLoading]);
+  }, [isLoggedIn]);
 
   return (
     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
