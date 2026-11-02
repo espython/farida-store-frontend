@@ -50,3 +50,22 @@ export interface WpErrorBody {
   code?: string;
   message?: string;
 }
+
+/** POST /wc-farida/v1/password/forgot (farida-account mu-plugin, server keys). */
+export interface WpPasswordForgotRequest {
+  email: string;
+  locale: "en" | "ar";
+  /** The storefront page the emailed link opens; WordPress adds ?key=…&login=…. */
+  resetUrl: string;
+}
+
+/** POST /wc-farida/v1/password/reset. */
+export interface WpPasswordResetRequest {
+  login: string;
+  key: string;
+  password: string;
+}
+
+export interface WpPasswordResetResponse {
+  email: string;
+}

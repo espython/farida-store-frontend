@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Spinner } from "@nextui-org/react";
+import { Link } from "@/navigation";
 import TextField from "@/shared/ui/TextField";
 import PasswordField from "@/shared/ui/PasswordField";
 import Button from "@/shared/ui/Button";
@@ -60,6 +61,9 @@ const SignInForm = ({ onSignedIn, compact = false }: Props) => {
         placeholder={compact ? undefined : t("placeholders.password")}
         error={errors.password?.message}
       />
+      <Link href="/forgot-password" className="self-end -mt-2 text-sm font-semibold text-garden underline underline-offset-4">
+        {t("forgot")}
+      </Link>
       {failure && (
         <p role="alert" className="p-4 rounded-2xl bg-[#fde8e6] text-[#b42318] text-sm">
           {errorsT(failure === "invalid_credentials" ? "invalid_credentials" : "unavailable")}

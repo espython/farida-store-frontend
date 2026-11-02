@@ -122,6 +122,22 @@ Setup: `setup.sh` copies `infra/wordpress/mu-plugins/` (see `infra/wordpress/REA
 | Unknown order id | 404 |
 | Line items carry no product slug | Slugs come from `wc/store/v1/products?include=…` (cached); links are dropped if that fails |
 
+### Password reset checks (`spike-password.mjs`, 2026-11-02, A2 #243)
+
+Run: `node --env-file=.env.local spike-password.mjs` (about 70 s: it waits out the one-email-a-minute guard). Mail is caught by Mailpit (`docker compose up -d mailpit`, UI on http://localhost:8025; `local-mailpit.php` points `wp_mail` at it).
+
+| Check | Result |
+|---|---|
+| Routes without the Woo keys | 401 |
+| `resetUrl` not https (or localhost), or with a query | 400 |
+| Forgot for a customer: one email with the storefront link, greeting by first name, en and ar | Pass |
+| Second request within a minute | No second email (own timestamp: Woo's new-account email also issues a reset key) |
+| Unknown email, or a staff account | Same 202, no email |
+| Wrong key / short password | 400 |
+| Reset → returns the email; key single use; old password refused | Pass |
+| JWT issued before the reset | Signed out (`users/me` 404: anonymous, and `farida-hardening` hides `wp/v2/users`; the storefront reads 401/403/404 as signed out) |
+| PHP `"$name،"` | Reads `،` as part of the variable name: interpolate as `{$name}` next to Arabic text |
+
 ### Cancellation and return checks (`spike-orders.mjs`, 2026-11-02, O2 #253)
 
 Run: `node --env-file=.env.local spike-orders.mjs`. Creates its own product and orders, deletes them after.

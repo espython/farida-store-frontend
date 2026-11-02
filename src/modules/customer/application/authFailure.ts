@@ -5,12 +5,12 @@ import type { CredentialError } from "../domain/credentials";
 
 export interface AuthFailure {
   /** What to tell the shopper; "unavailable" covers outages and network errors. */
-  code: AuthErrorCode | "unavailable";
+  code: AuthErrorCode | "rate_limited" | "unavailable";
   /** Per-field codes from the domain rules (400 invalid_input). */
   fields: Partial<Record<string, CredentialError>>;
 }
 
-const KNOWN: AuthErrorCode[] = ["invalid_credentials", "email_taken", "invalid_input", "unauthenticated"];
+const KNOWN: AuthFailure["code"][] = ["invalid_credentials", "email_taken", "invalid_input", "unauthenticated", "invalid_reset_link", "rate_limited"];
 
 /** BFF error body ({ error: { code, details } }) → a domain failure the forms can show. */
 export const toAuthFailure = (error: FetchBaseQueryError | SerializedError | undefined): AuthFailure => {
@@ -20,7 +20,7 @@ export const toAuthFailure = (error: FetchBaseQueryError | SerializedError | und
   const code = data?.error?.code;
   const details = data?.error?.details;
   return {
-    code: KNOWN.includes(code as AuthErrorCode) ? (code as AuthErrorCode) : "unavailable",
+    code: KNOWN.includes(code as AuthFailure["code"]) ? (code as AuthFailure["code"]) : "unavailable",
     fields: details && typeof details === "object" && !Array.isArray(details) ? (details as AuthFailure["fields"]) : {},
   };
 };

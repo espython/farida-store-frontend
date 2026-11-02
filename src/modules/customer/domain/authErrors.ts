@@ -5,11 +5,14 @@ export type AuthErrorCode =
   | "email_taken"
   | "invalid_input"
   /** Missing, expired or rejected session token. */
-  | "unauthenticated";
+  | "unauthenticated"
+  /** A password reset link that is malformed, used or older than an hour. */
+  | "invalid_reset_link";
 
 export const AUTH_ERROR_STATUS: Record<AuthErrorCode, number> = {
   invalid_credentials: 401,
   email_taken: 409,
   invalid_input: 400,
   unauthenticated: 401,
+  invalid_reset_link: 400,
 };

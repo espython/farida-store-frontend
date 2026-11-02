@@ -42,6 +42,8 @@ export const WOO_ALLOWLIST: readonly AllowedWooRoute[] = [
   { method: "GET", pattern: /^\/farida\/v1\/promos$/ },
   // Contact form (B7): the farida-contact mu-plugin, with the shared secret.
   { method: "POST", pattern: /^\/farida\/v1\/contact$/ },
+  // Password reset (A2): the farida-account mu-plugin, with the server keys.
+  { method: "POST", pattern: /^\/wc-farida\/v1\/password\/(forgot|reset)$/ },
 ];
 
 export function isWooRouteAllowed(
