@@ -1,8 +1,8 @@
 import { Money } from "@/shared/kernel/Money";
 
 /**
- * Display a legacy decimal amount (the MobX cart and Strapi orders keep EGP as floats)
- * the same way as Money: "3,490", "349.50".
+ * Display a decimal EGP amount (price filters, the Paymob callback) the same way as
+ * Money: "3,490", "349.50".
  */
 export const formatAmount = (major: number | string | null | undefined): string => {
   if (major === null || major === undefined || major === "") return "";

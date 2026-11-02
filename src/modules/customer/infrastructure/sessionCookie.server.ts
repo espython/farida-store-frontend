@@ -3,7 +3,7 @@ import { isSessionExpired, secondsUntilExpiry, type Session } from "../domain/Se
 import { decodeJwtPayload } from "./sessionMapper";
 
 /**
- * The session lives in two cookies (unchanged from the Strapi setup):
+ * The session lives in two cookies:
  * - `credentials`: the token, httpOnly, never readable from JS
  * - `logged_in`: a readable flag so client code can show the signed-in UI
  * Both share the token's remaining lifetime, so the browser drops them when it

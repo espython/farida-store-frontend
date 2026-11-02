@@ -1,1 +1,0 @@
-export const STRAPI_ENDPOINT = "/api/strapi";

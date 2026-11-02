@@ -2,13 +2,12 @@ const createNextIntlPlugin = require("next-intl/plugin");
 
 const withNextIntl = createNextIntlPlugin();
 
-// Media host (Strapi uploads today, Woo later). Only this host may be
-// optimized by next/image; a bad value must not break the build.
+// Media comes from WordPress uploads (product images, promotion banners), so
+// next/image may optimize only the WooCommerce host. A bad value must not
+// break the build.
 const imagePatterns = [];
 try {
-  const { protocol, hostname, port } = new URL(
-    process.env.NEXT_PUBLIC_HOST || ""
-  );
+  const { protocol, hostname, port } = new URL(process.env.WC_BASE_URL || "");
   imagePatterns.push({
     protocol: protocol.replace(":", ""),
     hostname,
