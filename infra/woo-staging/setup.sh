@@ -63,23 +63,8 @@ add_filter( 'wp_mail_from', function () {
 } );
 PHP
 
-# Hardening that must also ship to production: hide the user list from anonymous visitors.
-cat > wp-content/mu-plugins/farida-hardening.php <<'PHP'
-<?php
-add_filter( 'rest_endpoints', function ( $endpoints ) {
-	if ( ! is_user_logged_in() ) {
-		foreach ( array_keys( $endpoints ) as $route ) {
-			if ( 0 === strpos( $route, '/wp/v2/users' ) ) {
-				unset( $endpoints[ $route ] );
-			}
-		}
-	}
-	return $endpoints;
-} );
-PHP
-
-# Farida's own mu-plugins (also deployed to production): order statuses (O1, O2), promotions (W7),
-# contact messages (B7), password reset (A2).
+# Farida's own mu-plugins (also deployed to production): hardening (W8), order statuses (O1, O2),
+# promotions (W7), contact messages (B7), password reset (A2).
 cp /farida-mu-plugins/*.php wp-content/mu-plugins/
 # The contact route only accepts the storefront's shared secret (CONTACT_SHARED_SECRET in
 # .env.local): pass it with -e CONTACT_SHARED_SECRET=... ; --quiet so it is not echoed.

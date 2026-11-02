@@ -89,7 +89,7 @@ const RegisterForm = ({ onRegistered }: { onRegistered: (session: Session) => vo
       />
       {failure && (
         <p role="alert" className="p-4 rounded-2xl bg-[#fde8e6] text-[#b42318] text-sm">
-          {errorsT("unavailable")}
+          {errorsT(failure === "rate_limited" ? "rate_limited" : "unavailable")}
         </p>
       )}
       <Button type="submit" size="lg" full disabled={pending} aria-busy={pending}>

@@ -66,7 +66,7 @@ const SignInForm = ({ onSignedIn, compact = false }: Props) => {
       </Link>
       {failure && (
         <p role="alert" className="p-4 rounded-2xl bg-[#fde8e6] text-[#b42318] text-sm">
-          {errorsT(failure === "invalid_credentials" ? "invalid_credentials" : "unavailable")}
+          {errorsT(failure === "invalid_credentials" || failure === "rate_limited" ? failure : "unavailable")}
         </p>
       )}
       <Button type="submit" size={compact ? "md" : "lg"} full disabled={pending} aria-busy={pending}>
