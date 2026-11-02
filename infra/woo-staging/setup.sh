@@ -102,8 +102,13 @@ add_filter( 'woocommerce_reports_order_statuses', function ( $statuses ) {
 } );
 PHP
 
-# Farida's own mu-plugins (also deployed to production): promotions content type (W7).
+# Farida's own mu-plugins (also deployed to production): promotions (W7), contact messages (B7).
 cp /farida-mu-plugins/*.php wp-content/mu-plugins/
+# The contact route only accepts the storefront's shared secret (CONTACT_SHARED_SECRET in
+# .env.local): pass it with -e CONTACT_SHARED_SECRET=... ; --quiet so it is not echoed.
+if [ -n "${CONTACT_SHARED_SECRET:-}" ]; then
+  wp config set FARIDA_CONTACT_SECRET "$CONTACT_SHARED_SECRET" --type=constant --quiet
+fi
 
 # Local only: the seeded mock banners are SVG, which WordPress refuses by default.
 # Never on a real host (SVG can carry scripts); production banners are JPEG/PNG/WebP.
