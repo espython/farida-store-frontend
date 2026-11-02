@@ -7,8 +7,6 @@ import { CartSidebarStore } from "./cartSidebarStore";
 import { FilterSidebarStore } from "./filterSidebarStore";
 import { ProductsView } from "./productsViewStore";
 import { SearchBoxStore } from "./searchBoxStore";
-import { AdsSliderStore } from "./adsStore";
-import { FastAdsStore } from "./fastAdsStore";
 import PaymentStore from "./paymentStore";
 
 // userDrop store instance
@@ -35,17 +33,6 @@ const searchBoxInstance = new SearchBoxStore();
 
 const productsViewStyle = new ProductsView();
 
-// slider ads  store
-
-const adsInstance = new AdsSliderStore();
-
-// fast ads store
-
-const fastAdsInstance = new FastAdsStore();
-
-// fast ads store
-
-
 // payment store
 
 const paymentInstance = new PaymentStore();
@@ -60,8 +47,6 @@ export const store = {
   filter: filterSidebarInstance,
   viewStyle: productsViewStyle,
   searchBox: searchBoxInstance,
-  ads: adsInstance,
-  fastAds: fastAdsInstance,
   payment: paymentInstance,
 };
 

@@ -50,6 +50,20 @@ Versions: WordPress 7.1.3, WooCommerce 11.2.1, Polylang 3.8.11, JWT Auth 1.5.0, 
 | `wp/v2/users` anonymous | **200: lists users. Must be locked down before launch** (security basics) |
 | Polylang languages en + ar | Created. Free Polylang has no WP-CLI; `lang` param on the Store API is not yet verified with translated products. Needs Polylang for WooCommerce (paid) or an alternative: decision pending |
 
+### Promotions checks (`spike-content.mjs`, 2026-11-02, W7 #232)
+
+Setup: `setup.sh` copies `infra/wordpress/mu-plugins/` (see `infra/wordpress/README.md`); `docker compose --profile tools run --rm wpcli sh /seed-content.sh` seeds the mock content (hero SVGs from `mock/.cache/banners`, announcement and mini-ad texts in both languages). Run: `node spike-content.mjs` (15/15).
+
+| Check | Result |
+|---|---|
+| `GET farida/v1/promos?lang=en\|ar` | Public, `Cache-Control: public, max-age=60`; `{id, placement, text, image{url,width,height,alt}\|null, link\|null, order}` in admin order |
+| Language | Each promotion is `all`, `en` or `ar`; none stored counts as `all`; `lang` missing or other than en/ar: 400 |
+| Hidden | Drafts, and hero banners without an image |
+| Links | Storefront paths (`/categories/...`) and `https://` only; `//host`, `http:`, `javascript:`, `data:` are dropped (admin save and route) |
+| `wp/v2` | No `farida_promo` route; the post type is not readable (401) |
+| Admin box (wp eval) | Saves placement, language, link; bad nonce or no `edit_post` capability: ignored; unknown values fall back to hero / all |
+| SVG | WordPress cannot measure SVGs (width/height `null`); local-only `local-svg-uploads` allows the mock SVGs. Production banners are raster images |
+
 ### Review checks (`spike-reviews.mjs`, 2026-11-02, O3 #254)
 
 | Check | Result |

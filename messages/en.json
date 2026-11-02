@@ -51,7 +51,8 @@
     "increase": "Increase quantity"
   },
   "announcement": {
-    "dismiss": "Hide announcements"
+    "dismiss": "Hide announcements",
+    "label": "Shop announcements"
   },
   "header": {
     "closeMenu": "Close menu",
@@ -844,5 +845,9 @@
         "unavailable": "We couldn’t send your review. Please try again."
       }
     }
+  },
+  "promotions": {
+    "label": "Promotions",
+    "goTo": "Go to promotion {index}"
   }
 }

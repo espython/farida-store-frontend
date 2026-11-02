@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import MiniAdsSection from "./MiniAdsSection";
+import { MiniPromos } from "@/modules/content";
 import FiltersSection from "@/app/components/FiltersSection";
 import ProductsSection from "@/app/components/ProductsSection";
 import { CategoryTitle } from "@/modules/catalog";
@@ -16,7 +16,7 @@ const CategoriesPageContainer = ({ name }: CategoriesPageContainerProps) => {
     <main>
       <PageContainer className="flex flex-col gap-5">
         <CategoryTitle slug={name} />
-        <MiniAdsSection />
+        <MiniPromos />
         <FiltersSection />
         <ProductsSection />
       </PageContainer>

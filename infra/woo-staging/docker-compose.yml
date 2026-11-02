@@ -50,6 +50,9 @@ services:
       - ./setup.sh:/setup.sh:ro
       - ./create-keys.php:/create-keys.php:ro
       - ./create-webhooks.sh:/create-webhooks.sh:ro
+      - ../wordpress/mu-plugins:/farida-mu-plugins:ro
+      - ./seed-content.sh:/seed-content.sh:ro
+      - ./mock/.cache:/mock-cache:ro
 
 volumes:
   db:

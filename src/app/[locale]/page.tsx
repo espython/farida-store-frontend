@@ -4,6 +4,7 @@ import ProductsSection from "@/app/components/ProductsSection";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import { CategorySlider, HomeHero, serializeJsonLd } from "@/modules/catalog";
 import PageContainer from "@/shared/ui/PageContainer";
+import { HeroBanners } from "@/modules/content";
 import { isLocale, LOCALES } from "@/shared/kernel/Locale";
 import { absoluteUrl, ogLocale, SITE_URL } from "@/shared/lib/siteUrl";
 
@@ -62,6 +63,7 @@ const HomePage = async ({ params: { locale } }: HomePageProps) => {
       />
       <PageContainer className="pt-2 md:pt-6 flex flex-col gap-12 md:gap-16">
         <HomeHero />
+        <HeroBanners />
         <section className="flex flex-col gap-4 md:gap-6">
           <h2 className="font-display text-2xl md:text-[2rem] font-medium">{t("browse")}</h2>
           <CategorySlider />

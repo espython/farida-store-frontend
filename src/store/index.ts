@@ -4,6 +4,7 @@ import { CATALOG_FILTERS_KEY, catalogFiltersReducer } from "@/modules/catalog";
 import { CART_KEY, cartReducer, startCartPersistence } from "@/modules/cart";
 import { WISHLIST_KEY, startWishlistPersistence, wishlistReducer } from "@/modules/wishlist";
 import { AUTH_API_KEY, authApi } from "@/modules/customer";
+import { CONTENT_KEY, contentReducer } from "@/modules/content";
 
 // Created per request/provider instance. Never export a module-level store:
 // on the server that would share state between users. The listener middleware
@@ -20,6 +21,7 @@ export const makeStore = () => {
       [CART_KEY]: cartReducer,
       [WISHLIST_KEY]: wishlistReducer,
       [AUTH_API_KEY]: authApi.reducer,
+      [CONTENT_KEY]: contentReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().prepend(listener.middleware).concat(baseApi.middleware, authApi.middleware),
