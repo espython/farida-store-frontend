@@ -6,6 +6,7 @@ import ar from "../../../../messages/ar.json";
 import { Money } from "@/shared/kernel/Money";
 import type { Product } from "../domain/Product";
 import CatalogProductCard from "./CatalogProductCard";
+import { axeViolations } from "@/test/axe";
 
 vi.mock("@/navigation", () => ({
   Link: ({ href, children, ...rest }: { href: string; children: React.ReactNode }) => (
@@ -69,5 +70,15 @@ describe("CatalogProductCard", () => {
     expect(screen.getByRole("button", { name: "act" })).toBeInTheDocument();
     expect(screen.getByText(/تخفيضات/)).toBeInTheDocument();
     expect(container.querySelector('[dir="rtl"]')).not.toBeNull();
+  });
+});
+
+describe("accessibility (axe, #195)", () => {
+  it("product card, in both languages", async () => {
+    for (const locale of ["en", "ar"] as const) {
+      const { container, unmount } = renderCard(product(), locale);
+      expect(await axeViolations(container)).toEqual([]);
+      unmount();
+    }
   });
 });

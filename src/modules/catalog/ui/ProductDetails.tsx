@@ -8,6 +8,7 @@ import Badge from "@/shared/ui/Badge";
 import type { Product } from "../domain/Product";
 import { discountPercent } from "../domain/pricing";
 import Price from "./Price";
+import { listSeparator } from "@/shared/kernel/Locale";
 
 interface Props {
   product: Product;
@@ -89,7 +90,7 @@ const ProductDetails = ({ product, actions, showDescription = true, footer }: Pr
           {product.attributes.map((attr) => (
             <div key={attr.slug} className="flex gap-2">
               <dt className="font-semibold capitalize">{attr.name}:</dt>
-              <dd>{attr.terms.map((term) => term.name).join(locale === "ar" ? "، " : ", ")}</dd>
+              <dd>{attr.terms.map((term) => term.name).join(listSeparator(locale))}</dd>
             </div>
           ))}
         </dl>

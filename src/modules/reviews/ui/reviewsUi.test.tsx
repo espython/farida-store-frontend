@@ -19,6 +19,7 @@ const hooks = vi.hoisted(() => ({ list: vi.fn(), mine: vi.fn() }));
 vi.mock("../application/useReviews", () => ({ useProductReviews: hooks.list, useMyReview: hooks.mine }));
 
 import ProductReviews from "./ProductReviews";
+import { axeViolations } from "@/test/axe";
 
 const review = (id: string, over: Partial<Review> = {}): Review => ({
   id, productId: "296", reviewer: "Ali M.", rating: 4, text: `Review ${id}`, verified: false, createdAt: "2026-11-01T10:00:00.000Z", ...over,
@@ -112,5 +113,17 @@ describe("ProductReviews", () => {
     wrap(<ProductReviews productId="296" rating={{ average: 4, count: 3 }} />, "ar");
     expect(screen.getByText("بناءً على 3 تقييمات")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "تسجيل الدخول" })).toBeInTheDocument();
+  });
+});
+
+describe("accessibility (axe, #195)", () => {
+  it("reviews with the write form open, in both languages", async () => {
+    for (const locale of ["en", "ar"] as const) {
+      hooks.list.mockReturnValue(list({ reviews: [review("1", { verified: true, rating: 5 })], total: 1 }));
+      hooks.mine.mockReturnValue(mine());
+      const { container, unmount } = wrap(<ProductReviews productId="296" rating={{ average: 5, count: 1 }} />, locale);
+      expect(await axeViolations(container)).toEqual([]);
+      unmount();
+    }
   });
 });

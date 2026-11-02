@@ -17,6 +17,7 @@ vi.mock("../application/useAccount", () => ({ useProfile: () => hooks.profile, u
 
 import ProfileCard from "./ProfileCard";
 import AddressBook from "./AddressBook";
+import { axeViolations } from "@/test/axe";
 
 const home: Address = { firstName: "Mona", lastName: "Ali", address1: "5 Tahrir St", address2: "", city: "Dokki", state: "EGGZ", postcode: "12611", phone: "01012345678" };
 const work: Address = { ...home, address1: "9 Nile Corniche", city: "Maadi", state: "EGC", postcode: "11728" };
@@ -146,5 +147,17 @@ describe("AddressBook", () => {
     wrap(<AddressBook />);
     expect(screen.queryByRole("button", { name: "Add an address" })).not.toBeInTheDocument();
     expect(screen.getByText(/the most you can keep/)).toBeInTheDocument();
+  });
+});
+
+describe("accessibility (axe, #195)", () => {
+  it("profile card and address book", async () => {
+    const { container } = wrap(
+      <>
+        <ProfileCard />
+        <AddressBook />
+      </>
+    );
+    expect(await axeViolations(container)).toEqual([]);
   });
 });

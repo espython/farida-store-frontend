@@ -12,6 +12,7 @@ import AddToCartButton from "./AddToCartButton";
 import CartLineItem from "./CartLineItem";
 import CartSummary from "./CartSummary";
 import { cartTotals } from "../domain/cart";
+import { axeViolations } from "@/test/axe";
 
 const ref = (id: string, extra: Partial<ProductRef> = {}): ProductRef => ({
   id,
@@ -108,5 +109,22 @@ describe("CartLineItem and CartSummary", () => {
     fireEvent.click(screen.getByRole("button", { name: "Remove Kettle 5" }));
     expect(lines()).toEqual([]);
     view.unmount();
+  });
+});
+
+describe("accessibility (axe, #195)", () => {
+  it("cart line with its quantity stepper, and the summary", async () => {
+    act(() => {
+      store.dispatch(cartActions.cartHydrated({ lines: [] }));
+      store.dispatch(cartActions.itemAdded({ product: ref("5", { regularUnitPrice: Money.of(100_000) }), quantity: 2 }));
+    });
+    const line = store.getState().cart.cart.lines[0];
+    const { container } = wrap(
+      <>
+        <CartLineItem line={line} />
+        <CartSummary totals={cartTotals(store.getState().cart.cart)} />
+      </>
+    );
+    expect(await axeViolations(container)).toEqual([]);
   });
 });

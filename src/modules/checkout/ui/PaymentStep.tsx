@@ -15,6 +15,7 @@ import CheckoutSummary, { summaryLines } from "./CheckoutSummary";
 import ChoiceCards from "./ChoiceCards";
 import CouponBox from "./CouponBox";
 import { CheckoutEmpty, CheckoutLoading, CheckoutSignIn, CheckoutUnavailable } from "./CheckoutStates";
+import { listSeparator } from "@/shared/kernel/Locale";
 
 const NOTE_MAX = 500;
 
@@ -80,7 +81,7 @@ const PaymentStep = () => {
             </p>
             <p className="text-garden-muted">
               <bdi>
-                {[a.address1, a.address2, a.city].filter(Boolean).join(locale === "ar" ? "، " : ", ")}
+                {[a.address1, a.address2, a.city].filter(Boolean).join(listSeparator(locale))}
               </bdi>
               {" — "}
               {governorateName(a.state, locale)}

@@ -21,6 +21,7 @@ vi.mock("../application/useOrders", () => ({ useOrder: () => hook.order, useOrde
 import OrderTracking from "./OrderTracking";
 import OrderLookup from "./OrderLookup";
 import OrderOverview from "./OrderOverview";
+import { axeViolations } from "@/test/axe";
 
 const order = (over: Partial<Order> = {}): Order => ({
   id: "298",
@@ -109,5 +110,16 @@ describe("OrderLookup", () => {
     fireEvent.click(screen.getByRole("button", { name: "Track order" }));
     expect(screen.getByText("Enter the order number, digits only.")).toBeInTheDocument();
     expect(push).not.toHaveBeenCalled();
+  });
+});
+
+describe("accessibility (axe, #195)", () => {
+  it("order details and tracking", async () => {
+    const overview = wrap(<OrderOverview order={order({ status: "out_for_delivery" })} />);
+    expect(await axeViolations(overview.container)).toEqual([]);
+    overview.unmount();
+    hook.order = ready(order({ status: "out_for_delivery" }));
+    const tracking = wrap(<OrderTracking orderId="298" />, "ar");
+    expect(await axeViolations(tracking.container)).toEqual([]);
   });
 });

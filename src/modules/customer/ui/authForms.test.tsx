@@ -8,6 +8,7 @@ vi.mock("../application/useAuthActions", () => ({ useAuthActions: () => actions 
 
 import SignInForm from "./SignInForm";
 import RegisterForm from "./RegisterForm";
+import { axeViolations } from "@/test/axe";
 
 const session = { customerId: "7", email: "s@x.io", displayName: "Salma", expiresAt: 9e9 };
 const wrap = (ui: React.ReactNode) =>
@@ -113,5 +114,20 @@ describe("RegisterForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "Create account" }));
     expect(await screen.findByText("Use 60 characters or fewer")).toBeInTheDocument();
     expect(screen.queryByRole("alert")).toBeNull();
+  });
+});
+
+describe("accessibility (axe, #195)", () => {
+  it("sign-in and register forms, with their errors showing", async () => {
+    const { container } = wrap(
+      <>
+        <SignInForm onSignedIn={vi.fn()} />
+        <RegisterForm onRegistered={vi.fn()} />
+      </>
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Log in" }));
+    fireEvent.click(screen.getByRole("button", { name: "Create account" }));
+    await screen.findAllByText("Enter a valid email address");
+    expect(await axeViolations(container)).toEqual([]);
   });
 });

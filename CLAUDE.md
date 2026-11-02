@@ -7,7 +7,7 @@ Storefront for a kitchen-appliances ecommerce shop (Arabic + English). Headless 
 - `npm run dev` – dev server (http://localhost:3000)
 - `npm run build` / `npm start` – production build / serve
 - `npm run lint` – next lint
-- `npm test` – unit tests; `npm run verify:i18n` – translation key check
+- `npm test` – unit tests, including axe accessibility checks on the main UI (`axeViolations` in `src/test/axe.ts`; add one for new forms and components); `npm run verify:i18n` – en/ar key parity and every static `t()` key
 
 ## Stack
 

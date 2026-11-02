@@ -12,6 +12,7 @@ import type { SavedAddress } from "../domain/AddressBook";
 import type { AccountResult } from "../application/accountFailure";
 import { useAddressBook } from "../application/useAccount";
 import { AccountLoading, AccountSignIn, AccountUnavailable } from "./AccountStates";
+import { listSeparator } from "@/shared/kernel/Locale";
 
 type Editing = { mode: "new" } | { mode: "edit"; entry: SavedAddress } | null;
 
@@ -99,7 +100,7 @@ const AddressCard = ({ entry, index, onEdit }: { entry: SavedAddress; index: num
   const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const a = entry.address;
-  const sep = locale === "ar" ? "، " : ", ";
+  const sep = listSeparator(locale);
   const heading = t("cardTitle", { index });
 
   const act = async (p: Promise<AccountResult>) => {
