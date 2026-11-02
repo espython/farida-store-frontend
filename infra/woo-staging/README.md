@@ -33,7 +33,7 @@ Production: do NOT install `local-webhooks.php`. Set `WC_WEBHOOK_SECRET` on the 
 
 `setup.sh` installs WooCommerce, Polylang, JWT Authentication for WP REST API and Paymob for WooCommerce; sets EGP / Egypt / 2 decimals / post-name permalinks; enables COD; creates English and Arabic languages and 5 sample products.
 
-It also writes `farida-hardening.php` (hides `wp/v2/users` from anonymous visitors), which **production WordPress needs too**, and copies Farida's own mu-plugins from `../wordpress/mu-plugins/` (order statuses, promotions, contact messages; see `../wordpress/README.md`).
+It also copies Farida's own mu-plugins from `../wordpress/mu-plugins/` (hardening, account, order statuses, promotions, contact messages; see `../wordpress/README.md`), which **production WordPress needs too**.
 
 ## Spike findings so far (2026-10-14)
 
@@ -121,6 +121,23 @@ Setup: `setup.sh` copies `infra/wordpress/mu-plugins/` (see `infra/wordpress/REA
 | Custom status `out-for-delivery` (mu-plugin) settable over REST and included in the default listing | Pass |
 | Unknown order id | 404 |
 | Line items carry no product slug | Slugs come from `wc/store/v1/products?include=…` (cached); links are dropped if that fails |
+
+### Hardening audit (`spike-hardening.mjs`, 2026-11-02, W8 #233)
+
+Run: `node --env-file=.env.local spike-hardening.mjs`. What anonymous visitors and signed-in customers reach on WordPress directly, bypassing the storefront. 21/21 after `farida-hardening.php` 2.0.
+
+| Check | Before | After |
+|---|---|---|
+| Anonymous `wc/v3` customers, orders, reviews, system status | Refused | Refused |
+| `?author=1` | Redirected to `/author/admin/` (login name) | 404 |
+| oEmbed `author_name` | `admin` | Removed |
+| XML-RPC `wp.getUsersBlogs` (password guessing outside the login form) | Answered | Method does not exist |
+| Signed-in customer: `wp/v2/users`, `wp/v2/users/1` | Listed | Hidden (only `/users/me`) |
+| Signed-in customer: write own `wc/v3/customers/<id>`, post a `wc/v3` review, call `wc-farida` | Refused (403) | Refused |
+| 12 wrong passwords on the JWT token route | All "incorrect password" | Locked after 10 (`farida_too_many_attempts`) |
+| Application passwords (a second credential a reset would not revoke) | Available | Off |
+
+**REST key:** `create-keys.php` now issues the key for a `farida-storefront` **Shop manager** user instead of the admin. Every spike passes with it except two that fail for other reasons (`spike-cod` triple submit: Woo has no idempotency, the BFF's key handles it; `spike-cart` picks leftover products whose stock is held by those orders). Found: Woo returns customer `meta_data` to administrators only; `farida-account.php` adds back the storefront's keys.
 
 ### Password reset checks (`spike-password.mjs`, 2026-11-02, A2 #243)
 
@@ -215,7 +232,7 @@ Run: `node --env-file=.env.local spike-cod.mjs` after creating keys once: `docke
 | Coupon `usage_limit=1` under concurrency | Pass (exactly one succeeds) |
 | Cancel restocks exactly once | Pass |
 | Anonymous cannot list orders | Pass (401) |
-| Anonymous cannot enumerate users | Fixed by `farida-hardening` mu-plugin (was 200). **Ship it to production** |
+| Anonymous cannot enumerate users | Fixed by `farida-hardening` mu-plugin (was 200; see the W8 audit). **Ship it to production** |
 | **Triple submit of one cart creates one order** | **FAIL: 3 orders.** Woo has no idempotency for concurrent identical checkouts. Workaround: the BFF checkout route takes an idempotency key (we already have `checkoutIdempotency.ts`) and rejects or replays duplicates, e.g. a per-key lock and a stored order id |
 
 Notes for the BFF: Woo only accepts consumer-key auth over HTTPS (locally faked for `/wp-json/` by an mu-plugin); the BFF must filter orders by customer itself because keys are admin-level.

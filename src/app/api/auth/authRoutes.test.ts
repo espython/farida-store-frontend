@@ -127,4 +127,43 @@ describe("/api/auth routes", () => {
     expect(cookies.some((c) => /^logged_in=;/.test(c) && /Max-Age=0/.test(c))).toBe(true);
     expect((await loginRoute.GET(get("/api/auth/login"), {})).status).toBe(405);
   });
+
+  describe("limits (W8)", () => {
+    const from = (path: string, body: unknown, ip: string) =>
+      new NextRequest(new URL(path, "http://localhost"), { method: "POST", body: JSON.stringify(body), headers: { "x-forwarded-for": ip } });
+
+    it("login: a locked WordPress account says 'too many attempts', not 'wrong password'", async () => {
+      fetchMock.mockResolvedValueOnce(respond(403, { code: "[jwt_auth] farida_too_many_attempts", message: "Too many failed attempts." }));
+      const res = await loginRoute.POST(from("/api/auth/login", { email: "locked@x.io", password: "Secret1" }, "10.7.0.1"), {});
+      expect(res.status).toBe(429);
+      expect((await res.json()).error.code).toBe("rate_limited");
+    });
+
+    it("login: 10 attempts per address per 15 minutes, whatever the visitor", async () => {
+      fetchMock.mockImplementation(async () => respond(403, { code: "[jwt_auth] incorrect_password" }));
+      const statuses: number[] = [];
+      for (let i = 0; i < 11; i++) {
+        statuses.push((await loginRoute.POST(from("/api/auth/login", { email: "Target@X.io", password: "Wrong1" }, `10.7.1.${i}`), {})).status);
+      }
+      expect(statuses.slice(0, 10).every((s) => s === 401)).toBe(true);
+      expect(statuses[10]).toBe(429);
+      expect(fetchMock).toHaveBeenCalledTimes(10);
+    });
+
+    it("login: 20 attempts per visitor per 15 minutes", async () => {
+      fetchMock.mockImplementation(async () => respond(403, { code: "[jwt_auth] incorrect_password" }));
+      let last = 0;
+      for (let i = 0; i < 21; i++) last = (await loginRoute.POST(from("/api/auth/login", { email: `u${i}@x.io`, password: "Wrong1" }, "10.7.2.1"), {})).status;
+      expect(last).toBe(429);
+    });
+
+    it("register: 5 accounts per visitor per hour", async () => {
+      fetchMock.mockImplementation(async () => respond(400, { code: "registration-error-email-exists" }));
+      const statuses: number[] = [];
+      for (let i = 0; i < 6; i++) {
+        statuses.push((await registerRoute.POST(from("/api/auth/register", { email: `n${i}@x.io`, password: "Secret1", firstName: "A", lastName: "B" }, "10.7.3.1"), {})).status);
+      }
+      expect(statuses).toEqual([409, 409, 409, 409, 409, 429]);
+    });
+  });
 });

@@ -21,10 +21,15 @@ const codeOf = (payload: unknown) => ((payload ?? {}) as WpErrorBody).code ?? ""
 // ("invalid_email"/"invalid_username") and a wrong password
 // ("incorrect_password"). Both become invalid_credentials so the sign-in form
 // cannot be used to find out who has an account.
-const mapTokenError = (status: number, payload: unknown) =>
-  status === 403 && codeOf(payload).startsWith("[jwt_auth]")
-    ? authError("invalid_credentials", "Invalid email or password")
-    : undefined;
+// After 10 wrong passwords in 15 minutes WordPress locks the account
+// (farida-hardening mu-plugin); that one is said plainly.
+const mapTokenError = (status: number, payload: unknown) => {
+  const code = codeOf(payload);
+  if (status === 403 && code.includes("farida_too_many_attempts")) {
+    return new AppError("rate_limited", "Too many failed attempts, try again later", 429);
+  }
+  return status === 403 && code.startsWith("[jwt_auth]") ? authError("invalid_credentials", "Invalid email or password") : undefined;
+};
 
 export async function login(email: string, password: string): Promise<SignedIn> {
   const { data } = await wooFetch<WpTokenResponse>({

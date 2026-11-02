@@ -17,6 +17,9 @@
  * - JWT tokens issued before the user's last password change are treated as signed out (the JWT plugin
  *   has no revocation), so a reset ends every other session.
  *
+ * - Customer responses carry the storefront's own meta (address book, wishlist) for the shop-manager REST
+ *   key; Woo shows customer meta to administrators only.
+ *
  * Email goes through wp_mail: production needs the mail service (W6 #231).
  */
 
@@ -157,3 +160,24 @@ add_filter( 'determine_current_user', function ( $user_id ) {
 	$changed = (int) get_user_meta( (int) $user_id, FARIDA_PASSWORD_CHANGED, true );
 	return $changed && $iat < $changed ? 0 : $user_id;
 }, 20 );
+
+// Woo returns a customer's meta_data to administrators only, but the storefront's REST key belongs to a
+// shop manager (W8 #233). Add back exactly the storefront's own keys, for users who manage the shop.
+const FARIDA_CUSTOMER_META_KEYS = array( 'farida_address_book', 'farida_wishlist' );
+
+add_filter( 'woocommerce_rest_prepare_customer', function ( $response, $user ) {
+	if ( wc_current_user_has_role( 'administrator' ) || ! current_user_can( 'manage_woocommerce' ) || ! $user instanceof WP_User ) {
+		return $response; // admins already get meta_data; nobody else should
+	}
+	$data = $response->get_data();
+	$meta = array();
+	foreach ( FARIDA_CUSTOMER_META_KEYS as $key ) {
+		$value = get_user_meta( $user->ID, $key, true );
+		if ( '' !== $value ) {
+			$meta[] = array( 'key' => $key, 'value' => $value );
+		}
+	}
+	$data['meta_data'] = $meta;
+	$response->set_data( $data );
+	return $response;
+}, 10, 2 );
