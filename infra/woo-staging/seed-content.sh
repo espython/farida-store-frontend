@@ -19,12 +19,26 @@ promo() { # placement lang order title [link]
   echo "$id"
 }
 
+# The title is the banner's text alternative: what the artwork says.
+title() { # n lang
+  case "$1-$2" in
+    1-en) echo "Kitchen Week: up to 20% off blenders and juicers" ;;
+    1-ar) echo "أسبوع المطبخ: خصم حتى 20% على الخلاطات والعصارات" ;;
+    2-en) echo "New arrival: Orbit Barista espresso machine" ;;
+    2-ar) echo "وصل حديثاً: ماكينة إسبريسو أوربت باريستا" ;;
+    3-en) echo "Cookware: pots and pans from 890 EGP" ;;
+    3-ar) echo "أدوات الطهي: حلل وطاسات تبدأ من ٨٩٠ جنيه" ;;
+    4-en) echo "Free delivery in Cairo and Giza on orders over 2,000 EGP" ;;
+    4-ar) echo "توصيل مجاني للقاهرة والجيزة للطلبات فوق ٢٬٠٠٠ جنيه" ;;
+  esac
+}
+
 i=1
 for link in /categories/blenders /categories/espresso-machines /categories/cookware /products; do
   for lang in en ar; do
     file="/mock-cache/banners/$lang-$i.svg"
     if [ -f "$file" ]; then
-      id=$(promo hero "$lang" "$i" "Banner $i ($lang)" "$link")
+      id=$(promo hero "$lang" "$i" "$(title "$i" "$lang")" "$link")
       att=$(wp media import "$file" --post_id="$id" --featured_image --title="Banner $i ($lang)" --porcelain)
       # WordPress cannot measure SVGs; the mock banners are 1600x900.
       wp post meta update "$att" _wp_attachment_metadata '{"width":1600,"height":900,"file":"'"$(wp post meta get "$att" _wp_attached_file)"'"}' --format=json >/dev/null

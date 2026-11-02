@@ -11,7 +11,7 @@ import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
 import CartFloatingButton from "@/components/CartFloatingButton";
 import CartSideBar from "@/components/CartSideBar";
-import TopPositionedAds from "@/components/TopPositionedAds";
+import { AnnouncementBar } from "@/modules/content";
 import BottomNavigation from "@/components/BottomNavigation";
 import GoTopFloatingButton from "@/components/GoTopFloatingButton";
 import { NextIntlClientProvider, useMessages } from "next-intl";
@@ -66,7 +66,7 @@ export default function RootLayout({
                 <div className="relative ">
                   <Sidebar />
                   <CartSideBar />
-                  <TopPositionedAds />
+                  <AnnouncementBar />
                   <CartFloatingButton />
                   <GoTopFloatingButton />
                   <BottomNavigation />
