@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 
 import { AnimatePresence, motion } from "framer-motion";
-import FilterSidebarContents from "@/app/components/FilterSidebarContents";
+import FilterSidebarContents from "@/components/listing/FilterSidebarContents";
 import { useLocale, useTranslations } from "next-intl";
 import { CatalogListing } from "@/modules/catalog";
 import { AddToCartButton, toProductRef } from "@/modules/cart";

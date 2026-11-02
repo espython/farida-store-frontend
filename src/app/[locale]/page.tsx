@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import FiltersSection from "@/app/components/FiltersSection";
-import ProductsSection from "@/app/components/ProductsSection";
+import FiltersSection from "@/components/listing/FiltersSection";
+import ProductsSection from "@/components/listing/ProductsSection";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import { CategorySlider, HomeHero, serializeJsonLd } from "@/modules/catalog";
 import PageContainer from "@/shared/ui/PageContainer";

@@ -3,7 +3,7 @@ import { useEffect, type ReactNode } from "react";
 import { Button, Pagination, Spinner } from "@nextui-org/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useScreenSize } from "react-screen-size-helper";
-import EmptyProducts from "@/app/components/EmptyProducts";
+import EmptyProducts from "./EmptyProducts";
 import type { Locale } from "@/shared/kernel/Locale";
 import type { Product } from "../domain/Product";
 import { useCatalogListing } from "../application/useCatalogListing";

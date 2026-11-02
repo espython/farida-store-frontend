@@ -340,7 +340,7 @@ Note: `selectionAddressModal` is currently `new AddressModalStore()`; it becomes
 - [ ] Phase 5: cart and checkout (C1–C4). C1 and C2 done; C3 cash-on-delivery checkout done; card payment after launch (#326)
 - [ ] Phase 6: orders and wishlist (O1–O4). O1–O4 done (O2: cancel before dispatch, return requests within 14 days as a Woo status; owner email for returns waits on W6)
 - [x] Phase 7: data migration (M1–M4): dropped 2026-10-31, no real data
-- [ ] Phase 8: UI state and cleanup (U1–U3). U1 and U3 done: UI state in `src/store/uiSlice`, MobX removed (`paymentStore` is a plain class until #326); U2 (dedupe components and folders) open
+- [ ] Phase 8: UI state and cleanup (U1–U3). U1 and U3 done: UI state in `src/store/uiSlice`, MobX removed (`paymentStore` is a plain class until #326); U2 done (one `src/components` folder with `listing/`, `useAuth` replaced by `useSession`, dead components removed; the card-payment leftovers go with #326)
 - [ ] Phase 9: launch and Strapi removal (X1, X2, X4; X3 dropped). X4 code sweep done: Strapi proxy, `api/config.ts` and the Strapi env vars are gone; `backend-admin` still to archive
 - [ ] Phase 10: post-launch
 - [ ] Phase 11: feature-based full DDD architecture (after launch)

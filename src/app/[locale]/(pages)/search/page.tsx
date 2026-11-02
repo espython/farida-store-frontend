@@ -1,5 +1,5 @@
-import FiltersSection from "@/app/components/FiltersSection";
-import ProductsSection from "@/app/components/ProductsSection";
+import FiltersSection from "@/components/listing/FiltersSection";
+import ProductsSection from "@/components/listing/ProductsSection";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import React from "react";
 import PageContainer from "@/shared/ui/PageContainer";
