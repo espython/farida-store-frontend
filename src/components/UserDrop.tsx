@@ -1,17 +1,16 @@
 "use client";
 
-import React, { useContext } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { observer } from "mobx-react-lite";
 import { useLocale, useTranslations } from "next-intl";
-import { StoreContext } from "@/contexts/StoreContext";
 import { SignInForm, useSession } from "@/modules/customer";
 import GoogleProvider from "@/app/[locale]/(auth)/GoogleProvider";
 import UserLoggedInUi from "./UserLoggedInUi";
+import { useUserMenu } from "@/store/ui";
 
 /** Hover dropdown under the header account icon: sign-in form or the account menu. */
 const UserDrop = () => {
-  const { userDrop } = useContext(StoreContext);
+  const userDrop = useUserMenu();
   const { status } = useSession();
   const locale = useLocale();
   const t = useTranslations("loginForm");
@@ -21,8 +20,8 @@ const UserDrop = () => {
     <motion.div
       initial={{ scaleY: 0, opacity: 0 }}
       animate={{
-        scaleY: userDrop.isUserMenuDisplayed ? 1 : 0,
-        opacity: userDrop.isUserMenuDisplayed ? 1 : 0,
+        scaleY: userDrop.shown ? 1 : 0,
+        opacity: userDrop.shown ? 1 : 0,
       }}
       className={`origin-top flex flex-col gap-5 w-[22rem] text-garden absolute top-full end-0 z-[100] bg-white rounded-3xl shadow-xl border border-line overflow-hidden ${
         signedIn ? "" : "p-5"
@@ -47,4 +46,4 @@ const UserDrop = () => {
   );
 };
 
-export default observer(UserDrop);
+export default UserDrop;

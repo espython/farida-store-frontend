@@ -1,11 +1,11 @@
 "use client";
-import React, { useContext } from "react";
-import { StoreContext } from "@/contexts/StoreContext";
+import React from "react";
 import { ColorOptions } from "@/modules/catalog";
+import { useDrawer } from "@/store/ui";
 
 const ColorsMenu = () => {
-  const { filter } = useContext(StoreContext);
-  return <ColorOptions onSelect={filter.hideWholeFilterSidebar} />;
+  const filter = useDrawer("filters");
+  return <ColorOptions onSelect={filter.hide} />;
 };
 
 export default ColorsMenu;

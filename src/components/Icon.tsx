@@ -2,7 +2,6 @@
 import React, { ReactElement } from "react";
 import { IconType } from "react-icons/lib";
 import { motion } from "framer-motion";
-import { observer } from "mobx-react-lite";
 
 type color =
   | "mainPink"
@@ -76,4 +75,4 @@ const Icon = ({
   );
 };
 
-export default observer(Icon);
+export default Icon;

@@ -1,7 +1,5 @@
 "use client";
-import React, { useContext, useEffect } from "react";
-import { StoreContext } from "@/contexts/StoreContext";
-import { observer } from "mobx-react-lite";
+import React, { useEffect } from "react";
 
 import { AnimatePresence, motion } from "framer-motion";
 import FilterSidebarContents from "@/app/components/FilterSidebarContents";
@@ -9,41 +7,43 @@ import { useLocale, useTranslations } from "next-intl";
 import { CatalogListing } from "@/modules/catalog";
 import { AddToCartButton, toProductRef } from "@/modules/cart";
 import { WishlistButton } from "@/modules/wishlist";
+import { useDrawer, useProductsView } from "@/store/ui";
 
 const ProductsSection = () => {
-  const { viewStyle, filter } = useContext(StoreContext);
+  const viewStyle = useProductsView();
+  const filter = useDrawer("filters");
 
   const locale = useLocale();
   const t = useTranslations("filters");
 
   useEffect(() => {
-    if (!filter.showFilterSideBar) return;
+    if (!filter.open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") filter.hideWholeFilterSidebar();
+      if (e.key === "Escape") filter.hide();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [filter, filter.showFilterSideBar]);
+  }, [filter, filter.open]);
 
   return (
     <div className="flex flex-col gap-5">
       {/* The page composes catalog, cart and wishlist: the catalog imports neither. */}
       <CatalogListing
-        view={viewStyle.gridView ? "grid" : "row"}
-        onFiltersChange={filter.hideWholeFilterSidebar}
+        view={(viewStyle.view === "grid") ? "grid" : "row"}
+        onFiltersChange={filter.hide}
         renderActions={(product) => <AddToCartButton product={toProductRef(product)} />}
         renderOverlay={(product) => <WishlistButton productId={product.id} title={product.title} />}
       />
 
       <AnimatePresence mode="wait">
-        {filter.showBackdrop && (
+        {filter.backdrop && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             key="filter-backdrop"
             className="backdrop z-[90]"
-            onClick={filter.hideWholeFilterSidebar}
+            onClick={filter.hide}
           />
         )}
       </AnimatePresence>
@@ -53,7 +53,7 @@ const ProductsSection = () => {
         aria-label={t("filters")}
         initial={false}
         animate={
-          filter.showFilterSideBar
+          filter.open
             ? { x: 0, visibility: "visible" }
             : { x: locale === "en" ? "-105%" : "105%", transitionEnd: { visibility: "hidden" } }
         }
@@ -69,4 +69,4 @@ const ProductsSection = () => {
   );
 };
 
-export default observer(ProductsSection);
+export default ProductsSection;

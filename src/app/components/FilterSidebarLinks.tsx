@@ -1,11 +1,11 @@
 "use client";
-import { StoreContext } from "@/contexts/StoreContext";
-import React, { useContext } from "react";
+import React from "react";
 import { CategoryLinks } from "@/modules/catalog";
+import { useDrawer } from "@/store/ui";
 
 const FilterSidebarLinks = () => {
-  const { filter } = useContext(StoreContext);
-  return <CategoryLinks onSelect={filter.hideWholeFilterSidebar} />;
+  const filter = useDrawer("filters");
+  return <CategoryLinks onSelect={filter.hide} />;
 };
 
 export default FilterSidebarLinks;

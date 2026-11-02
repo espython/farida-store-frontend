@@ -1,17 +1,16 @@
 "use client";
-import React, { useContext } from "react";
-import { observer } from "mobx-react-lite";
-import { StoreContext } from "@/contexts/StoreContext";
+import React from "react";
 import { AccountMenu } from "@/modules/customer";
+import { useDrawer } from "@/store/ui";
 
 /** Account section of the menu drawer when signed in. */
 const UserSidebarMenu = () => {
-  const { sidebar } = useContext(StoreContext);
+  const sidebar = useDrawer("menu");
   return (
     <div className="px-5 py-4 border-t border-line">
-      <AccountMenu variant="drawer" onNavigate={sidebar.hideWholeSidebar} />
+      <AccountMenu variant="drawer" onNavigate={sidebar.hide} />
     </div>
   );
 };
 
-export default observer(UserSidebarMenu);
+export default UserSidebarMenu;

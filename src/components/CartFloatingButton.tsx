@@ -1,16 +1,18 @@
 "use client";
-import { StoreContext } from "@/contexts/StoreContext";
 import { Button } from "@nextui-org/react";
-import React, { useContext, useMemo } from "react";
+import React, { useMemo } from "react";
 import { FaCartArrowDown } from "react-icons/fa6";
-import { observer } from "mobx-react-lite";
 import { AnimatePresence, motion } from "framer-motion";
 import Icon from "./Icon";
 import { useLocale, useTranslations } from "next-intl";
 import { useCart } from "@/modules/cart";
+import { useCartMenu, useDrawer } from "@/store/ui";
 
 const CartFloatingButton = () => {
-  const { cartSidebar, sidebar, searchBox } = useContext(StoreContext);
+  const cartSidebar = useDrawer("cart");
+  const cartMenu = useCartMenu();
+  const sidebar = useDrawer("menu");
+  const searchBox = useDrawer("search");
   const locale = useLocale();
   const t = useTranslations("header");
   const { totals, hydrated } = useCart();
@@ -24,10 +26,10 @@ const CartFloatingButton = () => {
   }, [locale]);
   return (
     <AnimatePresence mode="wait">
-      {!cartSidebar.showCartSideBar &&
-        !cartSidebar.isCartMenuDisplayed &&
-        !sidebar.showSideBar &&
-        !searchBox.showSearchBox && (
+      {!cartSidebar.open &&
+        !cartMenu.shown &&
+        !sidebar.open &&
+        !searchBox.open && (
           <motion.div
             initial={{ x: movingValue }}
             animate={{ x: 0 }}
@@ -45,7 +47,7 @@ const CartFloatingButton = () => {
               count={hydrated ? totals.itemCount : 0}
               label={t("cart")}
               whenClick={() => {
-                cartSidebar.displayWholeCartSidebar();
+                cartSidebar.show();
               }}
             />
           </motion.div>
@@ -54,4 +56,4 @@ const CartFloatingButton = () => {
   );
 };
 
-export default observer(CartFloatingButton);
+export default CartFloatingButton;

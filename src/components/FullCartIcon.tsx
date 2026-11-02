@@ -1,26 +1,26 @@
 "use client";
-import React, { useContext } from "react";
+import React from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import Icon from "./Icon";
 
 // import CartDrop from "./Cartdrop";
 import CartDrop2 from "./Cartdrop";
 
-import { observer } from "mobx-react-lite";
 
-import { StoreContext } from "@/contexts/StoreContext";
 import { Link } from "@/navigation";
 import { useTranslations } from "next-intl";
 import { useCart } from "@/modules/cart";
+import { useCartMenu, useDrawer } from "@/store/ui";
 
 const FullCartIcon = () => {
-  const { cartSidebar } = useContext(StoreContext);
+  const cartSidebar = useDrawer("cart");
+  const cartMenu = useCartMenu();
   const t = useTranslations("header");
   const { totals, hydrated } = useCart();
   const count = hydrated ? totals.itemCount : 0;
 
   return (
-    <div className="relative" onMouseOver={cartSidebar.displayCartMenu} onMouseLeave={cartSidebar.hideCartMenu}>
+    <div className="relative" onMouseOver={cartMenu.show} onMouseLeave={cartMenu.hide}>
       <Link href={"/cart"} aria-label={`${t("cart")} (${count})`}>
         <Icon
           icon={<AiOutlineShoppingCart />}
@@ -35,4 +35,4 @@ const FullCartIcon = () => {
   );
 };
 
-export default observer(FullCartIcon);
+export default FullCartIcon;

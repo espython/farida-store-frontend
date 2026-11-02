@@ -1,38 +1,37 @@
 "use client";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { CgClose } from "react-icons/cg";
 import SearchBox from "./SearchBox";
-import { observer } from "mobx-react-lite";
-import { StoreContext } from "@/contexts/StoreContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
+import { useDrawer } from "@/store/ui";
 
 const SearchMenu = () => {
-  const { searchBox } = useContext(StoreContext);
+  const searchBox = useDrawer("search");
   const divRef = useRef<HTMLDivElement>(null);
 
   const t = useTranslations("search");
   const locale = useLocale();
 
   useEffect(() => {
-    if (!searchBox.showSearchBox) return;
+    if (!searchBox.open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") searchBox.hideWholeSearchBox();
+      if (e.key === "Escape") searchBox.hide();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [searchBox, searchBox.showSearchBox]);
+  }, [searchBox, searchBox.open]);
 
   return (
     <div dir={locale === "en" ? "ltr" : "rtl"}>
       <AnimatePresence mode="wait">
-        {searchBox.showBackdrop && (
+        {searchBox.backdrop && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="backdrop z-[90]"
-            onClick={searchBox.hideWholeSearchBox}
+            onClick={searchBox.hide}
           />
         )}
       </AnimatePresence>
@@ -40,7 +39,7 @@ const SearchMenu = () => {
         ref={divRef}
         initial={false}
         animate={
-          searchBox.showSearchBox
+          searchBox.open
             ? { y: 0, visibility: "visible" }
             : { y: "-110%", transitionEnd: { visibility: "hidden" } }
         }
@@ -51,7 +50,7 @@ const SearchMenu = () => {
         role="dialog"
         aria-modal="true"
         aria-labelledby="search-dialog-title"
-        aria-hidden={!searchBox.showSearchBox}
+        aria-hidden={!searchBox.open}
         className="bg-cream fixed top-0 inset-x-0 h-full md:h-auto md:max-h-[85vh] md:rounded-b-3xl shadow-xl text-garden z-[100] overflow-y-auto"
       >
         <div className="max-w-[860px] mx-auto px-4 md:px-8 py-4 md:py-8 flex flex-col gap-6">
@@ -61,7 +60,7 @@ const SearchMenu = () => {
             </p>
             <button
               type="button"
-              onClick={searchBox.hideWholeSearchBox}
+              onClick={searchBox.hide}
               aria-label={t("close")}
               className="w-11 h-11 grid place-items-center rounded-full bg-white hover:bg-sand"
             >
@@ -75,4 +74,4 @@ const SearchMenu = () => {
   );
 };
 
-export default observer(SearchMenu);
+export default SearchMenu;

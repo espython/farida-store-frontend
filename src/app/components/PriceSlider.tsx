@@ -1,12 +1,12 @@
 "use client";
 import { buttonClass } from "@/shared/ui/Button";
 import { formatAmount } from "@/shared/lib/price";
-import { StoreContext } from "@/contexts/StoreContext";
 import { Button, Slider, SliderValue } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useRouter, usePathname } from "@/navigation";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useDrawer } from "@/store/ui";
 
 const PriceSlider = () => {
   const router = useRouter();
@@ -18,7 +18,7 @@ const PriceSlider = () => {
     min_price ? Number(min_price) : 0,
     max_price ? Number(max_price) : 50000,
   ]);
-  const { filter } = useContext(StoreContext);
+  const filter = useDrawer("filters");
   const t = useTranslations("filters");
   const currency = useTranslations("currency");
 
@@ -42,7 +42,7 @@ const PriceSlider = () => {
       // router.push(`${pathname}?min_price=${value[0] }&max_price=${value[1]}`)
       handlePriceSearch(value[0].toString(), value[1].toString());
     }
-    filter.hideWholeFilterSidebar();
+    filter.hide();
   };
 
   return (

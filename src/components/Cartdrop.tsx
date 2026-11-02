@@ -1,18 +1,17 @@
 "use client";
 
-import React, { useContext } from "react";
-import { observer } from "mobx-react-lite";
+import React from "react";
 import { motion } from "framer-motion";
-import { StoreContext } from "@/contexts/StoreContext";
 import { useRouter } from "@/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { CartLineItem, CartSummary, useCart } from "@/modules/cart";
 import { buttonClass } from "@/shared/ui/Button";
 import EmptyCartDrop from "./EmptyCartDrop";
+import { useCartMenu } from "@/store/ui";
 
 /** Hover dropdown under the header cart icon (desktop). */
 const CartDrop2 = () => {
-  const { cartSidebar: cartUi } = useContext(StoreContext);
+  const cartMenu = useCartMenu();
   const { lines, totals } = useCart();
   const router = useRouter();
   const locale = useLocale();
@@ -22,8 +21,8 @@ const CartDrop2 = () => {
     <motion.div
       initial={{ scaleY: 0, opacity: 0 }}
       animate={{
-        scaleY: cartUi.isCartMenuDisplayed ? 1 : 0,
-        opacity: cartUi.isCartMenuDisplayed ? 1 : 0,
+        scaleY: cartMenu.shown ? 1 : 0,
+        opacity: cartMenu.shown ? 1 : 0,
       }}
       className="origin-top w-[25rem] p-5 hidden md:block text-garden absolute top-full end-0 z-[100] bg-white rounded-3xl shadow-xl border border-line"
       dir={locale === "en" ? "ltr" : "rtl"}
@@ -40,7 +39,7 @@ const CartDrop2 = () => {
             <ul className="flex flex-col divide-y divide-line max-h-[45vh] overflow-y-auto overflow-x-hidden">
               {lines.map((line) => (
                 <li key={line.product.id} className="py-3 first:pt-0">
-                  <CartLineItem line={line} variant="compact" onNavigate={cartUi.hideCartMenu} />
+                  <CartLineItem line={line} variant="compact" onNavigate={cartMenu.hide} />
                 </li>
               ))}
             </ul>
@@ -62,4 +61,4 @@ const CartDrop2 = () => {
   );
 };
 
-export default observer(CartDrop2);
+export default CartDrop2;

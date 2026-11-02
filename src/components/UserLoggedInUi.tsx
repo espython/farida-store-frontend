@@ -1,13 +1,12 @@
 "use client";
-import React, { useContext } from "react";
-import { observer } from "mobx-react-lite";
-import { StoreContext } from "@/contexts/StoreContext";
+import React from "react";
 import { AccountMenu } from "@/modules/customer";
+import { useUserMenu } from "@/store/ui";
 
 /** Header dropdown when signed in. */
 const UserLoggedInUi = () => {
-  const { userDrop } = useContext(StoreContext);
-  return <AccountMenu onNavigate={userDrop.hideUserMenu} />;
+  const userDrop = useUserMenu();
+  return <AccountMenu onNavigate={userDrop.hide} />;
 };
 
-export default observer(UserLoggedInUi);
+export default UserLoggedInUi;

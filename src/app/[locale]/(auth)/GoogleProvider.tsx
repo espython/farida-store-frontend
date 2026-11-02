@@ -2,7 +2,6 @@
 
 import React from "react";
 import { FaGoogle } from "react-icons/fa";
-import { observer } from "mobx-react-lite";
 import { useTranslations } from "next-intl";
 import { buttonClass } from "@/shared/ui/Button";
 
@@ -34,4 +33,4 @@ const GoogleProvider = ({ format = "large" }: providerProps) => {
   );
 };
 
-export default observer(GoogleProvider);
+export default GoogleProvider;

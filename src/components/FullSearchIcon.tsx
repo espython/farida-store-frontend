@@ -1,10 +1,9 @@
 "use client";
-import { observer } from "mobx-react-lite";
-import React, { useContext } from "react";
+import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import Icon from "./Icon";
-import { StoreContext } from "@/contexts/StoreContext";
 import { useTranslations } from "next-intl";
+import { useDrawer } from "@/store/ui";
 
 interface fullUserSearchIconProps {
   className?: string;
@@ -17,7 +16,7 @@ const FullSearchIcon = ({
   hasBorder = true,
   hasBorderHover = true,
 }: fullUserSearchIconProps) => {
-  const { searchBox } = useContext(StoreContext);
+  const searchBox = useDrawer("search");
   const t = useTranslations("header");
 
   return (
@@ -25,10 +24,10 @@ const FullSearchIcon = ({
       icon={<AiOutlineSearch className={className} />}
       hasBorder={hasBorder}
       hasBorderHover={hasBorderHover}
-      whenClick={searchBox.displayWholeSearchBox}
+      whenClick={searchBox.show}
       label={t("searchLabel")}
     />
   );
 };
 
-export default observer(FullSearchIcon);
+export default FullSearchIcon;
