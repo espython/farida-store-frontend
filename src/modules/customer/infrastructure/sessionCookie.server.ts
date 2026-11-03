@@ -9,8 +9,9 @@ import { decodeJwtPayload } from "./sessionMapper";
  * Both share the token's remaining lifetime, so the browser drops them when it
  * expires and the middleware then treats the visitor as signed out.
  */
-export const TOKEN_COOKIE = "credentials";
-export const FLAG_COOKIE = "logged_in";
+import { FLAG_COOKIE, TOKEN_COOKIE } from "./sessionCookieNames";
+
+export { FLAG_COOKIE, TOKEN_COOKIE };
 
 const base = () => ({ secure: process.env.NODE_ENV === "production", sameSite: "lax" as const, path: "/" });
 
