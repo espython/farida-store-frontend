@@ -7,11 +7,14 @@ import type { WcCustomerAccount, WcCustomerAddress, WcMeta } from "./wcCustomerD
 export const BOOK_META_KEY = "farida_address_book";
 /** Id of the entry made from an address the customer had before the book existed. */
 export const SEEDED_ENTRY_ID = "primary";
+/** Customer meta key set (epoch seconds) when the email is confirmed (farida-account mu-plugin). */
+export const EMAIL_VERIFIED_META_KEY = "farida_email_verified";
 
 export const toProfile = (dto: WcCustomerAccount): Profile => ({
   firstName: dto.first_name ?? "",
   lastName: dto.last_name ?? "",
   email: dto.email ?? "",
+  emailVerified: Boolean((dto.meta_data ?? []).find((m) => m.key === EMAIL_VERIFIED_META_KEY)?.value),
 });
 
 const str = (v: unknown) => (typeof v === "string" ? v : "");

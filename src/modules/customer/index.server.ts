@@ -3,6 +3,8 @@ export { getSession, login, register } from "./infrastructure/authClient.server"
 export type { SignedIn } from "./infrastructure/authClient.server";
 export { requestPasswordReset, resetPassword } from "./infrastructure/passwordClient.server";
 export { toResetLink } from "./domain/passwordReset";
+export { sendEmailVerification, verifyEmail } from "./infrastructure/emailVerificationClient.server";
+export { toVerifyLink } from "./domain/emailVerification";
 export {
   clearSessionCookies,
   FLAG_COOKIE,

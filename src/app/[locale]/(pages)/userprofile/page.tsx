@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import { unstable_setRequestLocale } from "next-intl/server";
 import PageTitle from "@/components/PageTitle";
 import PageContainer from "@/shared/ui/PageContainer";
-import { ProfileCard } from "@/modules/customer";
+import { EmailVerificationBanner, ProfileCard } from "@/modules/customer";
 
 interface UserProfilePageProps {
   params: { locale: string };
@@ -16,6 +16,7 @@ const UserProfilePage = ({ params: { locale } }: UserProfilePageProps) => {
     <>
       <PageTitle title={t("title")} />
       <PageContainer className="pt-6 pb-8">
+        <EmailVerificationBanner />
         <ProfileCard />
       </PageContainer>
     </>

@@ -1,5 +1,6 @@
 "use client";
 import { useCallback } from "react";
+import { useLocale } from "next-intl";
 import type { RegistrationInput } from "../domain/credentials";
 import type { Session } from "../domain/Session";
 import { authApi } from "./authApi";
@@ -11,6 +12,8 @@ type Outcome = { ok: true; session: Session } | { ok: false; failure: AuthFailur
 export const useAuthActions = () => {
   const [signInMutation, signInState] = authApi.useSignInMutation();
   const [registerMutation, registerState] = authApi.useRegisterMutation();
+  // The confirmation email goes out in the language the customer signed up in.
+  const locale = useLocale() === "ar" ? "ar" : "en";
   const [signOutMutation, signOutState] = authApi.useSignOutMutation();
 
   const signIn = useCallback(
@@ -27,12 +30,12 @@ export const useAuthActions = () => {
   const register = useCallback(
     async (input: RegistrationInput): Promise<Outcome> => {
       try {
-        return { ok: true, session: await registerMutation(input).unwrap() };
+        return { ok: true, session: await registerMutation({ ...input, locale }).unwrap() };
       } catch (error) {
         return { ok: false, failure: toAuthFailure(error as Parameters<typeof toAuthFailure>[0]) };
       }
     },
-    [registerMutation]
+    [registerMutation, locale]
   );
 
   const signOut = useCallback(async () => {
