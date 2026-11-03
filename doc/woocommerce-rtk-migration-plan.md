@@ -336,11 +336,11 @@ Note: `selectionAddressModal` is currently `new AddressModalStore()`; it becomes
 - [ ] Phase 1: foundations (F1–F5). F1–F4 and D1 (module structure, boundary lint rules) done; F5 legal pages wait on owner content
 - [ ] Phase 2: Woo platform (W1–W9). W0 staging spike done on local Docker; W7 promotions content type done (`infra/wordpress/mu-plugins/farida-content.php`); W8 done (shop-manager REST key, `farida-hardening.php` 2.0, login limits; admin 2FA is a launch step); the rest not started. Open: Polylang add-on, Paymob sandbox keys, hosting
 - [ ] Phase 3: BFF and catalog (B1–B7). B1–B3 done; B4 code done (#293, #295–#298), Lighthouse SEO ≥ 90 on a deployed Woo build still to run; B5 done (promotions from the W7 mu-plugin); B6 (#303) done; B7 (#304) contact messages in WordPress admin done, owner email waits on W6 (#231)
-- [ ] Phase 4: accounts (A1–A5). A1, A4 and A5 done (Woo auth, profile and address book); A2 password reset done (`farida-account` mu-plugin, signs out older tokens), email verification and Google login open (Google waits on the owner); A3 open
+- [ ] Phase 4: accounts (A1–A5). A1, A4 and A5 done (Woo auth, profile and address book); A2 password reset done (`farida-account` mu-plugin, signs out older tokens), email verification and Google login open (Google waits on the owner); A3 middleware done (segment rules in `customer/domain/routeAccess`, `next` after sign-in, token expiry)
 - [ ] Phase 5: cart and checkout (C1–C4). C1 and C2 done; C3 cash-on-delivery checkout done; C4 parity script (`infra/woo-staging/parity-checkout.mjs`) done; card payment after launch (#326)
 - [ ] Phase 6: orders and wishlist (O1–O4). O1–O4 done (O2: cancel before dispatch, return requests within 14 days as a Woo status; owner email for returns waits on W6)
 - [x] Phase 7: data migration (M1–M4): dropped 2026-10-31, no real data
 - [ ] Phase 8: UI state and cleanup (U1–U3). The MobX `cartStore` and `userStore` are gone (the cart dropdown flag moved to `cartSidebarStore` until U1)
-- [ ] Phase 9: launch and Strapi removal (X1, X2, X4; X3 dropped). X4 code sweep done: Strapi proxy, `api/config.ts` and the Strapi env vars are gone; `backend-admin` still to archive
+- [ ] Phase 9: launch and Strapi removal (X1, X2, X4; X3 dropped). X4 done: Strapi proxy, `api/config.ts` and the Strapi env vars are gone; `backend-admin` archived
 - [ ] Phase 10: post-launch
 - [ ] Phase 11: feature-based full DDD architecture (after launch)
