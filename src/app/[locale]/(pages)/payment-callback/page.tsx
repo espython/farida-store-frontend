@@ -1,7 +1,6 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
-import { StoreContext } from "@/contexts/StoreContext";
-import { observer } from "mobx-react-lite";
+import React, { useEffect, useState } from "react";
+import PaymentStore from "@/stores/paymentStore";
 import { Link, useRouter } from "@/navigation";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -22,7 +21,8 @@ const STATUS_ICON: Record<Status, { icon: React.ReactNode; className: string }> 
 };
 
 const PaymentCallbackPage = () => {
-  const { payment } = useContext(StoreContext);
+  // Card payment (#326, after launch) rebuilds this page on Woo; until then the store is page-local.
+  const [payment] = useState(() => new PaymentStore());
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("paymentCallback");
@@ -163,4 +163,4 @@ const PaymentCallbackPage = () => {
   );
 };
 
-export default observer(PaymentCallbackPage);
+export default PaymentCallbackPage;

@@ -1,26 +1,25 @@
 "use client";
-import React, { useContext } from "react";
+import React from "react";
 import { IoMdClose } from "react-icons/io";
 import { LiaNewspaper } from "react-icons/lia";
-import { observer } from "mobx-react-lite";
 import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
-import { StoreContext } from "@/contexts/StoreContext";
 import { useAuth } from "@/hooks/useAuth";
 import { CategoryLinks } from "@/modules/catalog";
 import BrandLogo from "@/shared/ui/BrandLogo";
 import UserSidebarMenu from "./UserSidebarMenu";
+import { useDrawer } from "@/store/ui";
 
 const rowClass = "flex items-center gap-3 min-h-[44px] px-3 -mx-3 rounded-xl hover:bg-sand transition-colors";
 
 /** The menu drawer: main links (hidden in the header below xl), categories, order tracking, account. */
 const SidebarContent = () => {
-  const { sidebar } = useContext(StoreContext);
+  const sidebar = useDrawer("menu");
   const { isLoggedIn } = useAuth();
   const t = useTranslations("sidebar");
   const nav = useTranslations("navbar");
   const header = useTranslations("header");
-  const close = sidebar.hideWholeSidebar;
+  const close = sidebar.hide;
 
   const mainMenu = [
     { label: nav("home"), href: "/" },
@@ -73,4 +72,4 @@ const SidebarContent = () => {
   );
 };
 
-export default observer(SidebarContent);
+export default SidebarContent;

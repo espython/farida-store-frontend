@@ -1,10 +1,9 @@
 "use client";
-import React, { useContext } from "react";
+import React from "react";
 import type { ReactNode } from "react";
-import { observer } from "mobx-react-lite";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/navigation";
-import { StoreContext } from "@/contexts/StoreContext";
+import { useDrawer } from "@/store/ui";
 
 const tabClass = (active: boolean) =>
   `flex flex-col items-center justify-center gap-0.5 min-h-[44px] text-xs font-semibold ${
@@ -29,7 +28,7 @@ const ICONS = {
 const BottomNavigation = () => {
   const t = useTranslations("bottomNav");
   const pathname = usePathname();
-  const { searchBox } = useContext(StoreContext);
+  const searchBox = useDrawer("search");
 
   const tab = (href: string, key: keyof typeof ICONS, active: boolean): ReactNode => (
     <Link href={href} className={tabClass(active)} aria-current={active ? "page" : undefined}>
@@ -44,7 +43,7 @@ const BottomNavigation = () => {
       className="md:hidden fixed bottom-3 inset-x-3 z-[85] h-16 rounded-full bg-garden shadow-lg grid grid-cols-4"
     >
       {tab("/", "home", pathname === "/")}
-      <button type="button" className={tabClass(false)} onClick={searchBox.displayWholeSearchBox}>
+      <button type="button" className={tabClass(false)} onClick={searchBox.show}>
         <Glyph d={ICONS.search} />
         {t("search")}
       </button>
@@ -54,4 +53,4 @@ const BottomNavigation = () => {
   );
 };
 
-export default observer(BottomNavigation);
+export default BottomNavigation;

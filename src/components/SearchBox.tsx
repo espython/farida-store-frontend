@@ -1,17 +1,17 @@
 "use client";
-import { StoreContext } from "@/contexts/StoreContext";
 import { Input } from "@nextui-org/react";
 import { SearchIcon } from "lucide-react";
 import { Link } from "@/navigation";
 import { useSearchParams } from "next/navigation";
 import { useRouter, usePathname } from "@/navigation";
-import React, { useContext, useEffect, useRef } from "react";
-import { observer } from "mobx-react-lite";
+import React, { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { QuickSearch } from "@/modules/catalog";
+import { useDrawer, useSearchQuery } from "@/store/ui";
 
 const SearchBox = () => {
-  const { searchBox } = useContext(StoreContext);
+  const searchBox = useDrawer("search");
+  const searchQuery = useSearchQuery();
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -21,12 +21,12 @@ const SearchBox = () => {
 
   // Put the caret in the field whenever the overlay opens.
   useEffect(() => {
-    if (searchBox.showSearchBox) setTimeout(() => inputRef.current?.focus(), 300);
-  }, [searchBox.showSearchBox]);
+    if (searchBox.open) setTimeout(() => inputRef.current?.focus(), 300);
+  }, [searchBox.open]);
 
   const closeSearch = () => {
-    searchBox.hideWholeSearchBox();
-    searchBox.setSearchInputValue("");
+    searchBox.hide();
+    searchQuery.setQuery("");
   };
 
   const searchForResult = (query: string) => {
@@ -37,14 +37,14 @@ const SearchBox = () => {
 
   useEffect(() => {
     const clickingEnter = (e: KeyboardEvent) => {
-      if (e.key === "Enter" && searchBox.searchInputValue.length > 0) {
+      if (e.key === "Enter" && searchQuery.query.length > 0) {
         e.preventDefault();
 
-        searchForResult(searchBox.searchInputValue);
+        searchForResult(searchQuery.query);
       }
     };
 
-    if (searchBox.showSearchBox === true) {
+    if (searchBox.open === true) {
       window.addEventListener("keydown", clickingEnter);
     } else {
       window.removeEventListener("keydown", clickingEnter);
@@ -53,7 +53,7 @@ const SearchBox = () => {
     return () => window.removeEventListener("keydown", clickingEnter);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchBox.searchInputValue, searchBox.showSearchBox]);
+  }, [searchQuery.query, searchBox.open]);
 
   return (
     <div className="w-full flex flex-col gap-5 items-center justify-center">
@@ -63,7 +63,7 @@ const SearchBox = () => {
         aria-label={t("search")}
         radius="full"
         size="lg"
-        value={searchBox.searchInputValue}
+        value={searchQuery.query}
         placeholder={query ? query : t("type")}
         classNames={{
           inputWrapper: "h-14 bg-white border border-line shadow-none data-[hover=true]:bg-white group-data-[focus=true]:bg-white group-data-[focus=true]:border-garden",
@@ -75,8 +75,8 @@ const SearchBox = () => {
               aria-label={t("search")}
               className="w-11 h-11 -me-2 grid place-items-center rounded-full bg-garden text-cream"
               onClick={() => {
-                if (searchBox.searchInputValue.length > 0) {
-                  searchForResult(searchBox.searchInputValue);
+                if (searchQuery.query.length > 0) {
+                  searchForResult(searchQuery.query);
                 }
               }}
             >
@@ -85,15 +85,15 @@ const SearchBox = () => {
         }
         className="w-full"
         onChange={(e) => {
-          searchBox.setSearchInputValue(e.target.value);
+          searchQuery.setQuery(e.target.value);
         }}
       />
 
       <div className="w-full">
-        <QuickSearch term={searchBox.searchInputValue} onPick={closeSearch} onShowAll={searchForResult} />
+        <QuickSearch term={searchQuery.query} onPick={closeSearch} onShowAll={searchForResult} />
       </div>
     </div>
   );
 };
 
-export default observer(SearchBox);
+export default SearchBox;

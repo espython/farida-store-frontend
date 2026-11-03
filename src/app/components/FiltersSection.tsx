@@ -1,21 +1,21 @@
 "use client";
 import { Checkbox, Select, SelectItem } from "@nextui-org/react";
-import React, { useContext } from "react";
+import React from "react";
 
 import { MdGridView } from "react-icons/md";
 import { MdOutlineViewAgenda } from "react-icons/md";
 import FilterButton from "./FilterButton";
 import { useSearchParams } from "next/navigation";
 import { useRouter, usePathname } from "@/navigation";
-import { StoreContext } from "@/contexts/StoreContext";
-import { observer } from "mobx-react-lite";
 import ActiveFilters from "./ActiveFilters";
 import { useLocale, useTranslations } from "next-intl";
+import { useProductsView } from "@/store/ui";
 
 const FiltersSection = () => {
   const t = useTranslations("filters");
   const locale = useLocale();
-  const { viewStyle } = useContext(StoreContext);
+  const viewStyle = useProductsView();
+  const isGrid = viewStyle.view === "grid";
 
   const selections: { value: string; label: string }[] = [
     { value: "", label: t("popularity") },
@@ -148,18 +148,18 @@ const FiltersSection = () => {
             <button
               type="button"
               aria-label={t("gridView")}
-              aria-pressed={viewStyle.gridView}
-              className={viewButton(viewStyle.gridView)}
-              onClick={() => viewStyle.displayGridView()}
+              aria-pressed={isGrid}
+              className={viewButton(isGrid)}
+              onClick={() => viewStyle.choose("grid")}
             >
               <MdGridView className="text-xl" aria-hidden="true" />
             </button>
             <button
               type="button"
               aria-label={t("rowView")}
-              aria-pressed={!viewStyle.gridView}
-              className={viewButton(!viewStyle.gridView)}
-              onClick={() => viewStyle.displayRowView()}
+              aria-pressed={!isGrid}
+              className={viewButton(!isGrid)}
+              onClick={() => viewStyle.choose("list")}
             >
               <MdOutlineViewAgenda className="text-xl" aria-hidden="true" />
             </button>
@@ -170,4 +170,4 @@ const FiltersSection = () => {
   );
 };
 
-export default observer(FiltersSection);
+export default FiltersSection;

@@ -1,4 +1,3 @@
-import { makeAutoObservable, runInAction } from 'mobx';
 import PaymobService from '@/services/paymobService';
 import {
   validatePaymobCallback,
@@ -52,14 +51,13 @@ class PaymentStore {
   private paymobService: PaymobService;
 
   constructor() {
-    makeAutoObservable(this);
     this.paymobService = new PaymobService();
 
   }
 
   // Reset payment state
   resetPaymentState = () => {
-    runInAction(() => {
+    {
       this.isInitiatingPayment = false;
       this.isProcessingPayment = false;
       this.currentPaymentKey = null;
@@ -68,7 +66,7 @@ class PaymentStore {
       this.createdPaymobOrderId = null;
       this.paymentResult = null;
       this.paymentError = null;
-    });
+    }
   };
 
   // The Paymob order and payment key are created server-side (POST
@@ -77,27 +75,27 @@ class PaymentStore {
   // secret ever reaches the browser (#179, #180).
   setServerPayment = (result: ServerPaymentResult): string | null => {
     const paymentKey = result?.payment?.paymentKey;
-    runInAction(() => {
+    {
       this.createdOrderId = result?.order?.id ?? null;
       this.createdPaymobOrderId = result?.payment?.paymobOrderId ?? null;
       if (!paymentKey) {
         this.paymentError = 'Payment could not be initiated';
-        return;
+        return null;
       }
       this.currentPaymentKey = paymentKey;
       this.currentIframeUrl = this.paymobService.getIframeUrl({
         paymentKey,
       });
       this.isInitiatingPayment = false;
-    });
+    }
     return paymentKey || null;
   };
 
   // Handle payment callback
   handlePaymentCallback = (params: URLSearchParams) => {
-    runInAction(() => {
+    {
       this.isProcessingPayment = true;
-    });
+    }
 
     try {
       // Validate callback parameters
@@ -157,10 +155,10 @@ class PaymentStore {
         };
       }
 
-      runInAction(() => {
+      {
         this.paymentResult = paymentResult;
         this.isProcessingPayment = false;
-      });
+      }
 
       return paymentResult;
     } catch (error) {
@@ -171,11 +169,11 @@ class PaymentStore {
         message: 'Error processing payment callback'
       };
 
-      runInAction(() => {
+      {
         this.paymentResult = errorResult;
         this.paymentError = error instanceof Error ? error.message : 'Callback processing failed';
         this.isProcessingPayment = false;
-      });
+      }
 
       return errorResult;
     }

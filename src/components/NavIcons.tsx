@@ -1,10 +1,9 @@
 "use client";
-import React, { useContext } from "react";
+import React from "react";
 
 import FullCartIcon from "./FullCartIcon";
 import FullUserIcon from "./FullUserIcon";
 
-import { observer } from "mobx-react-lite";
 
 import FullWishlistIcon from "./FullWishlistIcon";
 import LanguageIcon from "./LanguageIcon";
@@ -22,4 +21,4 @@ const NavIcons = () => {
   );
 };
 
-export default observer(NavIcons);
+export default NavIcons;

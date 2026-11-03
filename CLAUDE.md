@@ -11,7 +11,7 @@ Storefront for a kitchen-appliances ecommerce shop (Arabic + English). Headless 
 
 ## Stack
 
-Next.js 13 (App Router), React 18, TypeScript, Tailwind + NextUI, framer-motion, Swiper/react-slick, react-hook-form, react-toastify, MobX (`mobx-react-lite`), `next-intl`.
+Next.js 13 (App Router), React 18, TypeScript, Tailwind + NextUI, framer-motion, Swiper/react-slick, react-hook-form, react-toastify, Redux Toolkit + RTK Query (`react-redux`), `next-intl`.
 
 ## Layout
 
@@ -30,7 +30,7 @@ Next.js 13 (App Router), React 18, TypeScript, Tailwind + NextUI, framer-motion,
   - `contact` – the contact form, saved in WordPress as **Contact messages** (`modules/content`; the `farida-contact` mu-plugin in `infra/wordpress/`). The route rate-limits per visitor (5 per 15 min, in memory), validates (`ContactMessage`), and posts to `farida/v1/contact` with `CONTACT_SHARED_SECRET`, which WordPress checks against its `FARIDA_CONTACT_SECRET` constant. Owner email comes with the mail service (W6 #231).
   - `revalidate` – WooCommerce product webhook target; checks the `X-WC-Webhook-Signature` HMAC (`WC_WEBHOOK_SECRET`) and clears the `catalog` fetch-cache tag.
 - `src/store/` – Redux Toolkit root composition (`makeStore`, typed hooks, `StoreProvider`). `baseApi` lives in `src/shared/infrastructure/`. New code follows `doc/woocommerce-rtk-migration-plan.md` and the architecture rules below.
-- `src/stores/` – MobX stores (being migrated to `src/store/`), instantiated and exposed through context in `src/stores/index.tsx`. Add new stores there.
+- `src/store/` also holds the shell UI state: `uiSlice` (the menu, cart, filters and search drawers with their two-step slide, the header cart/user dropdowns, grid/list view, search text) and its hooks in `src/store/ui.ts` (`useDrawer(name)`, `useCartMenu`, `useUserMenu`, `useProductsView`, `useSearchQuery`, `ScrollLock`). MobX is gone; `src/stores/paymentStore.ts` is a plain class the payment-callback page owns until card payment (#326) rebuilds it.
 - `src/services/paymobService.ts` – Paymob payment integration.
 - `src/middleware.ts` – page access, then next-intl routing. The rules are `modules/customer/domain/routeAccess` (whole path segments after the locale, never substrings): guests on the account pages (`/user*`, `/order`, `/trackorder`) and checkout (`/cart/shipping`, `/cart/payment`, `/cart/confirmation`) go to `/<locale>/login?next=<page>`, and sign-in returns them there (`safeNextPath`: our own localized pages only); signed-in customers on login/register go to `next` or `/user`. A session counts when the token cookie holds an unexpired token (decoded only; WordPress checks the signature in the BFF); a bad or expired one is cleared. The middleware imports modules only through `@/modules/<name>/index.edge` (edge runtime: no React, Redux or Node APIs; lint rule).
 - `messages/en.json`, `messages/ar.json` – translations. Locale prefix is always present (`/en/...`, `/ar/...`); use `Link`/`useRouter` from `src/navigation.ts`, not `next/link`.

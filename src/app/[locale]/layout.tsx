@@ -5,7 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 import NavBar from "@/components/Navbar";
 
-import StoreContextProvider from "@/stores";
+import { ScrollLock } from "@/store/ui";
 
 import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
@@ -60,7 +60,6 @@ export default function RootLayout({
       <body className={`font-cairo flex flex-col `} suppressHydrationWarning={true}>
         <Uiproviders>
           <ReduxStoreProvider>
-          <StoreContextProvider>
             <NextIntlClientProvider locale={locale} messages={messages}>
               <div className="h-full   flex flex-col">
                 <div className="relative ">
@@ -72,6 +71,7 @@ export default function RootLayout({
                   <BottomNavigation />
                   <Toaster />
                   {/* Cart storage, cross-tab sync and the guest → account merge (needs translations and the store). */}
+                  <ScrollLock />
                   <CartSync />
                   <WishlistSync />
                 </div>
@@ -86,7 +86,6 @@ export default function RootLayout({
                 </div>
               </div>
             </NextIntlClientProvider>
-          </StoreContextProvider>
           </ReduxStoreProvider>
         </Uiproviders>
       </body>
