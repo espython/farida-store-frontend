@@ -27,6 +27,12 @@
  * - POST /wp-json/wc-farida/v1/email/verify   { id, token }
  *   Confirms the email if the token matches (and the email has not changed since it was sent).
  *   Changing a user's email clears the confirmation. Users > All Users shows an "Email verified" column.
+ * - POST /wp-json/wc-farida/v1/google/login   { sub, email, firstName, lastName }
+ *   Google sign-in: the storefront server has already checked Google's ID token (audience, issuer, expiry,
+ *   nonce, verified email). Signs in the customer linked to this Google account, else links the customer
+ *   with this email, else creates one; answers like the JWT plugin's token route. Linking an account whose
+ *   email was never confirmed replaces its password (whoever set it may not own the address) and so signs
+ *   out its other sessions. Staff accounts are refused.
  *
  * Email goes through wp_mail: production needs the mail service (W6 #231).
  */
@@ -51,6 +57,7 @@ add_action( 'rest_api_init', function () {
 	register_rest_route( 'wc-farida/v1', '/password/reset', $args + array( 'callback' => 'farida_password_reset' ) );
 	register_rest_route( 'wc-farida/v1', '/email/send', $args + array( 'callback' => 'farida_email_send' ) );
 	register_rest_route( 'wc-farida/v1', '/email/verify', $args + array( 'callback' => 'farida_email_verify' ) );
+	register_rest_route( 'wc-farida/v1', '/google/login', $args + array( 'callback' => 'farida_google_login' ) );
 } );
 
 /** Customers only: an admin or shop manager must never be reset from the storefront. */
@@ -289,4 +296,90 @@ add_filter( 'manage_users_custom_column', function ( $output, $column, $user_id 
 	$at = (int) get_user_meta( $user_id, FARIDA_EMAIL_VERIFIED, true );
 	return $at ? esc_html( wp_date( get_option( 'date_format' ), $at ) ) : '—';
 }, 10, 3 );
+
+// --- Google sign-in ----------------------------------------------------------------------------------
+
+const FARIDA_GOOGLE_SUB = 'farida_google_sub';
+
+/** The JWT plugin's own token for this user (same claims, secret, algorithm and filters as its token route). */
+function farida_issue_jwt( WP_User $user ) {
+	if ( ! defined( 'JWT_AUTH_SECRET_KEY' ) || ! class_exists( '\Tmeister\Firebase\JWT\JWT' ) ) {
+		return new WP_Error( 'farida_jwt_unavailable', 'JWT plugin not configured', array( 'status' => 500 ) );
+	}
+	$issued = time();
+	$claims = array(
+		'iss'  => get_bloginfo( 'url' ),
+		'iat'  => $issued,
+		'nbf'  => apply_filters( 'jwt_auth_not_before', $issued, $issued ),
+		'exp'  => apply_filters( 'jwt_auth_expire', $issued + DAY_IN_SECONDS * 7, $issued ),
+		'data' => array( 'user' => array( 'id' => $user->ID ) ),
+	);
+	$token = \Tmeister\Firebase\JWT\JWT::encode(
+		apply_filters( 'jwt_auth_token_before_sign', $claims, $user ),
+		JWT_AUTH_SECRET_KEY,
+		apply_filters( 'jwt_auth_algorithm', 'HS256' )
+	);
+	return array(
+		'token'             => $token,
+		'user_email'        => $user->user_email,
+		'user_nicename'     => $user->user_nicename,
+		'user_display_name' => $user->display_name,
+	);
+}
+
+function farida_google_login( WP_REST_Request $request ) {
+	$sub   = (string) $request->get_param( 'sub' );
+	$email = sanitize_email( (string) $request->get_param( 'email' ) );
+	$first = sanitize_text_field( (string) $request->get_param( 'firstName' ) );
+	$last  = sanitize_text_field( (string) $request->get_param( 'lastName' ) );
+	if ( ! preg_match( '/^[0-9]{1,64}$/', $sub ) || ! is_email( $email ) ) {
+		return new WP_Error( 'farida_bad_google_identity', 'Invalid Google identity', array( 'status' => 400 ) );
+	}
+	$staff = new WP_Error( 'farida_not_customer', 'Staff accounts sign in through WordPress', array( 'status' => 403 ) );
+
+	// 1. Already linked to this Google account (the email may have changed on either side since).
+	$linked = get_users( array( 'meta_key' => FARIDA_GOOGLE_SUB, 'meta_value' => $sub, 'number' => 1 ) );
+	$user   = $linked ? $linked[0] : null;
+
+	// 2. An account with this email: link it.
+	if ( ! $user ) {
+		$user = get_user_by( 'email', $email ) ?: null;
+		if ( $user ) {
+			if ( ! farida_is_customer( $user ) ) {
+				return $staff;
+			}
+			$other = (string) get_user_meta( $user->ID, FARIDA_GOOGLE_SUB, true );
+			if ( '' !== $other && $other !== $sub ) {
+				return new WP_Error( 'farida_google_conflict', 'This email is linked to another Google account', array( 'status' => 409 ) );
+			}
+			if ( ! get_user_meta( $user->ID, FARIDA_EMAIL_VERIFIED, true ) ) {
+				// Google proves who owns the address; a password set by someone else must not keep working.
+				wp_set_password( wp_generate_password( 64, true, true ), $user->ID );
+			}
+			update_user_meta( $user->ID, FARIDA_GOOGLE_SUB, $sub );
+		}
+	}
+
+	// 3. New customer (Woo's own path, so it gets the customer role and Woo data).
+	if ( ! $user ) {
+		$id = wc_create_new_customer( $email, 'c_' . bin2hex( random_bytes( 6 ) ), wp_generate_password( 64, true, true ), array(
+			'first_name' => $first,
+			'last_name'  => $last,
+		) );
+		if ( is_wp_error( $id ) ) {
+			return new WP_Error( 'farida_google_create_failed', $id->get_error_message(), array( 'status' => 500 ) );
+		}
+		$user = get_user_by( 'id', $id );
+		update_user_meta( $user->ID, FARIDA_GOOGLE_SUB, $sub );
+	}
+
+	if ( ! farida_is_customer( $user ) ) {
+		return $staff;
+	}
+	if ( ! get_user_meta( $user->ID, FARIDA_EMAIL_VERIFIED, true ) && strtolower( $user->user_email ) === strtolower( $email ) ) {
+		update_user_meta( $user->ID, FARIDA_EMAIL_VERIFIED, time() ); // Google verified this address
+	}
+	$token = farida_issue_jwt( $user );
+	return is_wp_error( $token ) ? $token : new WP_REST_Response( $token, 200 );
+}
 

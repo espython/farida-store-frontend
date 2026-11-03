@@ -285,7 +285,15 @@
     "copyrights": "  © 2024 farida store. All Rights Reserved"
   },
   "google": {
-    "continue": "Continue with Google"
+    "continue": "Continue with Google",
+    "errors": {
+      "cancelled": "Google sign-in was cancelled. You can try again or sign in with your email.",
+      "expired": "That Google sign-in took too long. Please try again.",
+      "unverified_email": "Your Google account's email isn't verified yet. Verify it with Google, or sign in with your email.",
+      "staff": "This is a shop staff account. Staff sign in through the WordPress admin.",
+      "conflict": "This email is already linked to a different Google account. Sign in with that Google account or with your email and password.",
+      "failed": "We couldn't sign you in with Google. Please try again, or sign in with your email."
+    }
   },
   "search": {
     "close": "Close search",

@@ -87,3 +87,11 @@ export interface WpEmailVerifyRequest {
   id: number;
   token: string;
 }
+
+/** POST /wc-farida/v1/google/login (farida-account mu-plugin, server keys); answers a WpTokenResponse. */
+export interface WpGoogleLoginRequest {
+  sub: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+}
