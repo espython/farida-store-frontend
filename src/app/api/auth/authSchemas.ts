@@ -14,6 +14,8 @@ export const registerBody = z.object({
   password: z.string().max(PASSWORD_MAX_LENGTH),
   firstName: z.string().max(100),
   lastName: z.string().max(100),
+  /** Language of the confirmation email. */
+  locale: z.enum(LOCALES).default("en"),
 });
 
 export const forgotPasswordBody = z.object({
@@ -26,3 +28,7 @@ export const resetPasswordBody = z.object({
   login: z.string().max(60),
   password: z.string().max(PASSWORD_MAX_LENGTH),
 });
+
+export const resendVerificationBody = z.object({ locale: z.enum(LOCALES).default("en") });
+
+export const verifyEmailBody = z.object({ id: z.string().max(20), token: z.string().max(64) });

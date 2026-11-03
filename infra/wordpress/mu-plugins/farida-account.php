@@ -20,6 +20,14 @@
  * - Customer responses carry the storefront's own meta (address book, wishlist) for the shop-manager REST
  *   key; Woo shows customer meta to administrators only.
  *
+ * - POST /wp-json/wc-farida/v1/email/send     { customerId, locale: en|ar, verifyUrl }
+ *   Emails the customer a link (verifyUrl?id=…&token=…) to confirm their email, valid 48 hours, at most one
+ *   email a minute. Nothing is blocked while unconfirmed (owner decision 2026-11-03): it only tells the shop
+ *   the address is real. Answers { status: sent | recent | verified }.
+ * - POST /wp-json/wc-farida/v1/email/verify   { id, token }
+ *   Confirms the email if the token matches (and the email has not changed since it was sent).
+ *   Changing a user's email clears the confirmation. Users > All Users shows an "Email verified" column.
+ *
  * Email goes through wp_mail: production needs the mail service (W6 #231).
  */
 
@@ -41,6 +49,8 @@ add_action( 'rest_api_init', function () {
 	);
 	register_rest_route( 'wc-farida/v1', '/password/forgot', $args + array( 'callback' => 'farida_password_forgot' ) );
 	register_rest_route( 'wc-farida/v1', '/password/reset', $args + array( 'callback' => 'farida_password_reset' ) );
+	register_rest_route( 'wc-farida/v1', '/email/send', $args + array( 'callback' => 'farida_email_send' ) );
+	register_rest_route( 'wc-farida/v1', '/email/verify', $args + array( 'callback' => 'farida_email_verify' ) );
 } );
 
 /** Customers only: an admin or shop manager must never be reset from the storefront. */
@@ -163,7 +173,7 @@ add_filter( 'determine_current_user', function ( $user_id ) {
 
 // Woo returns a customer's meta_data to administrators only, but the storefront's REST key belongs to a
 // shop manager (W8 #233). Add back exactly the storefront's own keys, for users who manage the shop.
-const FARIDA_CUSTOMER_META_KEYS = array( 'farida_address_book', 'farida_wishlist' );
+const FARIDA_CUSTOMER_META_KEYS = array( 'farida_address_book', 'farida_wishlist', 'farida_email_verified' );
 
 add_filter( 'woocommerce_rest_prepare_customer', function ( $response, $user ) {
 	if ( wc_current_user_has_role( 'administrator' ) || ! current_user_can( 'manage_woocommerce' ) || ! $user instanceof WP_User ) {
@@ -181,3 +191,102 @@ add_filter( 'woocommerce_rest_prepare_customer', function ( $response, $user ) {
 	$response->set_data( $data );
 	return $response;
 }, 10, 2 );
+
+// --- Email verification ------------------------------------------------------------------------------
+
+const FARIDA_VERIFY_TTL         = 48 * HOUR_IN_SECONDS;
+const FARIDA_VERIFY_RESEND_WAIT = 60;
+const FARIDA_EMAIL_VERIFIED     = 'farida_email_verified'; // epoch seconds when confirmed
+const FARIDA_EMAIL_VERIFY       = 'farida_email_verify';   // { hash, email, exp } of the pending link
+const FARIDA_EMAIL_VERIFY_SENT  = 'farida_email_verify_sent';
+
+function farida_email_send( WP_REST_Request $request ) {
+	$id        = (int) $request->get_param( 'customerId' );
+	$locale    = 'ar' === $request->get_param( 'locale' ) ? 'ar' : 'en';
+	$verify_url = (string) $request->get_param( 'verifyUrl' );
+	if ( ! farida_valid_reset_url( $verify_url ) ) {
+		return new WP_Error( 'farida_bad_verify_url', 'verifyUrl must be an https address without a query', array( 'status' => 400 ) );
+	}
+	$user = $id > 0 ? get_user_by( 'id', $id ) : false;
+	if ( ! $user || ! farida_is_customer( $user ) ) {
+		return new WP_Error( 'farida_not_found', 'No such customer', array( 'status' => 404 ) );
+	}
+	if ( get_user_meta( $user->ID, FARIDA_EMAIL_VERIFIED, true ) ) {
+		return new WP_REST_Response( array( 'status' => 'verified' ), 200 );
+	}
+	$sent = (int) get_user_meta( $user->ID, FARIDA_EMAIL_VERIFY_SENT, true );
+	if ( $sent && time() - $sent < FARIDA_VERIFY_RESEND_WAIT ) {
+		return new WP_REST_Response( array( 'status' => 'recent' ), 202 );
+	}
+	$token = wp_generate_password( 32, false, false );
+	update_user_meta( $user->ID, FARIDA_EMAIL_VERIFY, array(
+		'hash'  => hash( 'sha256', $token ),
+		'email' => strtolower( $user->user_email ),
+		'exp'   => time() + FARIDA_VERIFY_TTL,
+	) );
+	update_user_meta( $user->ID, FARIDA_EMAIL_VERIFY_SENT, time() );
+
+	$link = add_query_arg( array( 'id' => $user->ID, 'token' => $token ), $verify_url );
+	$site = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+	$name = $user->first_name ? $user->first_name : '';
+	if ( 'ar' === $locale ) {
+		$subject = "[{$site}] تأكيد بريدك الإلكتروني";
+		$body    = ( $name ? "مرحبًا {$name}،" : 'مرحبًا،' ) . "\n\n"
+			. "لتأكيد أن هذا البريد الإلكتروني خاص بحسابك في {$site}، افتح هذا الرابط خلال يومين:\n\n{$link}\n\n"
+			. "إذا لم تنشئ حسابًا لدينا، تجاهل هذه الرسالة.\n";
+	} else {
+		$subject = "[{$site}] Confirm your email";
+		$body    = ( $name ? "Hi {$name}," : 'Hi,' ) . "\n\n"
+			. "To confirm this email belongs to your {$site} account, open this link within two days:\n\n{$link}\n\n"
+			. "If you didn't create an account with us, ignore this email.\n";
+	}
+	if ( ! wp_mail( $user->user_email, $subject, $body ) ) {
+		error_log( 'farida-account: verification email to user ' . $user->ID . ' failed' );
+	}
+	return new WP_REST_Response( array( 'status' => 'sent' ), 202 );
+}
+
+function farida_email_verify( WP_REST_Request $request ) {
+	$id      = (int) $request->get_param( 'id' );
+	$token   = (string) $request->get_param( 'token' );
+	$invalid = new WP_Error( 'farida_invalid_verify_token', 'The confirmation link is invalid or has expired', array( 'status' => 400 ) );
+	$user    = $id > 0 ? get_user_by( 'id', $id ) : false;
+	if ( ! $user || ! farida_is_customer( $user ) || '' === $token || strlen( $token ) > 64 ) {
+		return $invalid;
+	}
+	$pending = get_user_meta( $user->ID, FARIDA_EMAIL_VERIFY, true );
+	if ( ! is_array( $pending ) || empty( $pending['hash'] )
+		|| ! hash_equals( (string) $pending['hash'], hash( 'sha256', $token ) )
+		|| (int) ( $pending['exp'] ?? 0 ) < time()
+		|| strtolower( $user->user_email ) !== ( $pending['email'] ?? '' ) ) {
+		return $invalid;
+	}
+	// The link stays valid until it expires, so opening it twice answers the same.
+	if ( ! get_user_meta( $user->ID, FARIDA_EMAIL_VERIFIED, true ) ) {
+		update_user_meta( $user->ID, FARIDA_EMAIL_VERIFIED, time() );
+	}
+	return new WP_REST_Response( array( 'verified' => true ), 200 );
+}
+
+// A new email is unconfirmed again, and old links stop working.
+add_action( 'profile_update', function ( $user_id, $old_user ) {
+	$user = get_user_by( 'id', $user_id );
+	if ( $user && $old_user instanceof WP_User && strtolower( $user->user_email ) !== strtolower( $old_user->user_email ) ) {
+		delete_user_meta( $user_id, FARIDA_EMAIL_VERIFIED );
+		delete_user_meta( $user_id, FARIDA_EMAIL_VERIFY );
+	}
+}, 10, 2 );
+
+// Users > All Users: who confirmed their email.
+add_filter( 'manage_users_columns', function ( $columns ) {
+	$columns['farida_email_verified'] = __( 'Email verified', 'farida' );
+	return $columns;
+} );
+add_filter( 'manage_users_custom_column', function ( $output, $column, $user_id ) {
+	if ( 'farida_email_verified' !== $column ) {
+		return $output;
+	}
+	$at = (int) get_user_meta( $user_id, FARIDA_EMAIL_VERIFIED, true );
+	return $at ? esc_html( wp_date( get_option( 'date_format' ), $at ) ) : '—';
+}, 10, 3 );
+

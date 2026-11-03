@@ -206,6 +206,28 @@
     "done": "Your password has been changed and you're signed in.",
     "continue": "Continue shopping"
   },
+  "emailVerification": {
+    "pageTitle": "Confirm your email",
+    "bannerTitle": "Please confirm your email",
+    "bannerText": "We sent a confirmation link to <email></email>. It helps us reach you about your orders.",
+    "resend": "Send the link again",
+    "sending": "Sending…",
+    "notes": {
+      "sent": "Sent. Check your inbox and spam folder.",
+      "recent": "We just sent you a link. Check your inbox and spam folder.",
+      "rate_limited": "Too many attempts. Please try again in a few minutes.",
+      "unavailable": "We couldn't send the email. Please try again."
+    },
+    "verifying": "Confirming your email…",
+    "done": "Thanks, your email is confirmed.",
+    "continue": "Continue shopping",
+    "toAccount": "Go to your account",
+    "errors": {
+      "invalid": "This confirmation link is invalid or has expired. Sign in and send a new one from your account.",
+      "rate_limited": "Too many attempts. Please try again in a few minutes.",
+      "unavailable": "We couldn't reach the shop. Please open the link again."
+    }
+  },
   "userLoggedIn": {
     "orders": "your orders",
     "profile": "profile settings",
@@ -559,6 +581,7 @@
     "invalid_input": "Check the highlighted fields",
     "unauthenticated": "Your session has ended. Please sign in again.",
     "invalid_reset_link": "This reset link is invalid or has expired. Ask for a new one.",
+    "invalid_verify_link": "This confirmation link is invalid or has expired. Sign in and send a new one from your account.",
     "rate_limited": "Too many attempts. Please wait a few minutes and try again.",
     "unavailable": "We couldn't reach the shop. Please try again."
   },
