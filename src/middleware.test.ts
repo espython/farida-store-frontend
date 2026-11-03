@@ -13,6 +13,8 @@ const token = (exp: number) => `${b64({ alg: "HS256" })}.${b64({ iss: "wp", iat:
 const now = () => Math.floor(Date.now() / 1000);
 const req = (path: string, cookie?: string) => new NextRequest(new URL(path, "http://localhost:3000"), { headers: cookie ? { cookie } : {} });
 const run = (path: string, cookie?: string) => middleware(req(path, cookie)) as NextResponse;
+// Node's Headers has getSetCookie(); this TypeScript lib does not declare it yet.
+const setCookies = (res: Response): string[] => (res.headers as Headers & { getSetCookie(): string[] }).getSetCookie();
 
 describe("middleware", () => {
   it("redirects a guest to sign in, with next", () => {
@@ -30,7 +32,7 @@ describe("middleware", () => {
     for (const bad of [token(now() - 10), token(now() + 30), "garbage"]) {
       const res = run("/en/user", `credentials=${bad}; logged_in=1`);
       expect(res.headers.get("location")).toContain("/en/login?next=");
-      const cleared = res.headers.getSetCookie().join(" | ");
+      const cleared = setCookies(res).join(" | ");
       expect(cleared).toMatch(/credentials=;/);
       expect(cleared).toMatch(/logged_in=;/);
     }
