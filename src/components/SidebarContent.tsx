@@ -4,7 +4,7 @@ import { IoMdClose } from "react-icons/io";
 import { LiaNewspaper } from "react-icons/lia";
 import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
-import { useAuth } from "@/hooks/useAuth";
+import { useSession } from "@/modules/customer";
 import { CategoryLinks } from "@/modules/catalog";
 import BrandLogo from "@/shared/ui/BrandLogo";
 import UserSidebarMenu from "./UserSidebarMenu";
@@ -15,7 +15,7 @@ const rowClass = "flex items-center gap-3 min-h-[44px] px-3 -mx-3 rounded-xl hov
 /** The menu drawer: main links (hidden in the header below xl), categories, order tracking, account. */
 const SidebarContent = () => {
   const sidebar = useDrawer("menu");
-  const { isLoggedIn } = useAuth();
+  const signedIn = useSession().status === "signedIn";
   const t = useTranslations("sidebar");
   const nav = useTranslations("navbar");
   const header = useTranslations("header");
@@ -67,7 +67,7 @@ const SidebarContent = () => {
         </Link>
       </div>
 
-      {isLoggedIn && <UserSidebarMenu />}
+      {signedIn && <UserSidebarMenu />}
     </div>
   );
 };

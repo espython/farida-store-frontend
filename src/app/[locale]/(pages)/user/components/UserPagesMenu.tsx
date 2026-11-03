@@ -4,10 +4,10 @@ import PageCard from "./PageCard";
 import { LuHeart, LuMapPin, LuPackage, LuShoppingCart, LuUserCog } from "react-icons/lu";
 import { useRouter } from "@/navigation";
 import { useTranslations } from "next-intl";
-import { useAuth } from "@/hooks/useAuth";
+import { useSession } from "@/modules/customer";
 
 const UserPagesMenu = () => {
-  const { isLoggedIn } = useAuth();
+  const { status } = useSession();
   const t = useTranslations("userPage");
 
   const router = useRouter();
@@ -58,13 +58,11 @@ const UserPagesMenu = () => {
     },
   ];
 
+  // The middleware already guards this page; this covers a session that ends while it is open.
+  // Only once the session is known: redirecting while it loads sent every visitor to /login.
   useEffect(() => {
-    if (!isLoggedIn) {
-      router.push("/login");
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoggedIn]);
+    if (status === "signedOut") router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
+  }, [status, router]);
 
   return (
     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">

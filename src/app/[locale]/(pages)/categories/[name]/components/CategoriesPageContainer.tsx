@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import { MiniPromos } from "@/modules/content";
-import FiltersSection from "@/app/components/FiltersSection";
-import ProductsSection from "@/app/components/ProductsSection";
+import FiltersSection from "@/components/listing/FiltersSection";
+import ProductsSection from "@/components/listing/ProductsSection";
 import { CategoryTitle } from "@/modules/catalog";
 import PageContainer from "@/shared/ui/PageContainer";
 
