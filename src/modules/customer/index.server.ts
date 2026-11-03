@@ -5,6 +5,20 @@ export { requestPasswordReset, resetPassword } from "./infrastructure/passwordCl
 export { toResetLink } from "./domain/passwordReset";
 export { sendEmailVerification, verifyEmail } from "./infrastructure/emailVerificationClient.server";
 export { toVerifyLink } from "./domain/emailVerification";
+export { checkGoogleClaims } from "./domain/googleSignIn";
+export { safeNextPath } from "./domain/routeAccess";
+export type { GoogleSignInError } from "./domain/googleSignIn";
+export { signInWithGoogle } from "./infrastructure/googleLogin.server";
+export {
+  clearGoogleFlowCookie,
+  exchangeGoogleCode,
+  GOOGLE_CALLBACK_PATH,
+  googleAuthorizeUrl,
+  googleConfig,
+  newGoogleFlow,
+  readGoogleFlow,
+  setGoogleFlowCookie,
+} from "./infrastructure/googleOAuth.server";
 export {
   clearSessionCookies,
   FLAG_COOKIE,

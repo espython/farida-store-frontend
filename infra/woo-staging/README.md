@@ -151,6 +151,10 @@ Run: `node --env-file=.env.local spike-hardening.mjs`. What anonymous visitors a
 
 **REST key:** `create-keys.php` now issues the key for a `farida-storefront` **Shop manager** user instead of the admin. Every spike passes with it except two that fail for other reasons (`spike-cod` triple submit: Woo has no idempotency, the BFF's key handles it; `spike-cart` picks leftover products whose stock is held by those orders). Found: Woo returns customer `meta_data` to administrators only; `farida-account.php` adds back the storefront's keys.
 
+### Google sign-in account checks (`spike-google.mjs`, 2026-11-03, A2 #243)
+
+Run: `node --env-file=.env.local spike-google.mjs`. Stands in for the storefront after it checked Google's ID token. 13/13: keys required; malformed subject refused; a new Google user becomes a customer with a token that works like a password login's and a confirmed email; the same Google account signs into the same customer; an existing unconfirmed customer is linked, its password replaced and its old session signed out; a confirmed one keeps its password; a second Google account for that email gets 409; a staff email gets 403. (Test Google ids are random per run: an earlier version reused ids between runs and was flaky.)
+
 ### Email confirmation checks (`spike-email-verify.mjs`, 2026-11-03, A2 #243)
 
 Run: `node --env-file=.env.local spike-email-verify.mjs` (about 65 s: it waits out the one-email-a-minute guard). 17/17: keys required; https/localhost link only; one email, then "recent" within a minute; wrong token or other id refused; verify sets `farida_email_verified` (visible with the shop-manager key) and the link can be opened twice; "verified" stops further emails; an email change clears the confirmation and kills old links; Arabic email keeps the first name.
