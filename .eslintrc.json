@@ -220,6 +220,28 @@
           }
         ]
       }
+    },
+    {
+      "files": [
+        "src/middleware.ts"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@/modules/*/*",
+                  "!@/modules/*/index.edge",
+                  "@/modules/*/*/**"
+                ],
+                "message": "The middleware runs on the edge: import modules only through @/modules/<name>/index.edge (pure rules, no React, Redux or Node APIs)."
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }
