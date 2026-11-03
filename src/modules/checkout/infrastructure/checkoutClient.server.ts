@@ -13,11 +13,17 @@ export interface CheckoutResult {
 
 const GATEWAY: Record<PaymentMethod, string> = { cod: "cod", card: "paymob" };
 
+// Woo's stock codes, whatever their status: a customer who loses the race for
+// the last unit gets 403 woocommerce_product_not_enough_stock (parity-checkout.mjs),
+// which must not read as "session expired".
+const STOCK_CODES = /^woocommerce(_rest)?_(product|cart)_.*(out_of_stock|not_enough_stock)/;
+
 // Woo's checkout/coupon errors keep their machine code (mapWooError), but a
 // rejected JWT is "sign in again" and a bad coupon gets one stable code.
 const mapError = (status: number, payload: unknown) => {
-  if (status === 401 || status === 403) return new AppError("unauthenticated", "Session expired", 401);
   const code = (payload as { code?: string } | null)?.code ?? "";
+  if (STOCK_CODES.test(code)) return new AppError("out_of_stock", "Some items are no longer in stock in that quantity", 409);
+  if (status === 401 || status === 403) return new AppError("unauthenticated", "Session expired", 401);
   if (code === "woocommerce_rest_cart_coupon_error") return new AppError("coupon_invalid", "Coupon cannot be used", 400);
   // Woo's own address check at checkout (e.g. a required field the shop adds).
   if (code.startsWith("woocommerce_rest_invalid_address")) return new AppError("invalid_address", "Check the delivery address", 400);

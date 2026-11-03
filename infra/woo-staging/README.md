@@ -122,6 +122,18 @@ Setup: `setup.sh` copies `infra/wordpress/mu-plugins/` (see `infra/wordpress/REA
 | Unknown order id | 404 |
 | Line items carry no product slug | Slugs come from `wc/store/v1/products?include=…` (cached); links are dropped if that fails |
 
+### Checkout parity (`parity-checkout.mjs`, 2026-11-02, C4 #250)
+
+Run with the dev server on :3111: `node --env-file=.env.local parity-checkout.mjs`. Unlike the spikes it goes through the storefront's own routes (BFF), so it checks what customers get; the Woo keys only set up data and compare. 20/20.
+
+| Guarantee | Result |
+|---|---|
+| Double submit: 3 concurrent `POST /api/shop/checkout/order` with one Idempotency-Key, then a retry | One order id, one Woo order, stock reduced once |
+| Two customers, last unit, concurrent | One order; the other gets **409 `out_of_stock`**; stock 0, never below. Found: Woo answers the loser **403** `woocommerce_product_not_enough_stock`, which the BFF read as "session expired" (would have signed them out); stock codes are now mapped first |
+| Coupon with `usage_limit: 1`, two customers | Second refused with 400 `coupon_invalid`; Woo usage count 1 |
+| Totals shown at checkout and on the order page vs the Woo order (shipping, fixed-cart coupon) | Equal to the minor unit |
+| Cancel / full refund in the Woo admin | The order page and list show cancelled / refunded |
+
 ### Hardening audit (`spike-hardening.mjs`, 2026-11-02, W8 #233)
 
 Run: `node --env-file=.env.local spike-hardening.mjs`. What anonymous visitors and signed-in customers reach on WordPress directly, bypassing the storefront. 21/21 after `farida-hardening.php` 2.0.
