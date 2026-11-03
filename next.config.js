@@ -17,6 +17,8 @@ try {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // A self-contained server (.next/standalone) for the Docker image (doc/deploy-coolify.md).
+  output: "standalone",
   images: { remotePatterns: imagePatterns },
 };
 

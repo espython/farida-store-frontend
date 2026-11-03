@@ -1,0 +1,118 @@
+# Farida Stores on one server, deployed by Coolify (doc/deploy-coolify.md).
+# The same file serves production and hosted staging: one Coolify application each, with its own
+# environment variables and domains. Coolify's proxy (Traefik) terminates HTTPS and routes the
+# domains set in its UI to `storefront:3000` and `wordpress:80`; nothing here publishes a port.
+#
+# Variables marked :? are required; Coolify lists them all under Environment Variables.
+
+services:
+  storefront:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      args:
+        WC_BASE_URL: ${WC_BASE_URL:?}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?}
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID:-}
+    # Exactly one instance: checkout idempotency, order/address/wishlist locks and rate limits are
+    # in memory. Scaling out needs a shared store (Redis) first.
+    restart: unless-stopped
+    environment:
+      WC_BASE_URL: ${WC_BASE_URL:?}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?}
+      NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID:-}
+      WC_CONSUMER_KEY: ${WC_CONSUMER_KEY:?}
+      WC_CONSUMER_SECRET: ${WC_CONSUMER_SECRET:?}
+      WC_WEBHOOK_SECRET: ${WC_WEBHOOK_SECRET:?}
+      CONTACT_SHARED_SECRET: ${CONTACT_SHARED_SECRET:?}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      # Behind Cloudflare: cf-connecting-ip (only with the origin firewalled to Cloudflare).
+      CLIENT_IP_HEADER: ${CLIENT_IP_HEADER:-}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  wordpress:
+    build:
+      context: ..
+      dockerfile: production/wordpress/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      WP_HOME: ${WP_HOME:?}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL:-}
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:?}
+      JWT_AUTH_SECRET_KEY: ${JWT_AUTH_SECRET_KEY:?}
+      FARIDA_CONTACT_SECRET: ${CONTACT_SHARED_SECRET:?}
+      WORDPRESS_CONFIG_EXTRA: |
+        // HTTPS ends at the proxy; Woo's REST keys work over HTTPS only.
+        if ( ( $$_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '' ) === 'https' ) { $$_SERVER['HTTPS'] = 'on'; }
+        define( 'WP_HOME', getenv_docker( 'WP_HOME', '' ) );
+        define( 'WP_SITEURL', getenv_docker( 'WP_HOME', '' ) );
+        define( 'JWT_AUTH_SECRET_KEY', getenv_docker( 'JWT_AUTH_SECRET_KEY', '' ) );
+        define( 'FARIDA_CONTACT_SECRET', getenv_docker( 'FARIDA_CONTACT_SECRET', '' ) );
+        define( 'DISALLOW_FILE_EDIT', true );
+        define( 'WP_AUTO_UPDATE_CORE', 'minor' );
+        define( 'WP_ENVIRONMENT_TYPE', getenv_docker( 'WP_ENVIRONMENT_TYPE', 'production' ) );
+      WP_ENVIRONMENT_TYPE: ${WP_ENVIRONMENT_TYPE:-production}
+    volumes:
+      - wp:/var/www/html
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://127.0.0.1/wp-includes/images/blank.gif"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  db:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wp
+      MARIADB_PASSWORD: ${DB_PASSWORD:?}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?}
+      MARIADB_AUTO_UPGRADE: "1"
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  backup:
+    build:
+      context: ./backup
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_NAME: wordpress
+      DB_USER: wp
+      DB_PASSWORD: ${DB_PASSWORD:?}
+      # Off-site S3 bucket, e.g. s3:https://s3.eu-central-003.backblazeb2.com/farida-backups/production
+      RESTIC_REPOSITORY: ${RESTIC_REPOSITORY:?}
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD:?}
+      AWS_ACCESS_KEY_ID: ${BACKUP_S3_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${BACKUP_S3_SECRET:-}
+      BACKUP_CRON: ${BACKUP_CRON:-30 1 * * *}
+      BACKUP_PING_URL: ${BACKUP_PING_URL:-}
+      TZ: ${TZ:-Africa/Cairo}
+    volumes:
+      # Read-write only so restore.sh can put files back; backup.sh only reads.
+      - wp:/wp
+
+volumes:
+  db:
+  wp:

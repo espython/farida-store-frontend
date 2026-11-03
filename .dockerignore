@@ -1,0 +1,14 @@
+# Only what `next build` needs goes into the build context.
+.git
+.github
+.claude
+node_modules
+.next
+coverage
+infra
+doc
+*.md
+.env*
+*.tsbuildinfo
+npm-debug.log*
+.DS_Store

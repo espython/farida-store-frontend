@@ -21,3 +21,9 @@ it("clientIp takes the first forwarded address", () => {
   expect(clientIp(new Headers({ "x-real-ip": "5.6.7.8" }))).toBe("5.6.7.8");
   expect(clientIp(new Headers())).toBe("unknown");
 });
+
+it("clientIp reads only the configured header when one is trusted", () => {
+  const h = new Headers({ "x-forwarded-for": "6.6.6.6, 1.2.3.4", "cf-connecting-ip": "1.2.3.4" });
+  expect(clientIp(h, "cf-connecting-ip")).toBe("1.2.3.4");
+  expect(clientIp(new Headers({ "x-forwarded-for": "6.6.6.6" }), "cf-connecting-ip")).toBe("unknown");
+});

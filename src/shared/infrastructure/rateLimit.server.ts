@@ -26,6 +26,13 @@ export function fixedWindowLimiter({ windowMs, max, maxKeys = 100_000 }: { windo
   };
 }
 
-/** The visitor's IP as the trusted edge reports it (first X-Forwarded-For value). */
-export const clientIp = (headers: Headers) =>
-  headers.get("x-forwarded-for")?.split(",")[0]?.trim() || headers.get("x-real-ip")?.trim() || "unknown";
+/**
+ * The visitor's IP as the trusted edge reports it. With `CLIENT_IP_HEADER` set
+ * (e.g. `cf-connecting-ip` behind Cloudflare) only that header counts: Cloudflare
+ * keeps a client's own X-Forwarded-For and appends the real address, so the first
+ * value there could be anything. Without it: first X-Forwarded-For value, then X-Real-IP.
+ */
+export const clientIp = (headers: Headers, trusted = process.env.CLIENT_IP_HEADER?.trim().toLowerCase()) =>
+  (trusted
+    ? headers.get(trusted)?.trim()
+    : headers.get("x-forwarded-for")?.split(",")[0]?.trim() || headers.get("x-real-ip")?.trim()) || "unknown";
