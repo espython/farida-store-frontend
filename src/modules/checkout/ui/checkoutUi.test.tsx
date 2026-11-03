@@ -20,6 +20,7 @@ vi.mock("../application/useCheckout", () => ({ useCheckout: () => hook.value }))
 
 import AddressForm from "@/shared/ui/AddressForm";
 import PaymentStep from "./PaymentStep";
+import { axeViolations } from "@/test/axe";
 
 const address: Address = { firstName: "Mona", lastName: "Ali", address1: "12 El Nasr St", address2: "", city: "Nasr City", state: "EGC", postcode: "11765", phone: "01001234567" };
 const checkout: Checkout = {
@@ -96,5 +97,17 @@ describe("PaymentStep", () => {
     wrap(<PaymentStep />);
     expect(screen.getByRole("link", { name: "Complete address" })).toHaveAttribute("href", "/cart/shipping");
     expect(screen.queryByRole("button", { name: /Place order/ })).toBeNull();
+  });
+});
+
+describe("accessibility (axe, #195)", () => {
+  it("address form with errors, and the payment step", async () => {
+    const form = wrap(<AddressForm initial={emptyAddress()} busy={false} submitLabel="Continue" onSubmit={vi.fn()} />);
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
+    await screen.findAllByRole("alert").catch(() => null);
+    expect(await axeViolations(form.container)).toEqual([]);
+    form.unmount();
+    const pay = wrap(<PaymentStep />);
+    expect(await axeViolations(pay.container)).toEqual([]);
   });
 });

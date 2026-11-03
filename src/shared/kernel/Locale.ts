@@ -7,3 +7,6 @@ export const isLocale = (value: unknown): value is Locale =>
 
 export const directionOf = (locale: Locale): "ltr" | "rtl" =>
   locale === "ar" ? "rtl" : "ltr";
+
+/** Separator between list items in running text ("Dokki، Giza" / "Dokki, Giza"). */
+export const listSeparator = (locale: string): string => (locale === "ar" ? "، " : ", ");

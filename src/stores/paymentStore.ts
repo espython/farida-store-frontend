@@ -179,31 +179,6 @@ class PaymentStore {
     }
   };
 
-  // Get payment status text for UI
-  getPaymentStatusText = (locale: string = 'en'): string => {
-    if (this.isInitiatingPayment) {
-      return locale === 'ar' ? 'جاري تحضير الدفع...' : 'Preparing payment...';
-    }
-    
-    if (this.isProcessingPayment) {
-      return locale === 'ar' ? 'جاري معالجة الدفع...' : 'Processing payment...';
-    }
-    
-    if (this.paymentError) {
-      return locale === 'ar' ? 'حدث خطأ في الدفع' : 'Payment error occurred';
-    }
-    
-    if (this.paymentResult) {
-      if (this.paymentResult.success) {
-        return locale === 'ar' ? 'تم الدفع بنجاح' : 'Payment successful';
-      } else {
-        return locale === 'ar' ? 'فشل الدفع' : 'Payment failed';
-      }
-    }
-    
-    return locale === 'ar' ? 'جاهز للدفع' : 'Ready to pay';
-  };
-
   // Format amount for display
   formatAmount = (amount: number, currency: string = 'EGP'): string => {
     return new Intl.NumberFormat('en-US', {

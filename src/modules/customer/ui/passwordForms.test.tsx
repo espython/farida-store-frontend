@@ -16,6 +16,7 @@ vi.mock("../application/usePasswordReset", () => ({ usePasswordReset: () => hook
 
 import ForgotPasswordForm from "./ForgotPasswordForm";
 import ResetPasswordForm from "./ResetPasswordForm";
+import { axeViolations } from "@/test/axe";
 
 const wrap = (ui: React.ReactNode, locale: "en" | "ar" = "en") =>
   render(
@@ -100,5 +101,22 @@ describe("ResetPasswordForm", () => {
     type("Confirm new password", "NewPass1");
     fireEvent.click(screen.getByRole("button", { name: "Save new password" }));
     expect(await screen.findByRole("link", { name: "Get a new link" })).toBeInTheDocument();
+  });
+});
+
+describe("accessibility (axe, #195)", () => {
+  it("forgot and reset forms, and the invalid-link state, in both languages", async () => {
+    for (const locale of ["en", "ar"] as const) {
+      const { container, unmount } = wrap(
+        <>
+          <ForgotPasswordForm />
+          <ResetPasswordForm link={link} onDone={vi.fn()} />
+          <ResetPasswordForm link={null} onDone={vi.fn()} />
+        </>,
+        locale
+      );
+      expect(await axeViolations(container)).toEqual([]);
+      unmount();
+    }
   });
 });

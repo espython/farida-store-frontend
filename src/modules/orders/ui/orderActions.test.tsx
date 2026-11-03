@@ -13,6 +13,7 @@ const actions = vi.hoisted(() => ({
 vi.mock("../application/useOrderActions", () => ({ useOrderActions: () => actions.value }));
 
 import OrderActions from "./OrderActions";
+import { axeViolations } from "@/test/axe";
 
 const order = (over: Partial<Order> = {}): Order => ({
   id: "298", status: "placed", createdAt: "2026-10-31T17:30:42", itemCount: 1, total: Money.of(100000), payment: "cod", deliveredAt: null,
@@ -91,5 +92,20 @@ describe("OrderActions", () => {
   it("tells the customer a return was requested, in Arabic too", () => {
     wrap(order({ status: "return_requested" }), "ar");
     expect(screen.getByRole("heading", { name: "تم طلب الإرجاع" })).toBeInTheDocument();
+  });
+});
+
+describe("accessibility (axe, #195)", () => {
+  it("cancel confirmation and the open return form", async () => {
+    actions.value = { ...base(), canCancel: true };
+    const cancel = wrap(order());
+    fireEvent.click(screen.getByRole("button", { name: "Cancel order" }));
+    expect(await axeViolations(cancel.container)).toEqual([]);
+    cancel.unmount();
+
+    actions.value = { ...base(), canRequestReturn: true, returnDeadline: new Date("2026-11-15T10:00:00Z") };
+    const ret = wrap(order({ status: "delivered" }), "ar");
+    fireEvent.click(screen.getByRole("button", { name: "طلب إرجاع" }));
+    expect(await axeViolations(ret.container)).toEqual([]);
   });
 });
