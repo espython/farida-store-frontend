@@ -46,6 +46,8 @@ export const WOO_ALLOWLIST: readonly AllowedWooRoute[] = [
   { method: "POST", pattern: /^\/wc-farida\/v1\/password\/(forgot|reset)$/ },
   // Email confirmation (A2): same mu-plugin, server keys.
   { method: "POST", pattern: /^\/wc-farida\/v1\/email\/(send|verify)$/ },
+  // Google sign-in (A2): same mu-plugin, server keys.
+  { method: "POST", pattern: /^\/wc-farida\/v1\/google\/login$/ },
 ];
 
 export function isWooRouteAllowed(
