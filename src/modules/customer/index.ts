@@ -24,6 +24,9 @@ export { usePasswordReset } from "./application/usePasswordReset";
 export type { ResetLink } from "./domain/passwordReset";
 export { toResetLink } from "./domain/passwordReset";
 export { safeNextPath } from "./domain/routeAccess";
+export type { VerifyLink } from "./domain/emailVerification";
+export { toVerifyLink } from "./domain/emailVerification";
+export { useEmailVerification } from "./application/useEmailVerification";
 export type { AuthFailure } from "./application/authFailure";
 
 // Account (A4): profile and address book on the Woo customer.
@@ -39,6 +42,8 @@ export { default as SignInForm } from "./ui/SignInForm";
 export { default as RegisterForm } from "./ui/RegisterForm";
 export { default as ForgotPasswordForm } from "./ui/ForgotPasswordForm";
 export { default as ResetPasswordForm } from "./ui/ResetPasswordForm";
+export { default as EmailVerificationBanner } from "./ui/EmailVerificationBanner";
+export { default as VerifyEmailResult } from "./ui/VerifyEmailResult";
 export { default as AccountMenu } from "./ui/AccountMenu";
 export { default as ProfileCard } from "./ui/ProfileCard";
 export { default as AddressBook } from "./ui/AddressBook";

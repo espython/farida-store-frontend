@@ -151,6 +151,10 @@ Run: `node --env-file=.env.local spike-hardening.mjs`. What anonymous visitors a
 
 **REST key:** `create-keys.php` now issues the key for a `farida-storefront` **Shop manager** user instead of the admin. Every spike passes with it except two that fail for other reasons (`spike-cod` triple submit: Woo has no idempotency, the BFF's key handles it; `spike-cart` picks leftover products whose stock is held by those orders). Found: Woo returns customer `meta_data` to administrators only; `farida-account.php` adds back the storefront's keys.
 
+### Email confirmation checks (`spike-email-verify.mjs`, 2026-11-03, A2 #243)
+
+Run: `node --env-file=.env.local spike-email-verify.mjs` (about 65 s: it waits out the one-email-a-minute guard). 17/17: keys required; https/localhost link only; one email, then "recent" within a minute; wrong token or other id refused; verify sets `farida_email_verified` (visible with the shop-manager key) and the link can be opened twice; "verified" stops further emails; an email change clears the confirmation and kills old links; Arabic email keeps the first name.
+
 ### Password reset checks (`spike-password.mjs`, 2026-11-02, A2 #243)
 
 Run: `node --env-file=.env.local spike-password.mjs` (about 70 s: it waits out the one-email-a-minute guard). Mail is caught by Mailpit (`docker compose up -d mailpit`, UI on http://localhost:8025; `local-mailpit.php` points `wp_mail` at it).

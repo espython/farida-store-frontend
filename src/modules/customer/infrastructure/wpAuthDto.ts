@@ -69,3 +69,21 @@ export interface WpPasswordResetRequest {
 export interface WpPasswordResetResponse {
   email: string;
 }
+
+/** POST /wc-farida/v1/email/send (farida-account mu-plugin, server keys). */
+export interface WpEmailSendRequest {
+  customerId: number;
+  locale: "en" | "ar";
+  /** The storefront page the emailed link opens; WordPress adds ?id=…&token=…. */
+  verifyUrl: string;
+}
+
+export interface WpEmailSendResponse {
+  status: "sent" | "recent" | "verified";
+}
+
+/** POST /wc-farida/v1/email/verify. */
+export interface WpEmailVerifyRequest {
+  id: number;
+  token: string;
+}

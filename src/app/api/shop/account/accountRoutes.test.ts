@@ -75,7 +75,7 @@ describe("account routes", () => {
     vi.stubGlobal("fetch", fakeWoo(customers, { id: 9 }));
     const got = await profileRoute.GET(req("/api/shop/account/profile", as(9)), {});
     expect(got.headers.get("cache-control")).toBe("private, no-store");
-    expect((await got.json()).profile).toEqual({ firstName: "Mona", lastName: "Ali", email: "c9@x.io" });
+    expect((await got.json()).profile).toEqual({ firstName: "Mona", lastName: "Ali", email: "c9@x.io", emailVerified: false });
 
     const put = await profileRoute.PUT(req("/api/shop/account/profile", as(9), "PUT", { firstName: " Mariam ", lastName: "Hassan" }), {});
     expect((await put.json()).profile).toMatchObject({ firstName: "Mariam", lastName: "Hassan" });

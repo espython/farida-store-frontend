@@ -10,7 +10,7 @@ export interface AuthFailure {
   fields: Partial<Record<string, CredentialError>>;
 }
 
-const KNOWN: AuthFailure["code"][] = ["invalid_credentials", "email_taken", "invalid_input", "unauthenticated", "invalid_reset_link", "rate_limited"];
+const KNOWN: AuthFailure["code"][] = ["invalid_credentials", "email_taken", "invalid_input", "unauthenticated", "invalid_reset_link", "invalid_verify_link", "rate_limited"];
 
 /** BFF error body ({ error: { code, details } }) → a domain failure the forms can show. */
 export const toAuthFailure = (error: FetchBaseQueryError | SerializedError | undefined): AuthFailure => {

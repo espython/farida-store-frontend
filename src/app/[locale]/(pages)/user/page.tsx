@@ -4,6 +4,7 @@ import UserPagesMenu from "./components/UserPagesMenu";
 import { unstable_setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
 import PageContainer from "@/shared/ui/PageContainer";
+import { EmailVerificationBanner } from "@/modules/customer";
 
 interface UserPageProps {
   params: { locale: string };
@@ -17,6 +18,7 @@ const UserPage = ({ params: { locale } }: UserPageProps) => {
     <>
       <PageTitle title={t("account")} />
       <PageContainer className="pt-6 pb-8">
+        <EmailVerificationBanner />
         <UserPagesMenu />
       </PageContainer>
     </>

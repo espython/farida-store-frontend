@@ -4,6 +4,8 @@ export interface Profile {
   lastName: string;
   /** Sign-in email; shown, not edited here (changing it needs a re-check of the password). */
   email: string;
+  /** The customer opened the confirmation link sent to `email`. Nothing is blocked while false: a reminder only. */
+  emailVerified: boolean;
 }
 
 export type ProfileInput = Pick<Profile, "firstName" | "lastName">;
