@@ -5,7 +5,8 @@ Storefront for a kitchen-appliances ecommerce shop (Arabic + English). Headless 
 ## Commands
 
 - `npm run dev` – dev server (http://localhost:3000)
-- `npm run build` / `npm start` – production build / serve
+- `npm run build` / `npm start` – production build / serve (`output: "standalone"`; the `Dockerfile` builds the image)
+- Hosting (W1): Contabo VPS + Coolify, Cloudflare in front, deploying `infra/production/docker-compose.yml` (storefront, WordPress image with the mu-plugins baked in, MariaDB, restic backups); runbook `doc/deploy-coolify.md`. One storefront instance only (in-memory guards). `/api/health` is the liveness check.
 - `npm run lint` – next lint
 - `npm test` – unit tests, including axe accessibility checks on the main UI (`axeViolations` in `src/test/axe.ts`; add one for new forms and components); `npm run verify:i18n` – en/ar key parity and every static `t()` key
 
@@ -53,7 +54,7 @@ Next.js 13 (App Router), React 18, TypeScript, Tailwind + NextUI, framer-motion,
 
 ## Environment variables
 
-`CONTACT_SHARED_SECRET` (server-only; must equal `FARIDA_CONTACT_SECRET` in WordPress's wp-config), `WC_BASE_URL`, `WC_CONSUMER_KEY`, `WC_CONSUMER_SECRET` (server-only, WooCommerce BFF; the key belongs to a **Shop manager** user, never an admin, see `infra/wordpress/README.md`; `WC_BASE_URL` is also the only `images.remotePatterns` host, read at build time), `WC_WEBHOOK_SECRET` (server-only; secret of the Woo product webhooks that call `/api/revalidate`), `NEXT_PUBLIC_SITE_URL` (public origin for canonical URLs, Open Graph and JSON-LD; defaults to `http://localhost:3000`), `NEXT_PUBLIC_GOOGLE_CLIENT_ID` (enables Google sign-in; build time) and `GOOGLE_CLIENT_SECRET` (server-only), see `doc/google-sign-in-setup.md`, `NEXT_PUBLIC_PAYMOB_IFRAME_ID` (legacy card code, unused at launch; removed with #326). No `.env` is committed.
+`CONTACT_SHARED_SECRET` (server-only; must equal `FARIDA_CONTACT_SECRET` in WordPress's wp-config), `WC_BASE_URL`, `WC_CONSUMER_KEY`, `WC_CONSUMER_SECRET` (server-only, WooCommerce BFF; the key belongs to a **Shop manager** user, never an admin, see `infra/wordpress/README.md`; `WC_BASE_URL` is also the only `images.remotePatterns` host, read at build time), `WC_WEBHOOK_SECRET` (server-only; secret of the Woo product webhooks that call `/api/revalidate`), `NEXT_PUBLIC_SITE_URL` (public origin for canonical URLs, Open Graph and JSON-LD; defaults to `http://localhost:3000`), `NEXT_PUBLIC_GOOGLE_CLIENT_ID` (enables Google sign-in; build time) and `GOOGLE_CLIENT_SECRET` (server-only), see `doc/google-sign-in-setup.md`, `CLIENT_IP_HEADER` (optional; the one header the rate limits trust for the visitor IP, `cf-connecting-ip` behind Cloudflare with the origin firewalled to it; unset: first `X-Forwarded-For`), `NEXT_PUBLIC_PAYMOB_IFRAME_ID` (legacy card code, unused at launch; removed with #326). No `.env` is committed.
 
 ## Workflow
 

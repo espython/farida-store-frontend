@@ -1,6 +1,6 @@
 # WordPress add-ons for the Farida storefront
 
-Files here are deployed to **every** WordPress that serves the storefront (staging and production). The local stack in `../woo-staging` installs them from `setup.sh`.
+Files here are deployed to **every** WordPress that serves the storefront (staging and production). The local stack in `../woo-staging` installs them from `setup.sh`; the hosted WordPress image (`../production/wordpress`, `doc/deploy-coolify.md`) bakes them in and reinstalls them on every deploy.
 
 | File | Install to | What it does |
 |---|---|---|
